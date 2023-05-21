@@ -8,30 +8,31 @@ export function useAuth() {
     return useContext(AuthContext);
 }
 
-function useProjectRoute(user) {
+function useProtectedRoute(user) {
     const segments = useSegments();
     const router = useRouter();
 
     useEffect(() => {
-        console.log('useProtectedTRoute useeffect called')
+        console.log('useProtectedRoute useeffect called');
         const inAuthGroup = segments[0] === "(auth)";
         if (user == null && !inAuthGroup) {
             router.replace("/login");
         } else if (user && inAuthGroup) {
             router.replace('/');
         }
-    }, [router, segments, user])
+    }, [router, segments, user]);
 }
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
 
-    useProjectRoute(user);
+    useProtectedRoute(user);
 
     useEffect(() => {
+        console.log(`AuthProvider useEffect called`);
         const { data } = supabase.auth.onAuthStateChange((event, session) => {
             console.log('authState: ${event}');
-            if(event === "SIGNED_IN") {
+            if (event === "SIGNED_IN") {
                 setUser(session.user);
             } else if (event === "SIGNED_OUT") {
                 setUser(null);

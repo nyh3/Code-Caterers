@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Button, Image, StyleSheet, Text, View } from 'react-native';
+import { Button, Text } from 'react-native-paper';
+import { StyleSheet, View, Image } from 'react-native';
 import { supabase } from '../lib/supabase';
 
 export default function HomePage() {
