@@ -2,7 +2,6 @@ import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { View, StyleSheet, Image } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
-import { Link } from "expo-router";
 
 export default function RegisterPage() {
     const [email, setEmail] = useState('');
@@ -51,7 +50,7 @@ export default function RegisterPage() {
                 value={password}
                 onChangeText={setPassword} />
             
-            <Button onPress={handleSubmit}>Sign Up</Button>
+            <Button onPress={handleSubmit}>Sign Up and Confirm email</Button>
             {errMsg !== "" && <Text>{errMsg}</Text>}
             {loading && <ActivityIndicator />}  
         </View>
