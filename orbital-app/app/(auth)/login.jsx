@@ -51,16 +51,21 @@ export default function LoginPage() {
                 textContentType='password'
                 value={password}
                 onChangeText={setPassword} />
-            
             <View style={styles.container}>
                 <Button onPress={handleSubmit}>Log In</Button>
             </View>
                 
             {errMsg !== "" && <Text>{errMsg}</Text>}
             {loading && <ActivityIndicator />}
-            <Link href="/register">
-                <Button>Sign Up</Button>
-            </Link>    
+            <View style={styles.bar}>
+                <Link href="/reset"> 
+                    <Button>Forgot Password</Button>
+                </Link>
+                <Link href="/register">
+                    <Button>Sign Up</Button>
+                </Link>    
+            </View>
+            
         </View>
     );
 }
@@ -86,4 +91,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         flexDirection: 'column',
     },
+    bar: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+    }
   });
