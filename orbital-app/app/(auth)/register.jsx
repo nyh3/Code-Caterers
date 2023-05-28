@@ -62,23 +62,24 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: 200,
         height: 200,
-        marginVertical: 20,
+        marginVertical: 30,
     },
     register: {
         fontWeight: 'bold',
         fontSize: 34,
         margin: 0,
-        marginHorizontal: 10,
+        marginHorizontal: 15, 
+        marginTop: 10,
     },
     bold: {
         fontWeight: 'bold',
         margin: 0,
-        marginHorizontal: 10,
-        marginVertical: 10,
+        marginHorizontal: 15,
+        marginTop: 10,
+        marginBottom: 3,
     },
     container: {
         padding:10,
-        paddingHorizontal: 30,
     },
     wholeThing: {
         justifyContent: 'space-evenly',
@@ -88,5 +89,6 @@ const styles = StyleSheet.create({
     button: {
         color: '#000000',
         fontWeight: 'bold',
+        marginVertical: 10,
     }
   });

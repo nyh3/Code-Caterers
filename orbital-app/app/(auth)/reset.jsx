@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View } from "react-native";
+import { Image, View, StyleSheet } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import * as Linking from 'expo-linking';
@@ -21,8 +21,12 @@ export default function reset() {
     }
 
     return (
-        <View>
-            <Text>Email</Text>
+        <View style={styles.wholeThing}>
+             <Image 
+            style={styles.logo} 
+            source={require('../../assets/logo.png')} />
+
+            <Text style={styles.word}>Email</Text>
             <TextInput
                 autoCapitalize='none'
                 textContentType='emailAddress'
@@ -30,7 +34,33 @@ export default function reset() {
                 onChangeText={setEmail} />
                 
             {errMsg !== "" && <Text>{errMsg}</Text>}
-            <Button onPress={handleSubmit}>Send email</Button>
+            <Button onPress={handleSubmit}><Text style={styles.button}>Send Password Reset Email</Text></Button>
         </View>
-    )
+    );    
 }
+
+const styles = StyleSheet.create({
+        logo: {
+            alignSelf: 'center',
+            width: 200,
+            height: 200,
+            marginVertical: 30,
+        },
+        wholeThing: {
+            justifyContent: 'space-evenly',
+            flexDirection: 'column',
+            backgroundColor: '#FFECF6',
+        }, 
+        button: {
+            color: '#000000',
+            fontWeight: 'bold',
+            marginVertical: 10,
+        },
+        word: {
+            fontWeight: 'bold',
+            margin: 0,
+            marginHorizontal: 15,
+            marginTop: 10,
+            marginBottom: 3,
+        }
+    });
