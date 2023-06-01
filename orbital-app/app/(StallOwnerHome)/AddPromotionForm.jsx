@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Button, TextInput, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { supabase } from '../../lib/supabase';
 
 export default function AddPromotionForm() {
     const [title, setTitle] = useState('');
@@ -84,7 +85,7 @@ const styles = {
     },
     input: {
         height: 40,
-        borderColor: 'gray',
+        borderColor: 'black',
         borderWidth: 1,
         marginBottom: 10,
         paddingHorizontal: 10,
