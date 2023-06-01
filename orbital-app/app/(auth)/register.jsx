@@ -82,9 +82,10 @@ const styles = StyleSheet.create({
         padding:10,
     },
     wholeThing: {
-        justifyContent: 'space-evenly',
+        justifyContent: 'flex-start',
         flexDirection: 'column',
-        backgroundColor: '#FFECF6',
+        backgroundColor: '#FFF5FA',
+        flex: 1,
     },
     button: {
         color: '#000000',
