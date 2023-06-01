@@ -12,11 +12,11 @@ export default function LoginPage() {
     
     const handleSubmit = async () => {
         if (email == '') {
-            setErrMsg('email cannot be empty');
+            setErrMsg('Please provide a valid email address.');
             return;
         }
         if (password == '') {
-            setErrMsg('password cannot be empty');
+            setErrMsg('Please provide a valid password.');
             return;
         }
         setLoading(true);
@@ -35,16 +35,16 @@ export default function LoginPage() {
             style={styles.logo} 
             source={require('../../assets/logo.png')} />
 
-            <Text style={styles.sign}>Sign In</Text>
+            <Text style={styles.sign}>Sign In:</Text>
 
-            <Text style={styles.bold}>Email</Text>
+            <Text style={styles.bold}>Email:</Text>
             <TextInput
                 autoCapitalize='none'
                 textContentType='emailAddress'
                 value={email}
                 onChangeText={setEmail} />
             
-            <Text style={styles.bold}>Password</Text>
+            <Text style={styles.bold}>Password:</Text>
             <TextInput
                 secureTextEntry
                 autoCapitalize='none'
@@ -52,17 +52,19 @@ export default function LoginPage() {
                 value={password}
                 onChangeText={setPassword} />
             <View style={styles.container}>
-                <Button onPress={handleSubmit}>Log In</Button>
+                <Button
+                style={styles.button}
+                onPress={handleSubmit}><Text style={styles.button}>Sign In</Text></Button>
             </View>
                 
             {errMsg !== "" && <Text>{errMsg}</Text>}
             {loading && <ActivityIndicator />}
             <View style={styles.bar}>
                 <Link href="/reset"> 
-                    <Button>Forgot Password</Button>
+                    <Button><Text style={styles.button}>Forgot Password</Text></Button>
                 </Link>
                 <Link href="/register">
-                    <Button>Sign Up</Button>
+                    <Button><Text style={styles.button}>Sign Up</Text></Button>
                 </Link>    
             </View>
             
@@ -75,24 +77,36 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: 200,
         height: 200,
+        marginVertical: 30,
     },
     sign: {
         fontWeight: 'bold',
         fontSize: 34,
+        margin: 0,
+        marginHorizontal: 15,
+        marginTop: 10,
     },
     bold: {
         fontWeight: 'bold',
+        margin: 0,
+        marginHorizontal: 15,
+        marginTop: 10,
+        marginBottom: 3,
     },
     container: {
-        padding:10,
-        /*backgroundColor: '#A020F0',*/
+        padding: 10,
     },
     wholeThing: {
         justifyContent: 'space-evenly',
         flexDirection: 'column',
+        backgroundColor: '#FFECF6',
     },
     bar: {
         flexDirection: 'row',
         justifyContent: 'space-around',
+    },
+    button: {
+        color: '#000000',
+        fontWeight: 'bold',
     }
   });
