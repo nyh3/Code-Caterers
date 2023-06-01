@@ -97,9 +97,10 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     wholeThing: {
-        justifyContent: 'space-evenly',
+        justifyContent: 'flex-start',
         flexDirection: 'column',
-        backgroundColor: '#FFECF6',
+        flex: 1,
+        backgroundColor: '#FFF5FA',
     },
     bar: {
         flexDirection: 'row',
