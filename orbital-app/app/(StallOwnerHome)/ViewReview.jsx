@@ -21,14 +21,14 @@ export default function ReviewPage() {
 const styles = StyleSheet.create({
     header: {
         fontWeight: 'bold',
-        fontSize: 34,
+        fontSize: 30,
         margin: 0,
         marginHorizontal: 15,
-        marginTop: 10,
+        marginTop: 15,
     },
     ratings: {
         fontWeight: 'bold',
-        fontSize: 25,
+        fontSize: 18,
         margin: 0,
         marginHorizontal: 15,
         marginTop: 10,

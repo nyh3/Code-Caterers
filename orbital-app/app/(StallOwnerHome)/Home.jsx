@@ -35,10 +35,10 @@ export default function OwnerHome() {
     }
 
     return (
-        <View>
+        <View style={styles.buttons}>
             <Button onPress={handleAddImage}>Insert Profile Image</Button>
            <Link href="../(StallOwnerHome)/EditOwnerProfile">
-                <Button>Profile</Button>
+                <Button>Edit Profile</Button>
             </Link>   
             <Link href="../(StallOwnerHome)/AddPromotion">
                 <Button>Add Promotions</Button>
@@ -54,13 +54,18 @@ export default function OwnerHome() {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#FFF5FA',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
+      marginHorizontal: 10,
     },
     profilephoto: {
       width: 200,
       height: 200,
       alignItems: 'center',
     },
+    buttons: {
+        marginHorizontal: 5,
+        marginVertical: 10,
+    }
   });

@@ -8,11 +8,10 @@ export default function AddPromotionPage() {
             <Text style={styles.header}>
                 Add Promotions:
             </Text>
-            <Button onPress={handleAddImage}>Insert Promotion Image</Button>
-           <Link href="../(StallOwnerHome)/AddPromotionForm">
-                <Button>Add Promotion</Button>
-            </Link>   
-            <Text style={styles.header}>
+            <Link href="../(StallOwnerHome)/AddPromotionForm">
+                <Button>Add Promotions</Button>
+            </Link>
+            <Text style={styles.normal}>
                 Previously added promotions: take from database?
             </Text>
         </View>
@@ -28,7 +27,13 @@ const styles = StyleSheet.create({
     },
     header: {
         fontWeight: 'bold',
-        fontSize: 34,
+        fontSize: 30,
+        margin: 0,
+        marginHorizontal: 15,
+        marginTop: 10,
+    },
+    normal: {
+        fontSize: 15,
         margin: 0,
         marginHorizontal: 15,
         marginTop: 10,
