@@ -3,15 +3,14 @@ import { Text } from "react-native-paper"
 
 export default function ReviewPage() {
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={styles.header}>
                 Reviews:
             </Text>
             <Text style={styles.ratings}> 
                 Ratings: use database to calculate overall ratings
             </Text>
-            <Text normal={styles.normal}>
-                Reviews listed below:
+            <Text style={styles.normal}>Reviews listed below:
                 Taken from database
             </Text>
         </View>
@@ -19,22 +18,28 @@ export default function ReviewPage() {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#FFF5FA',
+        justifyContent: 'flex-start',
+        marginHorizontal: 10,
+      },
     header: {
         fontWeight: 'bold',
-        fontSize: 30,
+        fontSize: 25,
         margin: 0,
         marginHorizontal: 15,
         marginTop: 15,
     },
     ratings: {
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 20,
         margin: 0,
         marginHorizontal: 15,
         marginTop: 10,
     },
     normal: {
-        fontSize: 20,
+        fontSize: 16,
         margin: 0,
         marginHorizontal: 15,
         marginTop: 10,

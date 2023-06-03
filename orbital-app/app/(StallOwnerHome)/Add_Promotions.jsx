@@ -4,15 +4,15 @@ import { Link } from 'expo-router';
 
 export default function AddPromotionPage() {
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={styles.header}>
                 Add Promotions:
             </Text>
-            <Link href="../(StallOwnerHome)/AddPromotionForm">
-                <Button>Add Promotions</Button>
+            <Link href="(StallOwnerHome)/Promotion_Form">
+                <Button style={styles.buttonContainer}><Text style={styles.buttons}>Add Promotions</Text></Button>
             </Link>
             <Text style={styles.normal}>
-                Previously added promotions: take from database?
+                Previously added promotions: list it, take from database?
             </Text>
         </View>
     )
@@ -21,16 +21,16 @@ export default function AddPromotionPage() {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
+      backgroundColor: '#FFF5FA',
+      justifyContent: 'flex-start',
+      marginHorizontal: 10,
     },
     header: {
         fontWeight: 'bold',
-        fontSize: 30,
+        fontSize: 25,
         margin: 0,
         marginHorizontal: 15,
-        marginTop: 10,
+        marginTop: 15,
     },
     normal: {
         fontSize: 15,
@@ -38,5 +38,16 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
         marginTop: 10,
     },
+    buttonContainer: {
+        backgroundColor: '#FFECF6',
+        borderWidth: 1,
+        //borderColor: '#FFBBDF',
+        marginTop: 5,
+      },
+    buttons: {
+        marginHorizontal: 5,
+        marginVertical: 5,
+        color: '#2C0080',
+    }
   });
   

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput, Image } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '../../lib/supabase';
 
-export default function AddPromotionForm() {
+export default function PromotionForm() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState(null);
@@ -50,10 +50,12 @@ export default function AddPromotionForm() {
     };
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={styles.header}>Add Promotions:</Text>
             {image && <Image source={{ uri: image }} style={styles.image} />}
-            <Button title="Add Image" onPress={handleAddImage} />
+            <TouchableOpacity style={styles.buttonContainer} onPress={handleAddImage}>
+                    <Text style={styles.buttons}>Add Image</Text>
+            </TouchableOpacity>
             <TextInput
                 style={styles.input}
                 placeholder="Title"
@@ -66,17 +68,26 @@ export default function AddPromotionForm() {
                 value={description}
                 onChangeText={(text) => setDescription(text)}
             />
-            <Button title="Add Promotion" onPress={handleSubmit} disabled={loading} />
+            <TouchableOpacity style={styles.buttonContainer} onPress={handleSubmit} disabled={loading}>
+                    <Text style={styles.buttons}>Save & Add Promotion</Text>
+            </TouchableOpacity>
             {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
         </View>
     );
 }
 
-const styles = {
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#FFF5FA',
+        justifyContent: 'flex-start',
+        marginHorizontal: 10,
+    },
     header: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginVertical: 15,
+        marginHorizontal: 5,
     },
     image: {
         width: 200,
@@ -85,7 +96,7 @@ const styles = {
     },
     input: {
         height: 40,
-        borderColor: 'black',
+        borderColor: '#FFBBDF',
         borderWidth: 1,
         marginBottom: 10,
         paddingHorizontal: 10,
@@ -93,5 +104,20 @@ const styles = {
     error: {
         color: 'red',
         marginTop: 10,
+        marginHorizontal: 5,
     },
-};
+    buttonContainer: {
+        backgroundColor: '#FFECF6',
+        borderWidth: 1,
+        borderColor: '#FFBBDF',
+        marginBottom: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 40,
+    },
+    buttons: {
+        color: '#2C0080',
+        fontWeight: 'bold',
+    },
+});
+
