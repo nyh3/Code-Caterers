@@ -9,14 +9,14 @@ export default function userOrOwner() {
             style={styles.logo} 
             source={require('../../assets/logo.png')} />
             
-            <Text style={styles.first}> Log In as </Text>
+            <Text style={styles.header}> Login Portal </Text>
             <Link href="/login"> 
-            <Button style={styles.buttonContainer}>User</Button>
+            <Button style={styles.buttonContainer}><Text style={styles.button}>User</Text></Button>
             </Link>
+            <Text></Text> 
             <Link href="/login"> 
-            <Button style={styles.buttonContainer}>Stall owner</Button>
+            <Button style={styles.buttonContainer}><Text style={styles.button}>Stall Owner</Text></Button>
             </Link>
-
         </View>
     )
 }
@@ -24,22 +24,29 @@ export default function userOrOwner() {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      /*backgroundColor: '#fff',*/
+      backgroundColor: '#FFF5FA',
       alignItems: 'center',
     },
     logo: {
       width: 200,
       height: 200,
       alignSelf: 'center',
+      marginVertical: 30,
     },
-    first: {
+    header: {
       fontWeight: 'bold',
       fontSize: 30,
+      marginBottom: 30,
     },
     buttonContainer: {
-      backgroundColor: 'pink',
+      backgroundColor: '#FFECF6',
       borderWidth: 5,
       borderLeftWidth: 10,
       borderRightWidth: 10,
     },
+    button: {
+      fontWeight: 'bold',
+      fontSize: 15,
+      color: '#2C0080',
+    }
   });

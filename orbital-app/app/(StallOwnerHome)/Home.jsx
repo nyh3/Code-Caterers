@@ -5,7 +5,7 @@ import { Link } from 'expo-router';
 import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 
-export default function OwnerHome() {
+export default function Home() {
     const [image, setImage] = useState(null);
     const [errMsg, setErrMsg] = useState('');
     const [loading, setLoading] = useState(false);
@@ -35,18 +35,18 @@ export default function OwnerHome() {
     }
 
     return (
-        <View style={styles.buttons}>
-            <Button onPress={handleAddImage}>Insert Profile Image</Button>
-           <Link href="../(StallOwnerHome)/EditOwnerProfile">
-                <Button>Edit Profile</Button>
+        <View style={styles.container}>
+            <Button style={styles.buttons} onPress={handleAddImage}>Insert Profile Image</Button>
+           <Link href="(StallOwnerHome)/Edit_Profile">
+                <Button style={styles.buttons}>Edit Profile</Button>
             </Link>   
-            <Link href="../(StallOwnerHome)/AddPromotion">
-                <Button>Add Promotions</Button>
+            <Link href="(StallOwnerHome)/Add_Promotions">
+                <Button style={styles.buttons}>Add Promotions</Button>
             </Link>
-            <Link href="../(StallOwnerHome)/ViewReview">
-                <Button>Reviews</Button>
+            <Link href="(StallOwnerHome)/Reviews">
+                <Button style={styles.buttons}>Reviews</Button>
             </Link>
-            <Button onPress={() => supabase.auth.signOut()}>Log out</Button>
+            <Button style={styles.buttons} onPress={() => supabase.auth.signOut()}>Log out</Button>
         </View>
     )
 }
@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#FFF5FA',
-      alignItems: 'center',
       justifyContent: 'flex-start',
       marginHorizontal: 10,
     },
@@ -66,6 +65,7 @@ const styles = StyleSheet.create({
     },
     buttons: {
         marginHorizontal: 5,
-        marginVertical: 10,
+        marginVertical: 5,
+        color: '#2C0080',
     }
   });

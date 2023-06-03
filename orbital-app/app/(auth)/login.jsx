@@ -53,7 +53,7 @@ export default function LoginPage() {
                 onChangeText={setPassword} />
             <View style={styles.container}>
                 <Button
-                style={styles.button}
+                style={styles.buttonContainer}
                 onPress={handleSubmit}><Text style={styles.button}>Sign In</Text></Button>
             </View>
                 
@@ -61,10 +61,10 @@ export default function LoginPage() {
             {loading && <ActivityIndicator />}
             <View style={styles.bar}>
                 <Link href="/reset"> 
-                    <Button><Text style={styles.button}>Forgot Password</Text></Button>
+                    <Button style={styles.buttonContainer}><Text style={styles.button}>Forgot Password</Text></Button>
                 </Link>
                 <Link href="/register">
-                    <Button><Text style={styles.button}>Sign Up</Text></Button>
+                    <Button style={styles.buttonContainer}><Text style={styles.button}>Sign Up</Text></Button>
                 </Link>    
             </View>
             
@@ -106,8 +106,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
     },
+    buttonContainer: {
+        backgroundColor: '#FFECF6',
+        borderWidth: 5,
+        borderLeftWidth: 5,
+        borderRightWidth: 5,
+      },
     button: {
-        color: '#000000',
+        color: '#2C0080',
         fontWeight: 'bold',
     }
   });

@@ -51,7 +51,7 @@ export default function EditOwnerProfilePage() {
                 onChangeText={setPassword}
             />
             <View style={styles.container}>
-                <Button style={styles.button} onPress={handleSubmit}>
+                <Button style={styles.buttonContainer} onPress={handleSubmit}>
                     <Text style={styles.button}>Save Changes</Text>
                 </Button>
             </View>
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     },
     sign: {
         fontWeight: 'bold',
-        fontSize: 34,
+        fontSize: 30,
         margin: 0,
         marginHorizontal: 15,
         marginTop: 10,
@@ -92,8 +92,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF5FA',
         flex: 1,
     },
+    buttonContainer: {
+        backgroundColor: '#FFECF6',
+        borderWidth: 5,
+        marginTop: 5,
+      },
     button: {
-        color: '#000000',
+        color: '#2C0080',
         fontWeight: 'bold',
     },
 });

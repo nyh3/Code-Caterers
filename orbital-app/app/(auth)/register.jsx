@@ -49,8 +49,7 @@ export default function RegisterPage() {
                 textContentType='password'
                 value={password}
                 onChangeText={setPassword} />
-            
-            <Button onPress={handleSubmit}><Text style={styles.button}>Verify email to sign in</Text></Button>
+            <Button style={styles.buttonContainer} onPress={handleSubmit}><Text style={styles.button}>Verify email to sign in</Text></Button>
             {errMsg !== "" && <Text>{errMsg}</Text>}
             {loading && <ActivityIndicator />}  
         </View>
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
         marginBottom: 3,
     },
     container: {
-        padding:10,
+        padding:15,
     },
     wholeThing: {
         justifyContent: 'flex-start',
@@ -87,9 +86,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF5FA',
         flex: 1,
     },
+    buttonContainer: {
+        backgroundColor: '#FFECF6',
+        borderWidth: 5,
+        marginTop: 15,
+      },
     button: {
-        color: '#000000',
+        color: '#2C0080',
         fontWeight: 'bold',
-        marginVertical: 10,
     }
   });

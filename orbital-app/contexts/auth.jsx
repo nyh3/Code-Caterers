@@ -18,7 +18,7 @@ function useProtectedRoute(user) {
         if (user == null && !inAuthGroup) {
             router.replace("/choose");
         } else if (user && inAuthGroup) {
-            router.replace('(StallOwnerHome)/OwnerHome');
+            router.replace('(StallOwnerHome)/Home');
         }
     }, [router, segments, user]);
 }

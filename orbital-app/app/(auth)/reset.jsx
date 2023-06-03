@@ -34,7 +34,7 @@ export default function reset() {
                 onChangeText={setEmail} />
                 
             {errMsg !== "" && <Text>{errMsg}</Text>}
-            <Button onPress={handleSubmit}><Text style={styles.button}>Send Password Reset Email</Text></Button>
+            <Button style={styles.buttonContainer} onPress={handleSubmit}><Text style={styles.button}>Send Password Reset Email</Text></Button>
         </View>
     );    
 }
@@ -52,8 +52,13 @@ const styles = StyleSheet.create({
             backgroundColor: '#FFF5FA',
             flex: 1,
         }, 
+        buttonContainer: {
+            backgroundColor: '#FFECF6',
+            borderWidth: 5,
+            marginTop: 15,
+          },
         button: {
-            color: '#000000',
+            color: '#2C0080',
             fontWeight: 'bold',
             marginVertical: 10,
         },
