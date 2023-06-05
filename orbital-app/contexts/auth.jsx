@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useRouter, useSegments } from "expo-router";
+import { GroupContext } from "./group";
 
 const AuthContext = createContext({});
 
@@ -11,20 +12,24 @@ export function useAuth() {
 function useProtectedRoute(user) {
     const segments = useSegments();
     const router = useRouter();
+    const { group } = useContext(GroupContext);
 
     useEffect(() => {
         console.log('useProtectedRoute useeffect called');
         const inAuthGroup = segments[0] === "(auth)";
         if (user == null && !inAuthGroup) {
             router.replace("/choose");
-        } else if (user && inAuthGroup) {
+        } else if (user && inAuthGroup && group === 'Owner') {
             router.replace('(StallOwnerHome)/Home');
+        } else if (user && inAuthGroup && group === 'User') {
+            router.replace('/');
         }
-    }, [router, segments, user]);
+    }, [router, segments, user, group]);
 }
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const { group } = useContext(GroupContext);
 
     useProtectedRoute(user);
 
@@ -41,5 +46,5 @@ export function AuthProvider({ children }) {
         return () => data.subscription.unsubscribe();
     }, [])
 
-    return <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{ user, group }}>{children}</AuthContext.Provider>
 }

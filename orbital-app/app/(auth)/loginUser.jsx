@@ -35,7 +35,7 @@ export default function LoginPage() {
             style={styles.logo} 
             source={require('../../assets/logo.png')} />
 
-            <Text style={styles.sign}>Sign In:</Text>
+            <Text style={styles.sign}>Sign In As User:</Text>
 
             <Text style={styles.bold}>Email:</Text>
             <TextInput
