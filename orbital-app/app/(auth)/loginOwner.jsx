@@ -63,7 +63,7 @@ export default function LoginPage() {
                 <Link href="/reset"> 
                     <Button style={styles.buttonContainer}><Text style={styles.button}>Forgot Password</Text></Button>
                 </Link>
-                <Link href="/register">
+                <Link href="/registerOwner">
                     <Button style={styles.buttonContainer}><Text style={styles.button}>Sign Up</Text></Button>
                 </Link>    
             </View>

@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Image, View, StyleSheet } from "react-native";
-import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
-import { Link } from 'expo-router';
 import { supabase } from "../../lib/supabase";
+import { View, StyleSheet, Image } from "react-native";
+import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 
-export default function LoginPage() {
+export default function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -16,26 +15,25 @@ export default function LoginPage() {
             return;
         }
         if (password == '') {
-            setErrMsg('Please provide a valid password.');
+            setErrMsg('Please provide a valid email password.');
             return;
         }
         setLoading(true);
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signUp({ email, password });
         setLoading(false);
         if (error) {
             setErrMsg(error.message);
             return;
         }
     }
-
     return (
         <View style={styles.wholeThing}>
-
+            
             <Image 
             style={styles.logo} 
             source={require('../../assets/logo.png')} />
 
-            <Text style={styles.sign}>Sign In As User:</Text>
+            <Text style={styles.register}>Register As Owner:</Text>
 
             <Text style={styles.bold}>Email:</Text>
             <TextInput
@@ -51,23 +49,9 @@ export default function LoginPage() {
                 textContentType='password'
                 value={password}
                 onChangeText={setPassword} />
-            <View style={styles.container}>
-                <Button
-                style={styles.buttonContainer}
-                onPress={handleSubmit}><Text style={styles.button}>Sign In</Text></Button>
-            </View>
-                
+            <Button style={styles.buttonContainer} onPress={handleSubmit}><Text style={styles.button}>Verify email to sign in</Text></Button>
             {errMsg !== "" && <Text>{errMsg}</Text>}
-            {loading && <ActivityIndicator />}
-            <View style={styles.bar}>
-                <Link href="/reset"> 
-                    <Button style={styles.buttonContainer}><Text style={styles.button}>Forgot Password</Text></Button>
-                </Link>
-                <Link href="/registerUser">
-                    <Button style={styles.buttonContainer}><Text style={styles.button}>Sign Up</Text></Button>
-                </Link>    
-            </View>
-            
+            {loading && <ActivityIndicator />}  
         </View>
     );
 }
@@ -79,11 +63,11 @@ const styles = StyleSheet.create({
         height: 200,
         marginVertical: 30,
     },
-    sign: {
+    register: {
         fontWeight: 'bold',
         fontSize: 34,
         margin: 0,
-        marginHorizontal: 15,
+        marginHorizontal: 15, 
         marginTop: 10,
     },
     bold: {
@@ -94,23 +78,18 @@ const styles = StyleSheet.create({
         marginBottom: 3,
     },
     container: {
-        padding: 10,
+        padding:15,
     },
     wholeThing: {
         justifyContent: 'flex-start',
         flexDirection: 'column',
-        flex: 1,
         backgroundColor: '#FFF5FA',
-    },
-    bar: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
+        flex: 1,
     },
     buttonContainer: {
         backgroundColor: '#FFECF6',
         borderWidth: 5,
-        borderLeftWidth: 5,
-        borderRightWidth: 5,
+        marginTop: 15,
       },
     button: {
         color: '#2C0080',

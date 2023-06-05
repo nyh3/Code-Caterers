@@ -33,7 +33,7 @@ export default function RegisterPage() {
             style={styles.logo} 
             source={require('../../assets/logo.png')} />
 
-            <Text style={styles.register}>Register:</Text>
+            <Text style={styles.register}>Register As User:</Text>
 
             <Text style={styles.bold}>Email:</Text>
             <TextInput
