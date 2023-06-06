@@ -27,7 +27,7 @@ export default function UserOrOwner() {
             
             <Text style={styles.header}> Login Portal </Text>
             <Button style={styles.buttonContainer} onPress={handleUser}><Text style={styles.button}>User</Text></Button>
-            
+            <Text></Text>
             <Button style={styles.buttonContainer} onPress={handleOwner}><Text style={styles.button}>Stall Owner</Text></Button>
         </View>
     )
