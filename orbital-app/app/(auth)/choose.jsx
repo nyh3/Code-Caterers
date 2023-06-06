@@ -1,34 +1,22 @@
 import { Image, View, StyleSheet } from "react-native"
 import { Text, Button } from "react-native-paper"
-import { Link, useRouter } from "expo-router";
-import { useContext } from "react";
-import { GroupContext } from "../../contexts/group";
+import { Link } from "expo-router";
 
-export default function UserOrOwner() {
-  const { group, setGroup } = useContext(GroupContext);
-  const router = useRouter();
-
-  const handleUser = async() => {
-    console.log(group);
-    setGroup('User');
-    router.replace("/loginUser");
-  }
-
-  const handleOwner = async() => {
-    console.log(group);
-    setGroup('Owner');
-    router.replace("/loginOwner");
-  }
-     return (
+export default function userOrOwner() {
+    return (
         <View style={styles.container}>
             <Image 
             style={styles.logo} 
             source={require('../../assets/logo.png')} />
             
             <Text style={styles.header}> Login Portal </Text>
-            <Button style={styles.buttonContainer} onPress={handleUser}><Text style={styles.button}>User</Text></Button>
-            
-            <Button style={styles.buttonContainer} onPress={handleOwner}><Text style={styles.button}>Stall Owner</Text></Button>
+            <Link href="/login"> 
+            <Button style={styles.buttonContainer}><Text style={styles.button}>User</Text></Button>
+            </Link>
+            <Text></Text> 
+            <Link href="/login"> 
+            <Button style={styles.buttonContainer}><Text style={styles.button}>Stall Owner</Text></Button>
+            </Link>
         </View>
     )
 }
