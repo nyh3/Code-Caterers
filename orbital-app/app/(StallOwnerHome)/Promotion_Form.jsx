@@ -52,10 +52,10 @@ export default function PromotionForm() {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Add Promotions:</Text>
-            {image && <Image source={{ uri: image }} style={styles.image} />}
             <TouchableOpacity style={styles.buttonContainer} onPress={handleAddImage}>
-                    <Text style={styles.buttons}>Add Image</Text>
+                <Text style={styles.buttons}>Add Image</Text>
             </TouchableOpacity>
+            {image && <Image source={{ uri: image }} style={styles.image} />}
             <TextInput
                 style={styles.input}
                 placeholder="Title"
@@ -69,7 +69,7 @@ export default function PromotionForm() {
                 onChangeText={(text) => setDescription(text)}
             />
             <TouchableOpacity style={styles.buttonContainer} onPress={handleSubmit} disabled={loading}>
-                    <Text style={styles.buttons}>Save & Add Promotion</Text>
+                <Text style={styles.buttons}>Save & Add Promotion</Text>
             </TouchableOpacity>
             {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
         </View>

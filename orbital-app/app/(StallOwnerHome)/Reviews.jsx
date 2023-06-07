@@ -7,7 +7,7 @@ export default function ReviewPage() {
             <Text style={styles.header}>
                 Reviews:
             </Text>
-            <Text style={styles.ratings}> 
+            <Text style={styles.ratings}>
                 Ratings: use database to calculate overall ratings
             </Text>
             <Text style={styles.normal}>Reviews listed below:
@@ -23,25 +23,25 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF5FA',
         justifyContent: 'flex-start',
         marginHorizontal: 10,
-      },
+    },
     header: {
         fontWeight: 'bold',
-        fontSize: 25,
+        fontSize: 20,
         margin: 0,
         marginHorizontal: 15,
         marginTop: 15,
     },
     ratings: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 17,
         margin: 0,
         marginHorizontal: 15,
         marginTop: 10,
     },
     normal: {
-        fontSize: 16,
+        fontSize: 15,
         margin: 0,
         marginHorizontal: 15,
         marginTop: 10,
     },
-  });
+});

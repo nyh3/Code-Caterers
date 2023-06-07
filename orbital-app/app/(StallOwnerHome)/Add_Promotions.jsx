@@ -20,10 +20,10 @@ export default function AddPromotionPage() {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#FFF5FA',
-      justifyContent: 'flex-start',
-      marginHorizontal: 10,
+        flex: 1,
+        backgroundColor: '#FFF5FA',
+        justifyContent: 'flex-start',
+        marginHorizontal: 10,
     },
     header: {
         fontWeight: 'bold',
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
         margin: 0,
         marginHorizontal: 15,
         marginTop: 15,
+        marginBottom: 5,
     },
     normal: {
         fontSize: 15,
@@ -41,13 +42,12 @@ const styles = StyleSheet.create({
     buttonContainer: {
         backgroundColor: '#FFECF6',
         borderWidth: 1,
-        //borderColor: '#FFBBDF',
+        borderColor: '#FFBBDF',
         marginTop: 5,
-      },
+    },
     buttons: {
         marginHorizontal: 5,
         marginVertical: 5,
         color: '#2C0080',
     }
-  });
-  
+});
