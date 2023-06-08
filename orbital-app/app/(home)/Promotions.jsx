@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, Text, Image } from 'react-native';
-import { Text as PaperText, Button } from 'react-native-paper';
-import { Link } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
 
-export default function AddPromotionPage() {
+export default function PromotionPage() {
     const [menuItems, setMenuItems] = useState([]);
     const isFocused = useIsFocused();
 
@@ -38,15 +36,9 @@ export default function AddPromotionPage() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.heading}>Add Promotions:</Text>
-            <Link href="(StallOwnerHome)/Promotion_Form">
-                <Button style={styles.buttonContainer}>
-                    <PaperText style={styles.buttons}>Add Promotions</PaperText>
-                </Button>
-            </Link>
-            <Text style={styles.heading}>Previously added promotions:</Text>
+            <Text style={styles.heading}>Recent Promotions & Deals:</Text>
             <FlatList
-                data={menuItems} 
+                data={menuItems}
                 renderItem={renderMenuItem}
                 keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={styles.promotionList}
@@ -90,15 +82,5 @@ const styles = StyleSheet.create({
     },
     promotionDescription: {
         marginBottom: 5,
-    },
-    buttonContainer: {
-        backgroundColor: '#FFECF6',
-        borderWidth: 1,
-        borderColor: '#FFBBDF',
-        marginTop: 5,
-    },
-    button: {
-        color: '#2C0080',
-        fontWeight: 'bold',
     },
 });
