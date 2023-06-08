@@ -48,13 +48,12 @@ export default function AddMenuPage() {
         if (error != null) {
             setLoading(false);
             console.log(error);
-            console.log('here');
             setErrMsg(error.message);
             return;
         }
 
         setLoading(false);
-        router.push('/');
+        router.push('(StallOwnerHome)/Menu');
         console.log('Menu item inserted successfully:', data);
         setName('');
         setDescription('');
@@ -89,7 +88,7 @@ export default function AddMenuPage() {
                 onChangeText={setPrice}
                 keyboardType="numeric"
                 style={styles.input}
-            />
+            />      
             <Button onPress={handleSubmit} style={styles.button}>Submit</Button>
             {loading && <ActivityIndicator />}
         </View>
