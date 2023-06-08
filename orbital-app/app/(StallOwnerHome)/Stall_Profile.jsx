@@ -16,6 +16,7 @@ export default function StallProfilePage() {
     const [hasAirCon, setHasAirCon] = useState(false);
     const [isHalal, setIsHalal] = useState(false);
     const [isVegetarian, setIsVegetarian] = useState(false);
+    const [locationId, setLocationId] = useState('1');
 
     const handleAddImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -24,10 +25,31 @@ export default function StallProfilePage() {
         if (!result.canceled) {
             setStallImage(result.assets[0].uri);
         }
+    };
+
+    const handleLocationSelection = async (location) => {
+        const { data, error } = await supabase
+        .from('location')
+        .select()
+        .eq('name', 'Location 1')
+        .single();
+        if (error) {
+            console.error(error);
+            console.error('help');
+          } else {
+            setLocationId(data.id);
+            console.log('Location ID:', locationId);
+            setSelectedLocation(location);
+          }
+        
+        setMenuVisible(false);
+    };
+
+    const handleSubmit = async () => {
         setLoading(true);
         let uploadedImage = null;
-        if (image != null) {
-            const { data, error } = await supabase.storage.from('StallImage').upload('${new date().getTime()}', { uri: stallImage, type: 'jpg', name: 'name.jpg' });
+        if (stallImage != null) {
+            const { data, error } = await supabase.storage.from('StallImage').upload(`${new Date().getTime()}`, { uri: stallImage, type: 'jpg', name: 'name.jpg' });
 
             if (error != null) {
                 console.log(error);
@@ -35,25 +57,17 @@ export default function StallProfilePage() {
                 setLoading(false);
                 return;
             }
+            const { data: { publicUrl } } = supabase.storage.from('StallImage').getPublicUrl(data.path);
+            setStallImage(publicUrl);
         }
-        const { data, error } = await supabase.storage.from('StallImage').download('folder/StallImage1.png');
-        uploadedImage = data;
-    };
-
-    const handleLocationSelection = (location) => {
-        setSelectedLocation(location);
-        setMenuVisible(false);
-    };
-
-    const handleSubmit = async () => {
         try {
             const { data, error } = await supabase.from('Stall').insert([
                 {
-                    stall_image: stallImage,
-                    stall_name: stallName,
+                    stallImage: stallImage,
+                    name: stallName,
                     email,
                     password,
-                    location,
+                    location_ID: locationId,
                     has_air_con: hasAirCon,
                     is_halal: isHalal,
                     is_vegetarian: isVegetarian,
@@ -71,7 +85,7 @@ export default function StallProfilePage() {
             setStallName('');
             setEmail('');
             setPassword('');
-            setLocation('');
+            setSelectedLocation('');
             setHasAirCon(false);
             setIsHalal(false);
             setIsVegetarian(false);
