@@ -41,8 +41,14 @@ export default function Home() {
             <Link href="(StallOwnerHome)/Edit_Profile">
                 <Button style={styles.buttons}>Edit Profile</Button>
             </Link>
-            <Link href="(StallOwnerHome)/Add_Promotions">
-                <Button style={styles.buttons}>Add Promotions</Button>
+           <Link href="(StallOwnerHome)/Stall_Profile">
+                <Button style={styles.buttons}>Stall Profile</Button>
+            </Link> 
+            <Link href="(StallOwnerHome)/Menu">
+                <Button style={styles.buttons}>Menu</Button>
+            </Link>
+            <Link href="(StallOwnerHome)/Promotions">
+                <Button style={styles.buttons}>Promotions</Button>
             </Link>
             <Link href="(StallOwnerHome)/Reviews">
                 <Button style={styles.buttons}>Reviews</Button>

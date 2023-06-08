@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, Text, Image } from 'react-native';
+import { Text as PaperText, Button } from 'react-native-paper';
+import { Link } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -37,6 +39,12 @@ export default function MenuPage() {
 
     return (
         <View style={styles.container}>
+            <Text></Text>
+            <Link href="../(StallOwnerHiddenTabs)/Add_Menu">
+                <Button mode="contained" style={styles.buttonContainer}>
+                    <PaperText style={styles.buttons}>Add Menu Item</PaperText>
+                </Button>
+            </Link>
             <Text style={styles.heading}>Menu:</Text>
             <FlatList
                 data={menuItems}
@@ -54,7 +62,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         backgroundColor: '#FFF5FA',
         flex: 1,
-        marginHorizontal: 10,
+        marginHorizontal: 15,
     },
     heading: {
         fontSize: 20,
@@ -85,6 +93,16 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     menuItemPrice: {
+        fontWeight: 'bold',
+    },
+    buttonContainer: {
+        backgroundColor: '#FFECF6',
+        borderWidth: 1,
+        borderColor: '#FFBBDF',
+        marginTop: 5,
+    },
+    buttons: {
+        color: '#2C0080',
         fontWeight: 'bold',
     },
 });
