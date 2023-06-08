@@ -10,22 +10,9 @@ export default function ProfileSetupScreen() {
     const router = useRouter();
 
     const handleImagePicker = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (status !== 'granted') {
-            Alert.alert('Permission denied');
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowingEditing: true,
-            aspect: [1, 1],
-            quality: 0.5,
-        });
-
-        if (!result.cancelled) {
-            setProfileImage(result.assets[0]);
+        let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
+        if (!result.canceled) {
+            setProfileImage(result.assets[0].uri);
         }
     };
 
