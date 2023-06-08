@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { Button, ActivityIndicator } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../contexts/auth';
+import { useRouter } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function PromotionForm() {
     const [title, setTitle] = useState('');
@@ -9,69 +12,79 @@ export default function PromotionForm() {
     const [image, setImage] = useState(null);
     const [errMsg, setErrMsg] = useState('');
     const [loading, setLoading] = useState(false);
+    const { user } = useAuth();
+    const router = useRouter();
 
     const handleAddImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        });
-        if (!result.cancelled) {
-            setImage(result.uri);
+        let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
         }
-    };
+    }
 
     const handleSubmit = async () => {
+        setErrMsg('');
+        if (title === '') {
+            setErrMsg('Promotion title cannot be empty');
+            return;
+        }
         setLoading(true);
+        let uploadedImage = null;
+        if (image != null) {
+            const { data, error } = await supabase.storage.from('PromotionImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
 
-        try {
-            let uploadedImage = null;
-            if (image != null) {
-                const { data, error } = await supabase.storage
-                    .from('ProfileImage')
-                    .upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
-
-                if (error != null) {
-                    console.log(error);
-                    setErrMsg(error.message);
-                    setLoading(false);
-                    return;
-                }
+            if (error != null) {
+                console.log(error);
+                setErrMsg(error.message)
+                setLoading(false);
+                return;
             }
+            const { data: { publicUrl } } = supabase.storage.from('PromotionImage').getPublicUrl(data.path);
+            uploadedImage = publicUrl;
+        }
+        const { data, error } = await supabase.from('Promotion').insert({ image: uploadedImage, title: title, description: description, }).select().single();
 
-            // TODO: Submit the form data to the server or perform other actions
-            console.log('Title:', title);
-            console.log('Description:', description);
-            console.log('Image:', image);
+        if (error != null) {
             setLoading(false);
-        } catch (error) {
             console.log(error);
             setErrMsg(error.message);
-            setLoading(false);
+            return;
         }
-    };
+
+        setLoading(false);
+        router.push('(StallOwnerHome)/Add_Promotions');
+        console.log('Promotion added successfully:', data);
+        setTitle('');
+        setDescription('');
+
+        if (error) {
+            console.error('Error inserting menu item:', error.message);
+            return;
+        }
+    }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Add Promotions:</Text>
+            <Text style={styles.heading}>Add Promotion:</Text>
+            <TextInput
+                placeholder="Title"
+                value={title}
+                onChangeText={setTitle}
+                style={styles.input}
+            />
             <TouchableOpacity style={styles.buttonContainer} onPress={handleAddImage}>
                 <Text style={styles.buttons}>Add Image</Text>
             </TouchableOpacity>
             {image && <Image source={{ uri: image }} style={styles.image} />}
             <TextInput
-                style={styles.input}
-                placeholder="Title"
-                value={title}
-                onChangeText={(text) => setTitle(text)}
-            />
-            <TextInput
-                style={styles.input}
                 placeholder="Description"
                 value={description}
-                onChangeText={(text) => setDescription(text)}
+                onChangeText={setDescription}
+                style={styles.input}
             />
-            <TouchableOpacity style={styles.buttonContainer} onPress={handleSubmit} disabled={loading}>
-                <Text style={styles.buttons}>Save & Add Promotion</Text>
-            </TouchableOpacity>
+            <Button onPress={handleSubmit} style={styles.button}>Submit</Button>
             {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
+            {loading && <ActivityIndicator />}
         </View>
     );
 }
@@ -83,16 +96,11 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         marginHorizontal: 10,
     },
-    header: {
+    heading: {
         fontSize: 20,
         fontWeight: 'bold',
         marginVertical: 15,
         marginHorizontal: 5,
-    },
-    image: {
-        width: 200,
-        height: 200,
-        marginBottom: 10,
     },
     input: {
         height: 40,
@@ -119,5 +127,9 @@ const styles = StyleSheet.create({
         color: '#2C0080',
         fontWeight: 'bold',
     },
+    image: {
+        width: 200,
+        height: 200,
+        marginBottom: 10,
+    },
 });
-
