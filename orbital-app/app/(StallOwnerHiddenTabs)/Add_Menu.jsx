@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
+import { Link } from 'expo-router';
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../contexts/auth";
 import { useRouter } from "expo-router";
@@ -53,7 +54,7 @@ export default function AddMenuPage() {
         }
 
         setLoading(false);
-        router.push('(StallOwnerHome)/Menu');
+        router.push('../(StallOwnerHome)/Menu');
         console.log('Menu item inserted successfully:', data);
         setName('');
         setDescription('');
@@ -67,14 +68,14 @@ export default function AddMenuPage() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.heading}>Add Menu Item:</Text>
+            <Text style={styles.heading}>Add Menu:</Text>
             <TextInput
                 label="Name"
                 value={name}
                 onChangeText={setName}
                 style={styles.input}
             />
-            <Button style={styles.button} onPress={handleAddImage}>Add Image</Button>
+            <Button style={styles.buttonContainer} onPress={handleAddImage}><Text style={styles.buttons}>Add Image</Text></Button>
             {image && <Image source={{ uri: image }} style={styles.image} />}
             <TextInput
                 label="Description"
@@ -89,7 +90,10 @@ export default function AddMenuPage() {
                 keyboardType="numeric"
                 style={styles.input}
             />      
-            <Button onPress={handleSubmit} style={styles.button}>Submit</Button>
+            <Button onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.buttons}>Submit</Text></Button>
+            <Link href="../(StallOwnerHome)/Menu">
+            <Button style={styles.buttonContainer}><Text style={styles.buttons}>Discard & Return</Text></Button>
+            </Link>
             {loading && <ActivityIndicator />}
         </View>
 
@@ -102,6 +106,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF5FA',
         flex: 1,
         marginHorizontal: 10,
+        marginTop: 30,
     },
     heading: {
         fontSize: 20,
@@ -112,7 +117,11 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         backgroundColor: '#FFECF6',
     },
-    button: {
+    buttons: {
+        color: '#2C0080',
+        fontWeight: 'bold',
+    },
+    buttonContainer: {
         marginHorizontal: 5,
         marginBottom: 10,
         backgroundColor: '#FFECF6',

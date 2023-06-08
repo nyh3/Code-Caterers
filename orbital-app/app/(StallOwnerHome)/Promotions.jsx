@@ -38,9 +38,9 @@ export default function AddPromotionPage() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.heading}>Add Promotions:</Text>
-            <Link href="(StallOwnerHome)/Promotion_Form">
-                <Button style={styles.buttonContainer}>
+            <Text></Text>
+            <Link href="../(StallOwnerHiddenTabs)/Promotion_Form">
+                <Button mode="contained" style={styles.buttonContainer}>
                     <PaperText style={styles.buttons}>Add Promotions</PaperText>
                 </Button>
             </Link>
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         backgroundColor: '#FFF5FA',
         flex: 1,
-        marginHorizontal: 10,
+        marginHorizontal: 15,
     },
     heading: {
         fontSize: 20,
@@ -95,10 +95,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFECF6',
         borderWidth: 1,
         borderColor: '#FFBBDF',
-        marginTop: 5,
-    },
-    button: {
+      },
+      buttons: {
         color: '#2C0080',
         fontWeight: 'bold',
-    },
+      },
+      
 });

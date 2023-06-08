@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet } from 'react-native';
 import { Button, ActivityIndicator } from 'react-native-paper';
+import { Link } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/auth';
 import { useRouter } from 'expo-router';
@@ -52,7 +53,7 @@ export default function PromotionForm() {
         }
 
         setLoading(false);
-        router.push('(StallOwnerHome)/Add_Promotions');
+        router.push('../(StallOwnerHome)/Promotions');
         console.log('Promotion added successfully:', data);
         setTitle('');
         setDescription('');
@@ -65,7 +66,7 @@ export default function PromotionForm() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.heading}>Add Promotion:</Text>
+            <Text style={styles.heading}>Add Promotions:</Text>
             <TextInput
                 placeholder="Title"
                 value={title}
@@ -82,8 +83,11 @@ export default function PromotionForm() {
                 onChangeText={setDescription}
                 style={styles.input}
             />
-            <Button onPress={handleSubmit} style={styles.button}>Submit</Button>
+            <TouchableOpacity onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.buttons}>Submit</Text></TouchableOpacity>
             {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
+            <Link href="../(StallOwnerHome)/Promotions">
+                <Button style={styles.buttonContainer}><Text mode='contained' style={styles.buttons}>Discard & Return</Text></Button>
+            </Link>
             {loading && <ActivityIndicator />}
         </View>
     );
@@ -95,6 +99,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF5FA',
         justifyContent: 'flex-start',
         marginHorizontal: 10,
+        marginTop:30,
     },
     heading: {
         fontSize: 20,
