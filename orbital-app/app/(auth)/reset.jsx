@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Image, View, StyleSheet } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
@@ -8,7 +8,7 @@ export default function reset() {
     const [email, setEmail] = useState('');
     const [errMsg, setErrMsg] = useState('');
 
-    const redirectUrl = Linking.createURL('/password-reset');
+    const redirectUrl = Linking.createURL('(auth)/password-reset');
         
     const handleSubmit = async() => {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {

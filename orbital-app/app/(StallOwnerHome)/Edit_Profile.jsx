@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFECF6',
         borderWidth: 5,
         marginTop: 5,
-      },
+    },
     button: {
         color: '#2C0080',
         fontWeight: 'bold',
