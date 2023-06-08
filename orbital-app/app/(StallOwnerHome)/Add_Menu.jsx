@@ -32,7 +32,7 @@ export default function AddMenuPage() {
         setLoading(true);
         let uploadedImage = null;
         if (image != null) {
-            const { data, error } = await supabase.storage.from('images').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
+            const { data, error } = await supabase.storage.from('MenuImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
 
             if (error != null) {
                 console.log(error);
@@ -40,14 +40,15 @@ export default function AddMenuPage() {
                 setLoading(false);
                 return;
             }
-            const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path);
+            const { data: { publicUrl } } = supabase.storage.from('MenuImage').getPublicUrl(data.path);
             uploadedImage = publicUrl;
         }
-        const { data, error } = await supabase.from('Menu').insert({ name: name, image_url: uploadedImage, description: description, price: parseFloat(price), }).select().single();
+        const { data, error } = await supabase.from('Menu').insert({ name: name, image: uploadedImage, description: description, price: parseFloat(price), }).select().single();
 
         if (error != null) {
             setLoading(false);
             console.log(error);
+            console.log('here');
             setErrMsg(error.message);
             return;
         }
