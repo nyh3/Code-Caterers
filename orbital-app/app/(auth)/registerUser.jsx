@@ -19,12 +19,25 @@ export default function RegisterPage() {
             return;
         }
         setLoading(true);
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({ 
+            email: email, 
+            password: password });
         setLoading(false);
         if (error) {
             setErrMsg(error.message);
             return;
         }
+
+        const { data, error2 } = await supabase
+            .from('profiles')
+            .insert({ email: email })
+            .single();
+        
+        if (error2) {
+            setErrMsg(error2.message);
+        }
+        console.log('User row created successfully:', data);
+
     }
     return (
         <View style={styles.wholeThing}>

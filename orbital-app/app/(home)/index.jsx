@@ -1,15 +1,51 @@
-import { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Button, Text } from 'react-native-paper';
-import { StyleSheet, View, Image } from 'react-native';
+import { useState, useEffect, useContext } from 'react';
+import { Text } from 'react-native-paper';
+import { StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { supabase } from '../../lib/supabase';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
+import { StallContext } from '../../contexts/stallid';
 
 export default function HomePage() {
+  const { setSelectedStallId } = useContext(StallContext);
+  const [stalls, setStalls] = useState([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    fetchStalls();
+  }, []);
+
+  const fetchStalls = async () => {
+    const { data: stalls, error } = await supabase
+      .from('Stall')
+      .select('*');
+
+    if (error) {
+      console.error(error);
+    } else {
+      setStalls(stalls);
+    }
+  };
+
+  const handleStallPress = (stall) => {
+    setSelectedStallId(stall.id);
+    router.replace('(Stalls)/stallDetails');
+  }
   return (
-    <View style={styles.container}>
-      <Text>This is the homepage with all the stalls</Text>
-    </View>
+    <ScrollView>
+      {stalls.map((stall) => (
+        <TouchableOpacity
+          key={stall.id}
+          style={{ flexDirection: 'row', alignItems: 'center, padding:16 '}}
+          onPress={() => handleStallPress(stall)}
+          >
+            <Image
+              source={{ uri: stall.image }}
+              style={{ width: 64, height: 64, borderRadius: 32, marginRight: 16 }}
+              />
+              <Text>{stall.name}</Text>
+          </TouchableOpacity>
+      ))}
+    </ScrollView>
   );
 }
 
