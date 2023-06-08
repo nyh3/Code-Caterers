@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Text } from 'react-native';
+import { View, StyleSheet, FlatList, Text, Image } from 'react-native';
 import { supabase } from '../../lib/supabase';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function MenuPage() {
     const [menuItems, setMenuItems] = useState([]);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         fetchMenuItems();
-    }, []);
+    }, [isFocused]);
 
     const fetchMenuItems = async () => {
         try {
-            const { data, error } = await supabase.from('menu_items').select('*');
+            const { data, error } = await supabase.from('Menu').select('*');
             if (error) {
                 console.error('Error fetching menu items:', error.message);
                 return;
@@ -24,9 +26,12 @@ export default function MenuPage() {
 
     const renderMenuItem = ({ item }) => (
         <View style={styles.menuItem}>
-            <Text style={styles.menuItemTitle}>{item.name}</Text>
-            <Text style={styles.menuItemDescription}>{item.description}</Text>
-            <Text style={styles.menuItemPrice}>Price: ${item.price}</Text>
+            <Image source={{ uri: item.image }} style={styles.menuItemImage} />
+            <View style={styles.menuItemDetails}>
+                <Text style={styles.menuItemName}>{item.name}</Text>
+                <Text style={styles.menuItemDescription}>{item.description}</Text>
+                <Text style={styles.menuItemPrice}>Price: ${item.price}</Text>
+            </View>
         </View>
     );
 
@@ -46,35 +51,41 @@ export default function MenuPage() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#FFF5FA',
         justifyContent: 'flex-start',
+        backgroundColor: '#FFF5FA',
+        flex: 1,
         marginHorizontal: 10,
     },
     heading: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginTop: 15,
+        marginVertical: 15,
     },
     menuList: {
-        paddingBottom: 10,
+        paddingBottom: 20,
     },
     menuItem: {
+        flexDirection: 'row',
         marginBottom: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#FFECF6',
-        paddingBottom: 10,
     },
-    menuItemTitle: {
-        fontSize: 18,
+    menuItemImage: {
+        width: 100,
+        height: 100,
+        marginRight: 10,
+    },
+    menuItemDetails: {
+        flex: 1,
+    },
+    menuItemName: {
         fontWeight: 'bold',
+        fontSize: 16,
+        marginBottom: 5,
     },
     menuItemDescription: {
-        fontSize: 15,
-        color: '#2C0080',
+        marginBottom: 5,
     },
     menuItemPrice: {
-        fontSize: 15,
-        color: '#2C0080',
+        fontWeight: 'bold',
     },
 });
+
