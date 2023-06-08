@@ -1,42 +1,52 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { Link } from 'expo-router';
-import { useState } from "react";
-import * as ImagePicker from 'expo-image-picker';
+import { useEffect, useMemo, useState } from "react";
 
 export default function UserProfile() {
-    const [image, setImage] = useState(null);
-    const [errMsg, setErrMsg] = useState('');
-    const [loading, setLoading] = useState(false);
-    
-    const handleAddImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images
-        })
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
-        }
-        setLoading(true);
-        let uploadedImage = null;
-        if (image != null) {
-            const { data, error } = await supabase.storage.from('ProfileImage').upload('${new date().getTime()}', { uri: image, type:'jpg', name: 'name.jpg'});
+    const [userData, setUserData] = useState(null);
 
-            if (error != null) {
-                console.log(error);
-                setErrMsg(error.message)
-                setLoading(false);
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select()
+                .single();
+            
+            if (error) {
+                console.error(error);
                 return;
             }
-        }
-        const { data, error } = await supabase.storage.from('ProfileImage').download('folder/ProfileImage1.png');
-        uploadedImage = data;
+            setUserData(data);
+        };
 
-    }
+        fetchProfileData();
+    }, []);
+
+    const renderProfile = useMemo(() => {
+        if (!userData) {
+            return null;
+        }
+
+        const { username, profileImageUrl } = userData;
+
+        return (
+            <View>
+                {profileImageUrl && (
+                    <Image source={{ uri: profileImageUrl }} style={{ width: 200, height: 200 }} />
+                )}
+                <Text> Username: {username}</Text>
+            </View>
+        );
+    }, [userData]);
 
     return (
         <View>
-            <Button onPress={handleAddImage}>Insert Profile Image</Button>
+            {renderProfile}
+            <Link href="../(UserProfile)/updateProfile">
+                <Button>update Profile</Button>
+            </Link> 
            <Link href="../(UserProfile)/restrictions">
                 <Button>Dietary Restrictions</Button>
             </Link>   
@@ -51,7 +61,7 @@ export default function UserProfile() {
             </Link> 
             <Button onPress={() => supabase.auth.signOut()}>Log out</Button>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
