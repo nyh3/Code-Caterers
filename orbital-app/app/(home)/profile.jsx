@@ -10,7 +10,7 @@ export default function UserProfile() {
     useEffect(() => {
         const fetchProfileData = async () => {
             const { data, error } = await supabase
-                .from('profiles')
+                .from('profile')
                 .select()
                 .single();
             

@@ -2,19 +2,18 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useRouter, useSegments } from "expo-router";
 import { GroupContext } from "./group";
-import { ProfileContext } from "./setup";
 
 const AuthContext = createContext({});
 
 export function useAuth() {
-    return useContext(AuthContext);
+    const { user } = useContext(AuthContext);
+    return { userId: user?.id };
 }
 
 function useProtectedRoute(user) {
     const segments = useSegments();
     const router = useRouter();
     const { group } = useContext(GroupContext);
-    const { setupComplete } = useContext(ProfileContext);
 
     useEffect(() => {
         console.log('useProtectedRoute useeffect called');
@@ -23,25 +22,21 @@ function useProtectedRoute(user) {
             router.replace("/choose");
         } else if (user && inAuthGroup && group === 'Owner') {
             router.replace('(StallOwnerHome)/Home');
-        } else if (user && inAuthGroup && group === 'User' && !setupComplete ) {
-            router.replace('(UserProfile)/profileSetUp');
-        } else if (user && inAuthGroup && group === 'User' && setupComplete ) {
+        } else if (user && inAuthGroup && group === 'User') {
             router.replace('/');
         }
-        console.log('setupComplete:', setupComplete);
-    }, [router, segments, user, group, setupComplete]);
+    }, [router, segments, user, group]);
 }
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const { group } = useContext(GroupContext);
 
     useProtectedRoute(user);
 
     useEffect(() => {
         console.log(`AuthProvider useEffect called`);
         const { data } = supabase.auth.onAuthStateChange((event, session) => {
-            console.log('authState: ${event}');
+            console.log('authState', event);
             if (event === "SIGNED_IN") {
                 setUser(session.user);
             } else if (event === "SIGNED_OUT") {
@@ -49,7 +44,7 @@ export function AuthProvider({ children }) {
             }
         })
         return () => data.subscription.unsubscribe();
-    }, [])
+    }, []);
 
-    return <AuthContext.Provider value={{ user, group }}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
 }
