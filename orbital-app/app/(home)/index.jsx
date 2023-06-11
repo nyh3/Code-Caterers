@@ -1,63 +1,94 @@
-import { useState, useEffect, useContext } from 'react';
-import { Text } from 'react-native-paper';
-import { StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity } from 'react-native';
 import { supabase } from '../../lib/supabase';
+import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-import { StallContext } from '../../contexts/stallid';
 
-export default function HomePage() {
-  const { setSelectedStallId } = useContext(StallContext);
-  const [stalls, setStalls] = useState([]);
-  const router = useRouter();
+export default function StallPage() {
+    const [stalls, setStalls] = useState([]);
+    const isFocused = useIsFocused();
+    const router = useRouter();
 
-  useEffect(() => {
-    fetchStalls();
-  }, []);
 
-  const fetchStalls = async () => {
-    const { data: stalls, error } = await supabase
-      .from('Stall')
-      .select('*');
+    useEffect(() => {
+        fetchStalls();
+    }, [isFocused]);
 
-    if (error) {
-      console.error(error);
-    } else {
-      setStalls(stalls);
-    }
-  };
+    const fetchStalls = async () => {
+        try {
+            const { data, error } = await supabase.from('Stall').select('*');
+            if (error) {
+                console.error('Error fetching stall details:', error.message);
+                return;
+            }
+            setStalls(data);
+        } catch (error) {
+            console.error('Error fetching stall details:', error.message);
+        }
+    };
 
-  const handleStallPress = (stall) => {
-    setSelectedStallId(stall.id);
-    router.replace('(Stalls)/stallDetails');
-  }
-  return (
-    <ScrollView>
-      {stalls.map((stall) => (
-        <TouchableOpacity
-          key={stall.id}
-          style={{ flexDirection: 'row', alignItems: 'center, padding:16 '}}
-          onPress={() => handleStallPress(stall)}
-          >
-            <Image
-              source={{ uri: stall.image }}
-              style={{ width: 64, height: 64, borderRadius: 32, marginRight: 16 }}
-              />
-              <Text>{stall.name}</Text>
-          </TouchableOpacity>
-      ))}
-    </ScrollView>
-  );
+    const handleStallPress = (stall) => {
+        router.push('../(Stalls)/stallDetails', {params: stall});
+    };
+
+    const renderStall = ({ item }) => (
+        <TouchableOpacity onPress={() => handleStallPress(item)}>
+            <View style={styles.stall}>
+                <Image source={{ uri: item.image }} style={styles.stallImage} />
+                <View style={styles.stallDetails}>
+                    <Text style={styles.stallTitle}>{item.name}</Text>
+                </View>
+            </View>
+        </TouchableOpacity>
+    );
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.heading}>Stalls:</Text>
+            <FlatList
+                data={stalls}
+                renderItem={renderStall}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.stallList}
+                showsVerticalScrollIndicator={false}
+            />
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logo: {
-    width: 200,
-    height: 200,
-  },
+    container: {
+        justifyContent: 'flex-start',
+        backgroundColor: '#FFF5FA',
+        flex: 1,
+        marginHorizontal: 10,
+    },
+    heading: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginVertical: 15,
+    },
+    stallList: {
+        paddingBottom: 20,
+    },
+    stall: {
+        flexDirection: 'row',
+        marginBottom: 15,
+    },
+    stallImage: {
+        width: 100,
+        height: 100,
+        marginRight: 10,
+    },
+    stallDetails: {
+        flex: 1,
+    },
+    stallTitle: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    stallDescription: {
+        marginBottom: 5,
+    },
 });

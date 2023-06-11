@@ -1,11 +1,11 @@
 import { View, Text, Image, ActivityIndicator } from 'react-native';
-import { useContext, useEffect, useState } from 'react';
-import { MenuContext } from '../../contexts/menuid';
+import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function StallDetailScreen() {
-  const { selectedMenuId } = useContext(MenuContext);
   const [menu, setMenu] = useState(null);
+  const { stall } = useLocalSearchParams();
 
   useEffect(() => {
     fetchMenuDetails();
@@ -16,7 +16,7 @@ export default function StallDetailScreen() {
       const { data, error } = await supabase
         .from('Menu')
         .select('*')
-        .eq('id', selectedMenuId)
+        .eq('id', stall.id)
         .single();
 
       if (error) {
