@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity, TextInput } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
@@ -8,6 +8,7 @@ export default function StallPage() {
     const [stalls, setStalls] = useState([]);
     const isFocused = useIsFocused();
     const router = useRouter();
+    const [searchQuery, setSearchQuery] = useState('');
 
 
     useEffect(() => {
@@ -16,7 +17,7 @@ export default function StallPage() {
 
     const fetchStalls = async () => {
         try {
-            const { data, error } = await supabase.from('Stall').select('*');
+            const { data, error } = await supabase.from('Stall').select('*').ilike('name', `%${searchQuery}%`);
             if (error) {
                 console.error('Error fetching stall details:', error.message);
                 return;
@@ -45,6 +46,12 @@ export default function StallPage() {
     return (
         <View style={styles.container}>
             <Text style={styles.heading}>Stalls:</Text>
+            <TextInput
+                style={styles.searchInput}
+                placeholder="Search..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+            />
             <FlatList
                 data={stalls}
                 renderItem={renderStall}
