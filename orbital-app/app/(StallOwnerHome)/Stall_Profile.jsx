@@ -3,6 +3,7 @@ import { View, Image, ScrollView, StyleSheet } from 'react-native';
 import { Text, TextInput, Button, Menu, Provider } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
 import * as ImagePicker from 'expo-image-picker';
+import { useAuth } from "../../contexts/auth";
 
 export default function StallProfilePage() {
     const [stallImage, setStallImage] = useState(null);
@@ -22,6 +23,7 @@ export default function StallProfilePage() {
     const [cuisineId, setCuisineId] = useState(null);
     const [locations, setLocations] = useState([]);
     const [cuisines, setCuisines] = useState([]);
+    const {id} = useAuth();
 
     useEffect(() => {
         const fetchLocations = async () => {
@@ -125,6 +127,7 @@ export default function StallProfilePage() {
         try {
             const { data, error } = await supabase.from('Stall').insert([
                 {
+                    id: id,
                     stallImage: uploadedImage,
                     name: stallName,
                     email,
