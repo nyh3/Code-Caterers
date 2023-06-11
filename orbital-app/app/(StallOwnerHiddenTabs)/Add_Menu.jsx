@@ -12,7 +12,7 @@ export default function AddMenuPage() {
     const [errMsg, setErrMsg] = useState('');
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState(null);
-    const { user } = useAuth();
+    const { userId } = useAuth();
     const router = useRouter();
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
@@ -44,7 +44,7 @@ export default function AddMenuPage() {
             const { data: { publicUrl } } = supabase.storage.from('MenuImage').getPublicUrl(data.path);
             uploadedImage = publicUrl;
         }
-        const { data, error } = await supabase.from('Menu').insert({ name: name, image: uploadedImage, description: description, price: parseFloat(price), }).select().single();
+        const { data, error } = await supabase.from('Menu').insert({ name: name, image: uploadedImage, description: description, price: parseFloat(price), stall_id: userId}).select().single();
 
         if (error != null) {
             setLoading(false);

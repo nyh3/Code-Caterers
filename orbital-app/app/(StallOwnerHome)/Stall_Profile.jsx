@@ -23,7 +23,7 @@ export default function StallProfilePage() {
     const [cuisineId, setCuisineId] = useState(null);
     const [locations, setLocations] = useState([]);
     const [cuisines, setCuisines] = useState([]);
-    const {id} = useAuth();
+    const { userId } = useAuth();
 
     useEffect(() => {
         const fetchLocations = async () => {
@@ -127,7 +127,7 @@ export default function StallProfilePage() {
         try {
             const { data, error } = await supabase.from('Stall').insert([
                 {
-                    id: id,
+                    owner_id: userId,
                     stallImage: uploadedImage,
                     name: stallName,
                     email,
