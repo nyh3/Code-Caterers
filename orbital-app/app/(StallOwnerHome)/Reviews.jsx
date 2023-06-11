@@ -1,0 +1,47 @@
+import { Image, View, StyleSheet } from "react-native"
+import { Text } from "react-native-paper"
+
+export default function ReviewPage() {
+    return (
+        <View style={styles.container}>
+            <Text style={styles.header}>
+                Reviews:
+            </Text>
+            <Text style={styles.ratings}>
+                Ratings: use database to calculate overall ratings
+            </Text>
+            <Text style={styles.normal}>Reviews listed below:
+                Taken from database
+            </Text>
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#FFF5FA',
+        justifyContent: 'flex-start',
+        marginHorizontal: 10,
+    },
+    header: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        margin: 0,
+        marginHorizontal: 15,
+        marginTop: 15,
+    },
+    ratings: {
+        fontWeight: 'bold',
+        fontSize: 17,
+        margin: 0,
+        marginHorizontal: 15,
+        marginTop: 10,
+    },
+    normal: {
+        fontSize: 15,
+        margin: 0,
+        marginHorizontal: 15,
+        marginTop: 10,
+    },
+});
