@@ -1,58 +1,52 @@
-import { View, StyleSheet, Text, Image } from "react-native";
-import { Button } from "react-native-paper";
+import { View, StyleSheet, Text, Image, } from "react-native";
+import { Button, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { Link } from 'expo-router';
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/auth";
 
 export default function UserProfile() {
+    const { userId } = useAuth();
     const [userData, setUserData] = useState(null);
 
     useEffect(() => {
-        const fetchProfileData = async () => {
-            const { data, error } = await supabase
-                .from('profiles')
-                .select()
-                .single();
-            
-            if (error) {
-                console.error(error);
-                return;
-            }
-            setUserData(data);
-        };
+        const fetchUserData = async () => {
+        const { data, error } = await supabase
+            .from('profile')
+            .select('image, username')
+            .eq('id', userId);
 
-        fetchProfileData();
-    }, []);
-
-    const renderProfile = useMemo(() => {
-        if (!userData) {
-            return null;
+        if (error) {
+            console.error('Error fetching user data:', error);
+            return;
         }
 
-        const { username, profileImageUrl } = userData;
+        if (data && data.length > 0) {
+            setUserData(data[0]);
+        }
+        };
 
-        return (
-            <View>
-                {profileImageUrl && (
-                    <Image source={{ uri: profileImageUrl }} style={{ width: 200, height: 200 }} />
-                )}
-                <Text> Username: {username}</Text>
-            </View>
-        );
-    }, [userData]);
+        if (userId) {
+        fetchUserData();
+        }
+    }, [userId]);
+
+    if (!userData) {
+        return <ActivityIndicator />;
+    }
+
+    const { image, username } = userData;
 
     return (
-        <View>
-            {renderProfile}
+        <View style={styles.wholeThing}>
+            <Image source={{ uri: image }} style={styles.logo} />
+            <Text style={styles.username}>{username}</Text>
             <Link href="../(UserProfile)/updateProfile">
-                <Button>update Profile</Button>
+                <Button>Update Profile</Button>
             </Link> 
            <Link href="../(UserProfile)/restrictions">
                 <Button>Dietary Restrictions</Button>
             </Link>   
-            <Link href="../(UserProfile)/promotions">
-                <Button>Promotions</Button>
-            </Link>
             <Link href="../(UserProfile)/reviews">
                 <Button>Reviews</Button>
             </Link>
@@ -66,13 +60,25 @@ export default function UserProfile() {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     logo: {
-      width: 200,
-      height: 200,
+        alignSelf: 'center',
+        width: 200,
+        height: 200,
     },
+    wholeThing: {
+        justifyContent: 'flex-start',
+        flexDirection: 'column',
+        backgroundColor: '#FFF5FA',
+        flex: 1,
+    },
+    username: {
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        fontSize: 26,
+    }
   });

@@ -1,109 +1,124 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import { StyleSheet, View, Alert } from 'react-native'
-import { Button, Input } from 'react-native-elements'
-import { Session } from '@supabase/supabase-js'
+import { StyleSheet, View, Image } from 'react-native'
+import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper'
+import * as ImagePicker from 'expo-image-picker'
+import { useRouter } from 'expo-router'
+import { useAuth } from '../../contexts/auth'
 
-export default function Account({ session }) {
-  const [loading, setLoading] = useState(true)
-  const [username, setUsername] = useState('')
-  const [avatarUrl, setAvatarUrl] = useState('')
+export default function Account() {
+  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState('');
+  const [errMsg, setErrMsg] = useState('');
+  const [image, setImage] = useState('');
+  const { userId } = useAuth();
+  const router = useRouter();
 
-  useEffect(() => {
-    if (Session) getProfile()
-  }, [Session])
-
-  async function getProfile() {
-    try {
-      setLoading(true)
-      if (!session?.user) throw new Error('No user on the session!')
-
-      let { data, error, status } = await supabase
-        .from('profiles')
-        .select(`username, avatar_url`)
-        .eq('id', session?.user.id)
-        .single()
-      if (error && status !== 406) {
-        throw error
+  const handleAddImage = async () => {
+      let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
+      if (!result.canceled) {
+          setImage(result.assets[0].uri);
       }
-
-      if (data) {
-        setUsername(data.username)
-        setAvatarUrl(data.avatar_url)
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message)
-      }
-    } finally {
-      setLoading(false)
-    }
   }
 
-  async function updateProfile({
-    username,
-    avatar_url,
-  }) {
-    try {
-      setLoading(true)
-      if (!session?.user) throw new Error('No user on the session!')
+  const handleSubmit = async () => {
+    setLoading(true);
+        let uploadedImage = null;
+        if (image != null) {
+            const { data, error } = await supabase.storage.from('ProfileImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
 
-      const updates = {
-        id: session?.user.id,
-        username,
-        avatar_url,
-        updated_at: new Date(),
+            if (error != null) {
+                console.log(error);
+                setErrMsg(error.message)
+                setLoading(false);
+                return;
+            }
+            console.log('user:', userId);
+            const { data: { publicUrl } } = supabase.storage.from('ProfileImage').getPublicUrl(data.path);
+            uploadedImage = publicUrl;
+        }
+        const { data, error } = await supabase.from('profile').update({ image: uploadedImage, username: username }).eq('id', userId);
+        if (error != null) {
+          setLoading(false);
+          console.log(error);
+          setErrMsg(error.message);
+          return;
       }
-
-      let { error } = await supabase.from('profiles').upsert(updates)
-
-      if (error) {
-        throw error
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message)
-      }
-    } finally {
-      setLoading(false)
-    }
+      setLoading(false);
+        router.push('../(home)/profile');
+        console.log('Menu item inserted successfully:', data);
   }
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input label="Email" value={session?.user?.email} disabled />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input label="Username" value={username || ''} onChangeText={(text) => setUsername(text)} />
-      </View>
+    <View style={styles.wholeThing}>
 
-      <View style={[styles.verticallySpaced, styles.mt20]}>
+        <Button style={styles.buttonContainer} onPress={handleAddImage}><Text style={styles.buttons}>Change Profile Picture</Text></Button>
+        {image && <Image source={{ uri: image }} style={styles.image} />}
+        
+        <Text style={styles.bold}>Username:</Text>
+        <TextInput
+            secureTextEntry
+            autoCapitalize='none'
+            value={username}
+            onChangeText={setUsername} />
+      
         <Button
-          title={loading ? 'Loading ...' : 'Update'}
-          onPress={() => updateProfile({ username, avatar_url: avatarUrl })}
-          disabled={loading}
-        />
-      </View>
-
-      <View style={styles.verticallySpaced}>
-        <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
-      </View>
+        style={styles.buttonContainer}
+        onPress={handleSubmit}><Text style={styles.button}>Update Profile</Text></Button>
+            
+        {errMsg !== "" && <Text>{errMsg}</Text>}
+        {loading && <ActivityIndicator />}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
+  logo: {
+      alignSelf: 'center',
+      width: 200,
+      height: 200,
+      marginVertical: 30,
+  },
+  sign: {
+      fontWeight: 'bold',
+      fontSize: 34,
+      margin: 0,
+      marginHorizontal: 15,
+      marginTop: 10,
+  },
+  bold: {
+      fontWeight: 'bold',
+      margin: 0,
+      marginHorizontal: 15,
+      marginTop: 10,
+      marginBottom: 3,
+  },
   container: {
-    marginTop: 40,
-    padding: 12,
+      padding: 10,
   },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
+  wholeThing: {
+      justifyContent: 'flex-start',
+      flexDirection: 'column',
+      flex: 1,
+      backgroundColor: '#FFF5FA',
   },
-  mt20: {
-    marginTop: 20,
+  bar: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
   },
-})
+  buttonContainer: {
+      backgroundColor: '#FFECF6',
+      borderWidth: 5,
+      borderLeftWidth: 5,
+      borderRightWidth: 5,
+    },
+  button: {
+      color: '#2C0080',
+      fontWeight: 'bold',
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 15,
+  }
+});
