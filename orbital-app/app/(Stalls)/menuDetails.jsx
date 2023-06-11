@@ -1,9 +1,9 @@
 import { View, Text, Image } from 'react-native';
-import { useContext } from 'react';
-import { MenuContext } from '../../contexts/menuid';
+//import { useContext } from 'react';
+//import { MenuContext } from '../../contexts/menuid';
 
 export default function StallDetailScreen() {
-    const { selectedMenuId } = useContext(MenuContext);
+    //const { selectedMenuId } = useContext(MenuContext);
     
     return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
