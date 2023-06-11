@@ -16,7 +16,7 @@ export default function StallDetailScreen() {
       const { data, error } = await supabase
         .from('Menu')
         .select('*')
-        .eq('id', stall.id)
+        .eq('stall_id', stall.id)
         .single();
 
       if (error) {

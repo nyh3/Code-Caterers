@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from 'expo-router';
@@ -16,6 +16,30 @@ export default function AddMenuPage() {
     const router = useRouter();
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
+    const [stall, setStall] = useState(null);
+
+    useEffect(() => {
+        fetchStallId();
+      }, []);
+    
+      const fetchStallId = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('Stall')
+            .select('id')
+            .eq('owner_id', userId)
+            .single();
+    
+          if (error) {
+            console.error('Error fetching stall ID:', error.message);
+            return;
+          }
+    
+          setStall(data);
+        } catch (error) {
+          console.error('Error fetching stall ID:', error.message);
+        }
+      };
 
     const handleAddImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
@@ -44,7 +68,8 @@ export default function AddMenuPage() {
             const { data: { publicUrl } } = supabase.storage.from('MenuImage').getPublicUrl(data.path);
             uploadedImage = publicUrl;
         }
-        const { data, error } = await supabase.from('Menu').insert({ name: name, image: uploadedImage, description: description, price: parseFloat(price), stall_id: userId}).select().single();
+        console.log(stall);
+        const { data, error } = await supabase.from('Menu').insert({ name: name, image: uploadedImage, description: description, price: parseFloat(price), stall_id: stall.id}).select().single();
 
         if (error != null) {
             setLoading(false);
