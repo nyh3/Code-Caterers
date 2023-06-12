@@ -29,7 +29,7 @@ export default function StallPage() {
     };
 
     const handleStallPress = (stall) => {
-        router.push('../(Stalls)/stallDetails', {params: stall});
+        router.push('../(Stalls)/stallDetails', { stall });
     };
 
     const renderStall = ({ item }) => (

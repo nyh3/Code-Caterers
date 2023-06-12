@@ -57,7 +57,6 @@ export default function Account() {
         
         <Text style={styles.bold}>Username:</Text>
         <TextInput
-            secureTextEntry
             autoCapitalize='none'
             value={username}
             onChangeText={setUsername} />
