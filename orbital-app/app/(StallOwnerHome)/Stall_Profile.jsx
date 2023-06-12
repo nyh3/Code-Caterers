@@ -19,7 +19,7 @@ export default function StallProfilePage() {
     const [hasAirCon, setHasAirCon] = useState(false);
     const [isHalal, setIsHalal] = useState(false);
     const [isVegetarian, setIsVegetarian] = useState(false);
-    const [locationId, setLocationId] = useState('1');
+    const [locationId, setLocationId] = useState(null);
     const [cuisineId, setCuisineId] = useState(null);
     const [locations, setLocations] = useState([]);
     const [cuisines, setCuisines] = useState([]);
