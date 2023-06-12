@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Image, StyleSheet } from 'react-native';
 import { Button, ActivityIndicator } from 'react-native-paper';
 import { Link } from 'expo-router';
@@ -13,8 +13,32 @@ export default function PromotionForm() {
     const [image, setImage] = useState(null);
     const [errMsg, setErrMsg] = useState('');
     const [loading, setLoading] = useState(false);
-    const { user } = useAuth();
+    const { userId } = useAuth();
     const router = useRouter();
+    const [stall, setStall] = useState(null);
+
+    useEffect(() => {
+        fetchStallId();
+      }, []);
+    
+      const fetchStallId = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('Stall')
+            .select('id')
+            .eq('owner_id', userId)
+            .single();
+    
+          if (error) {
+            console.error('Error fetching stall ID:', error.message);
+            return;
+          }
+    
+          setStall(data);
+        } catch (error) {
+          console.error('Error fetching stall ID:', error.message);
+        }
+      };
 
     const handleAddImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
@@ -43,7 +67,7 @@ export default function PromotionForm() {
             const { data: { publicUrl } } = supabase.storage.from('PromotionImage').getPublicUrl(data.path);
             uploadedImage = publicUrl;
         }
-        const { data, error } = await supabase.from('Promotion').insert({ image: uploadedImage, title: title, description: description, }).select().single();
+        const { data, error } = await supabase.from('Promotion').insert({ image: uploadedImage, title: title, description: description, stall_id: stall.id}).select().single();
 
         if (error != null) {
             setLoading(false);
