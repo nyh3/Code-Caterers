@@ -10,7 +10,6 @@ export default function StallPage() {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('');
 
-
     useEffect(() => {
         fetchStalls();
     }, [isFocused]);
