@@ -8,15 +8,18 @@ export default function StallDetailScreen() {
   const { stall } = useLocalSearchParams();
 
   useEffect(() => {
-    fetchMenuDetails();
-  }, []);
+    if (stall) {
+      fetchMenuDetails();
+    }
+  }, [stall]);
 
   const fetchMenuDetails = async () => {
+    console.log(stall);
     try {
       const { data, error } = await supabase
         .from('Menu')
         .select('*')
-        .eq('stall_id', stall.id)
+        .eq('stall_id', stall)
         .single();
 
       if (error) {
@@ -33,6 +36,7 @@ export default function StallDetailScreen() {
   if (!menu) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Error</Text>
         <ActivityIndicator size="large" />
       </View>
     );
