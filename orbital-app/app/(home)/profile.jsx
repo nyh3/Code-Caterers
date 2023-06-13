@@ -1,13 +1,14 @@
 import { View, StyleSheet, Text, Image, } from "react-native";
 import { Button, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
-import { Link } from 'expo-router';
 import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/auth";
+import { useRouter } from "expo-router";
 
 export default function UserProfile() {
     const { userId } = useAuth();
     const [userData, setUserData] = useState(null);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -35,24 +36,36 @@ export default function UserProfile() {
         return <ActivityIndicator />;
     }
 
+    const handleUpdateProfile =() => {
+        router.push('/updateProfile');
+    }
+
+    const handleRestrictions =() => {
+        router.push('/restrictions');
+    }
+
+    const handleReview =() => {
+        router.push('/reviews');
+    }
+
+    const handleSaved =() => {
+        router.push('/saved');
+    }
+
     const { image, username } = userData;
 
     return (
         <View style={styles.wholeThing}>
             <Image source={{ uri: image }} style={styles.logo} />
             <Text style={styles.username}>{username}</Text>
-            <Link href="../(UserProfile)/updateProfile">
-                <Button>Update Profile</Button>
-            </Link> 
-           <Link href="../(UserProfile)/restrictions">
-                <Button>Dietary Restrictions</Button>
-            </Link>   
-            <Link href="../(UserProfile)/reviews">
-                <Button>Reviews</Button>
-            </Link>
-            <Link href="../(UserProfile)/saved">
-                <Button>Saved</Button>
-            </Link> 
+                <Button onPress={handleUpdateProfile}>Update Profile</Button>
+
+                <Button onPress={handleRestrictions}>Dietary Restrictions</Button>
+    
+                <Button onPress={handleReview}>Reviews</Button>
+                
+                <Button onPress={handleSaved}>Saved</Button>
+
             <Button onPress={() => supabase.auth.signOut()}>Log out</Button>
         </View>
     );
