@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity, TextInput } from 'react-native';
 import { supabase } from '../../lib/supabase';
-import { Link, useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
 export default function StallPage() {
