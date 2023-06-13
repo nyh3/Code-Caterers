@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, ScrollView, StyleSheet } from 'react-native';
-import { Text, TextInput, Button, Menu, Provider } from 'react-native-paper';
+import { Text, TextInput, Button, Menu, Provider, ActivityIndicator } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from "../../contexts/auth";
@@ -10,8 +10,6 @@ export default function StallProfilePage() {
     const [errMsg, setErrMsg] = useState('');
     const [loading, setLoading] = useState(false);
     const [stallName, setStallName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [selectedCuisine, setSelectedCuisine] = useState(null);
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [locationMenuVisible, setLocationMenuVisible] = useState(false);
@@ -130,8 +128,6 @@ export default function StallProfilePage() {
                     owner_id: userId,
                     stallImage: uploadedImage,
                     name: stallName,
-                    email,
-                    password,
                     location_ID: locationId,
                     cuisine_ID: cuisineId,
                     has_air_con: hasAirCon,
@@ -148,8 +144,6 @@ export default function StallProfilePage() {
             console.log('Stall owner inserted successfully:', data);
             setStallImage(null);
             setStallName('');
-            setEmail('');
-            setPassword('');
             setSelectedLocation('');
             setSelectedCuisine('');
             setHasAirCon(false);
@@ -175,19 +169,6 @@ export default function StallProfilePage() {
                     value={stallName}
                     onChangeText={setStallName}
                     style={styles.input}
-                />
-                <TextInput
-                    label="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                    style={styles.input}
-                />
-                <TextInput
-                    label="Password"
-                    value={password}
-                    onChangeText={setPassword}
-                    style={styles.input}
-                    secureTextEntry
                 />
                 <Text style={styles.label}>What is the location of the stall?</Text>
                 <Menu
@@ -265,6 +246,7 @@ export default function StallProfilePage() {
                     {isVegetarian ? 'Yes' : 'No'}
                 </Button>
                 <Button onPress={handleSubmit} style={styles.button}>Submit</Button>
+                {loading && <ActivityIndicator />}
             </ScrollView>
         </Provider >
     );
@@ -313,5 +295,5 @@ const styles = StyleSheet.create({
         width: 200,
         height: 200,
         marginBottom: 15
-    }
+    },
 });

@@ -12,23 +12,23 @@ export default function UserProfile() {
 
     useEffect(() => {
         const fetchUserData = async () => {
-        const { data, error } = await supabase
-            .from('profile')
-            .select('image, username')
-            .eq('id', userId);
+            const { data, error } = await supabase
+                .from('profile')
+                .select('image, username')
+                .eq('id', userId);
 
-        if (error) {
-            console.error('Error fetching user data:', error);
-            return;
-        }
+            if (error) {
+                console.error('Error fetching user data:', error);
+                return;
+            }
 
-        if (data && data.length > 0) {
-            setUserData(data[0]);
-        }
+            if (data && data.length > 0) {
+                setUserData(data[0]);
+            }
         };
 
         if (userId) {
-        fetchUserData();
+            fetchUserData();
         }
     }, [userId]);
 
@@ -56,8 +56,9 @@ export default function UserProfile() {
 
     return (
         <View style={styles.wholeThing}>
-            <Image source={{ uri: image }} style={styles.logo} />
+            <Image source={{ uri: image }} style={styles.image} />
             <Text style={styles.username}>{username}</Text>
+
                 <Button onPress={handleUpdateProfile}>Update Profile</Button>
 
                 <Button onPress={handleRestrictions}>Dietary Restrictions</Button>
@@ -78,20 +79,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    logo: {
+    image: {
         alignSelf: 'center',
         width: 200,
         height: 200,
+        marginTop: 30,
+        marginBottom: 10,
+        borderRadius: 100,
     },
     wholeThing: {
         justifyContent: 'flex-start',
         flexDirection: 'column',
         backgroundColor: '#FFF5FA',
         flex: 1,
+        paddingHorizontal: 15,
     },
     username: {
         fontWeight: 'bold',
         alignSelf: 'center',
-        fontSize: 26,
+        fontSize: 25,
+        marginBottom: 15,
     }
-  });
+});
