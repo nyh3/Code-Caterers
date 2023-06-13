@@ -11,7 +11,7 @@ export default function UpdateStall() {
     const [name, setname] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [image, setImage] = useState('');
-    const { id } = useAuth();
+    const { userId } = useAuth();
     const router = useRouter();
 
     const handleAddImage = async () => {
@@ -25,7 +25,7 @@ export default function UpdateStall() {
         setLoading(true);
         let uploadedImage = null;
         if (image != null) {
-            const { data, error } = await supabase.storage.from('stallImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
+            const { data, error } = await supabase.storage.from('StallImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
 
             if (error != null) {
                 console.log(error);
@@ -33,14 +33,14 @@ export default function UpdateStall() {
                 setLoading(false);
                 return;
             }
-            console.log('stall:', id);
+            console.log('stall:', userId);
             const { data: { publicUrl } } = supabase.storage.from('stallImage').getPublicUrl(data.path);
             uploadedImage = publicUrl;
         }
-        const { data, error } = await supabase.from('Stall').update({ image: uploadedImage, name: name }).eq('id', id);
+        const { data, error } = await supabase.from('Stall').update({ stallImage: uploadedImage, name: name }).eq('owner_id', userId);
         if (error != null) {
             setLoading(false);
-            console.log(error);
+            console.log('2:',error);
             setErrMsg(error.message);
             return;
         }
