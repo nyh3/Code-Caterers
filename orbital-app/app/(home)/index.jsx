@@ -28,11 +28,11 @@ export default function StallPage() {
     };
 
     const handleStallPress = (stall) => {
-        router.push('../(Stalls)/stallDetails', { stall });
+        router.push({ pathname: '/stallDetails', params: { id: stall } });
     };
 
     const renderStall = ({ item }) => (
-        <TouchableOpacity onPress={() => handleStallPress(item)}>
+        <TouchableOpacity onPress={() => handleStallPress(item.id)}>
             <View style={styles.stall}>
                 <Image source={{ uri: item.image }} style={styles.stallImage} />
                 <View style={styles.stallDetails}>
