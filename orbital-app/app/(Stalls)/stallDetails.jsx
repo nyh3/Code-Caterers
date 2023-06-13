@@ -1,11 +1,11 @@
 import { View, Text, Image, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { useLocalSearchParams } from 'expo-router';
+import { useSearchParams } from 'expo-router';
 
 export default function StallDetailScreen() {
   const [menu, setMenu] = useState(null);
-  const { stall } = useLocalSearchParams();
+  const stall = useSearchParams();
 
   useEffect(() => {
     if (stall) {
@@ -19,8 +19,7 @@ export default function StallDetailScreen() {
       const { data, error } = await supabase
         .from('Menu')
         .select('*')
-        .eq('stall_id', stall)
-        .single();
+        .eq('stall_id', stall.id);
 
       if (error) {
         console.error('Error fetching menu details:', error.message);
