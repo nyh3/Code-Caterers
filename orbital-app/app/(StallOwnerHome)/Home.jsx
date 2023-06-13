@@ -1,49 +1,52 @@
 import { View, Image, StyleSheet } from "react-native";
-import { Button } from "react-native-paper";
+import { Button, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { Link } from 'expo-router';
-import { useState } from "react";
-import * as ImagePicker from 'expo-image-picker';
+import { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/auth";
 
 export default function Home() {
-    const [image, setImage] = useState(null);
-    const [errMsg, setErrMsg] = useState('');
-    const [loading, setLoading] = useState(false);
+    const { stallId } = useAuth();
+    const [stallData, setStallData] = useState(null);
 
-    const handleAddImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images
-        })
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
-        }
-        setLoading(true);
-        let uploadedImage = null;
-        if (image != null) {
-            const { data, error } = await supabase.storage.from('ProfileImage').upload('${new date().getTime()}', { uri: image, type: 'jpg', name: 'name.jpg' });
+    useEffect(() => {
+        const fetchStallData = async () => {
+            const { data, error } = await supabase
+                .from('Stall')
+                .select('stallImage, name')
+                .eq('id', stallId);
 
-            if (error != null) {
-                console.log(error);
-                setErrMsg(error.message)
-                setLoading(false);
+            if (error) {
+                console.error('Error fetching stall data:', error);
                 return;
             }
-        }
-        const { data, error } = await supabase.storage.from('ProfileImage').download('folder/ProfileImage1.png');
-        uploadedImage = data;
 
+            if (data && data.length > 0) {
+                setStallData(data[0]);
+            }
+        };
+
+        if (stallId) {
+            fetchStallData();
+        }
+    }, [stallId]);
+
+    if (!stallData) {
+        return <ActivityIndicator />;
     }
+
+    const { stallImage, name } = stallData;
 
     return (
         <View style={styles.container}>
-            <Button style={styles.buttons} onPress={handleAddImage}>Insert Profile Image</Button>
-            {image && <Image source={{ uri: image }} style={styles.image} />}
-            <Link href="(StallOwnerHome)/Edit_Profile">
-                <Button style={styles.buttons}>Edit Profile</Button>
+            <Image source={{ uri: stallImage }} style={styles.image} />
+            <Text style={styles.name}>{name}</Text>
+            <Link href="(StallOwnerHome)/Update_Stall">
+                <Button style={styles.buttons}>Update Stall</Button>
             </Link>
-           <Link href="(StallOwnerHome)/Stall_Profile">
+            <Link href="(StallOwnerHome)/Stall_Profile">
                 <Button style={styles.buttons}>Stall Profile</Button>
-            </Link> 
+            </Link>
             <Link href="(StallOwnerHome)/Menu">
                 <Button style={styles.buttons}>Menu</Button>
             </Link>
@@ -65,10 +68,19 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         marginHorizontal: 10,
     },
-    profilephoto: {
+    image: {
+        alignSelf: 'center',
         width: 200,
         height: 200,
-        alignItems: 'center',
+        marginTop: 30,
+        marginBottom: 10,
+        borderRadius: 100,
+    },
+    name: {
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        fontSize: 25,
+        marginBottom: 15,
     },
     buttons: {
         marginHorizontal: 5,
