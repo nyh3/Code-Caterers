@@ -4,6 +4,7 @@ import { Text, TextInput, Button, Menu, Provider, ActivityIndicator } from 'reac
 import { supabase } from '../../lib/supabase';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from "../../contexts/auth";
+import { Link } from 'expo-router';
 
 export default function StallProfilePage() {
     const [stallImage, setStallImage] = useState(null);
@@ -158,8 +159,8 @@ export default function StallProfilePage() {
         <Provider>
             <ScrollView style={styles.container}>
                 <Text style={styles.heading}>Stall Profile</Text>
-                <Button style={styles.buttons} onPress={handleAddImage}>
-                    Insert Stall Image
+                <Button style={styles.buttonContainer} onPress={handleAddImage}>
+                <Text style={styles.buttonText}>Insert Stall Image</Text>    
                 </Button>
                 {stallImage && (
                     <Image source={{ uri: stallImage }} style={styles.stallImage} />
@@ -245,7 +246,12 @@ export default function StallProfilePage() {
                 >
                     {isVegetarian ? 'Yes' : 'No'}
                 </Button>
-                <Button onPress={handleSubmit} style={styles.button}>Submit</Button>
+                <Button onPress={handleSubmit}style={styles.buttonContainer}><Text style={styles.buttonText}>Submit</Text></Button>
+                <View style={styles.marginLeftContainer}>
+                    <Link href="../(StallOwnerHome)/Home">
+                        <Button style={styles.discardContainer}><Text style={styles.buttonText}>Discard & Return</Text></Button>
+                    </Link>
+                </View>
                 {loading && <ActivityIndicator />}
             </ScrollView>
         </Provider >
@@ -278,22 +284,35 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFECF6',
         borderWidth: 1,
         borderColor: '#FFBBDF',
-        color: '#2C0080'
+        color: '#2C0080',
     },
     buttonText: {
-        color: '#2C0080'
+        color: '#2C0080',
+        fontWeight: 'bold'
     },
-    buttons: {
+    buttonContainer: {
         marginHorizontal: 5,
         marginVertical: 10,
         backgroundColor: '#FFECF6',
         borderWidth: 1,
         borderColor: '#FFBBDF',
-        color: '#2C0080'
+        color: '#2C0080',
+        fontWeight: 'bold'
     },
     stallImage: {
         width: 200,
         height: 200,
         marginBottom: 15
+    },
+    discardContainer: {
+        backgroundColor: '#FFECF6',
+        borderWidth: 1,
+        borderColor: '#FFBBDF',
+        color: '#2C0080',
+        fontWeight: 'bold',
+    },
+    marginLeftContainer: {
+        marginTop: 5,
+        marginLeft: 10,
     },
 });

@@ -5,6 +5,7 @@ import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker'
 import { useRouter } from 'expo-router'
 import { useAuth } from '../../contexts/auth'
+import { Link } from 'expo-router';
 
 export default function UpdateStall() {
     const [loading, setLoading] = useState(false);
@@ -34,13 +35,13 @@ export default function UpdateStall() {
                 return;
             }
             console.log('stall:', userId);
-            const { data: { publicUrl } } = supabase.storage.from('stallImage').getPublicUrl(data.path);
+            const { data: { publicUrl } } = supabase.storage.from('StallImage').getPublicUrl(data.path);
             uploadedImage = publicUrl;
         }
         const { data, error } = await supabase.from('Stall').update({ stallImage: uploadedImage, name: name }).eq('owner_id', userId);
         if (error != null) {
             setLoading(false);
-            console.log('2:',error);
+            console.log('2:', error);
             setErrMsg(error.message);
             return;
         }
@@ -67,6 +68,11 @@ export default function UpdateStall() {
 
             {errMsg !== "" && <Text>{errMsg}</Text>}
             <Text></Text>
+            <View style={styles.marginLeftContainer}>
+                <Link href="../(StallOwnerHome)/Home">
+                    <Button style={styles.discardContainer}><Text style={styles.button}>Discard & Return</Text></Button>
+                </Link>
+            </View>
             {loading && <ActivityIndicator />}
         </View>
     );
@@ -107,5 +113,16 @@ const styles = StyleSheet.create({
         height: 200,
         marginVertical: 30,
         borderRadius: 100,
-    }
+    },
+    discardContainer: {
+        backgroundColor: '#FFECF6',
+        borderWidth: 1,
+        borderColor: '#FFBBDF',
+        color: '#2C0080',
+        fontWeight: 'bold',
+    },
+    marginLeftContainer: {
+        marginTop: 5,
+        marginLeft: 10,
+    },
 });
