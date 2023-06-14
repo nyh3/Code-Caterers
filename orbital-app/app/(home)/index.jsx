@@ -34,7 +34,7 @@ export default function StallPage() {
     const renderStall = ({ item }) => (
         <TouchableOpacity onPress={() => handleStallPress(item.id)}>
             <View style={styles.stall}>
-                <Image source={{ uri: item.image }} style={styles.stallImage} />
+                <Image source={{ uri: item.stallImage }} style={styles.stallImage} />
                 <View style={styles.stallDetails}>
                     <Text style={styles.stallTitle}>{item.name}</Text>
                 </View>
