@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ScrollView, View, Text, TextInput, Switch, TouchableOpacity, StyleSheet } from 'react-native';
 import { Button, Menu, Provider } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';

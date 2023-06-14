@@ -60,7 +60,7 @@ export default function DietaryRestrictions() {
       <Text style={styles.restriction}>{dietary_restrictions}</Text>
       <Text style={styles.bold}>Update your dietary restrictions or food allergies:</Text>
       <TextInput
-        autoCapitalize="none"
+        autoCapitalize="characters"
         value={newRestriction}
         onChangeText={setNewRestriction}
         style={styles.input}
