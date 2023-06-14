@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Image, View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Image, View, StyleSheet, Text, TouchableOpacity, FlatList } from "react-native";
 import { ListItem } from 'react-native-elements';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from "../../contexts/auth";
@@ -46,79 +46,56 @@ export default function ReviewPage() {
 
         if (!error) {
             setReviews(data);
+            console.log(data);
         }
     };
 
-    const toggleMenuReviewsVisibility = (menuId) => {
-        setMenuReviewsVisibility((prevVisibility) => ({
-          ...prevVisibility,
-          [menuId]: !prevVisibility[menuId],
-        }));
+    const renderReviewItem = ({ item }) => {
+        return (
+          <ListItem>
+            <ListItem.Content>
+              <ListItem.Title>{item.menu_id}</ListItem.Title>
+              <Text>{item.rating}</Text>
+              <Text>{item.comment}</Text>
+            </ListItem.Content>
+          </ListItem>
+        );
       };
     
-
-    const renderMenuReviews = (menuId) => {
-        const menuReviews = reviews.filter((review) => review.menu_id === menuId);
-
-        if (menuReviewsVisibility[menuId]) {
-            return (
-                <View>
-                {menuReviews.map((review) => (
-                  <TouchableOpacity key={review.id} onPress={() => toggleMenuReviewsVisibility(review.id)}>
-                    <Text>{review.rating}</Text>
-                    {review.id === menuId && <Text>{review.comment}</Text>}
-                  </TouchableOpacity>
-                ))}
-              </View>  
-            );
-        }
-        return null;
-    };
-    return (
+      return (
         <View style={styles.container}>
-            <Text style={styles.header}>
-                Reviews:
-            </Text>
-            <Text style={styles.ratings}>
-                Ratings: use database to calculate overall ratings
-            </Text>
-            {reviews.map((review) => (
-            <ListItem key={review.id} onPress={() => toggleMenuReviewsVisibility(review.menu_id)}>
-            <ListItem.Content>
-                <ListItem.Title>{review.menu_id}</ListItem.Title>
-                {renderMenuReviews(review.menu_id)}
-            </ListItem.Content>
-            </ListItem>
-            ))}
+          <Text style={styles.header}>Reviews:</Text>
+          <Text style={styles.ratings}>
+            Ratings: use database to calculate overall ratings
+          </Text>
+          <FlatList
+            data={reviews}
+            renderItem={renderReviewItem}
+            keyExtractor={(item) => item.id}
+          />
         </View>
-    )
-}
-
-const styles = StyleSheet.create({
-    container: {
+      );
+    }
+    
+    const styles = StyleSheet.create({
+      container: {
         flex: 1,
         backgroundColor: '#FFF5FA',
         justifyContent: 'flex-start',
         marginHorizontal: 10,
-    },
-    header: {
+      },
+      header: {
         fontWeight: 'bold',
         fontSize: 20,
         margin: 0,
         marginHorizontal: 15,
         marginTop: 15,
-    },
-    ratings: {
+      },
+      ratings: {
         fontWeight: 'bold',
         fontSize: 17,
         margin: 0,
         marginHorizontal: 15,
         marginTop: 10,
-    },
-    normal: {
-        fontSize: 15,
-        margin: 0,
-        marginHorizontal: 15,
-        marginTop: 10,
-    },
-});
+      },
+    });

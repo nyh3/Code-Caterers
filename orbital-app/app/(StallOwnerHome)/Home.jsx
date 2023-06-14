@@ -1,4 +1,4 @@
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, Text } from "react-native";
 import { Button, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { Link } from 'expo-router';
@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/auth";
 
 export default function Home() {
-    const { stallId } = useAuth();
+    const { userId } = useAuth();
     const [stallData, setStallData] = useState(null);
 
     useEffect(() => {
@@ -14,7 +14,7 @@ export default function Home() {
             const { data, error } = await supabase
                 .from('Stall')
                 .select('stallImage, name')
-                .eq('id', stallId);
+                .eq('owner_id', userId);
 
             if (error) {
                 console.error('Error fetching stall data:', error);
@@ -26,10 +26,10 @@ export default function Home() {
             }
         };
 
-        if (stallId) {
+        if (userId) {
             fetchStallData();
         }
-    }, [stallId]);
+    }, [userId]);
 
     if (!stallData) {
         return <ActivityIndicator />;
