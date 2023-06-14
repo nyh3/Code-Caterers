@@ -1,13 +1,14 @@
 import { View, Image, StyleSheet, Text } from "react-native";
 import { Button, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
-import { Link } from 'expo-router';
 import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/auth";
+import { useRouter } from "expo-router";
 
 export default function Home() {
     const { userId } = useAuth();
     const [stallData, setStallData] = useState(null);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchStallData = async () => {
@@ -35,31 +36,38 @@ export default function Home() {
         return <ActivityIndicator />;
     }
 
+    const handleUpdateStall = () => {
+        router.push('(StallOwnerHome)/Update_Stall');
+    }
+    const handleStallProfile = () => {
+        router.push('(StallOwnerHome)/Stall_Profile');
+    }
+    const handleMenu = () => {
+        router.push('(StallOwnerHome)/Menu');
+    }
+    const handlePromotions = () => {
+        router.push('(StallOwnerHome)/Promotions');
+    }
+    const handleReviews = () => {
+        router.push('(StallOwnerHome)/Reviews');
+    }
+
     const { stallImage, name } = stallData;
 
     return (
         <View style={styles.container}>
             <Image source={{ uri: stallImage }} style={styles.image} />
             <Text style={styles.name}>{name}</Text>
-            <Link href="(StallOwnerHome)/Update_Stall">
-                <Button style={styles.buttons}>Update Stall</Button>
-            </Link>
-            <Link href="(StallOwnerHome)/Stall_Profile">
-                <Button style={styles.buttons}>Stall Profile</Button>
-            </Link>
-            <Link href="(StallOwnerHome)/Menu">
-                <Button style={styles.buttons}>Menu</Button>
-            </Link>
-            <Link href="(StallOwnerHome)/Promotions">
-                <Button style={styles.buttons}>Promotions</Button>
-            </Link>
-            <Link href="(StallOwnerHome)/Reviews">
-                <Button style={styles.buttons}>Reviews</Button>
-            </Link>
+            <Button onPress={handleUpdateStall} style={styles.buttons}>Update Stall</Button>
+            <Button onPress={handleStallProfile} style={styles.buttons}>Stall Profile</Button>
+            <Button onPress={handleMenu} style={styles.buttons}>Menu</Button>
+            <Button onPress={handlePromotions} style={styles.buttons}>Promotions</Button>
+            <Button onPress={handleReviews} style={styles.buttons}>Reviews</Button>
             <Button style={styles.buttons} onPress={() => supabase.auth.signOut()}>Log out</Button>
         </View>
-    )
+    );
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -83,8 +91,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     buttons: {
-        marginHorizontal: 5,
-        marginVertical: 5,
+        marginTop: 5,
         color: '#2C0080',
     }
 });
