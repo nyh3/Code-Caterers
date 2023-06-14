@@ -30,7 +30,7 @@ export default function Home() {
         if (userId) {
             fetchStallData();
         }
-    }, [userId]);
+    }, [userId, router]);
 
     if (!stallData) {
         return <ActivityIndicator />;
