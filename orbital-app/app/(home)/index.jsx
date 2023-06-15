@@ -88,13 +88,18 @@ const styles = StyleSheet.create({
     },
     stallDetails: {
         flex: 1,
+        alignSelf: 'center',
+        marginHorizontal: 10,
     },
     stallTitle: {
         fontWeight: 'bold',
-        fontSize: 16,
-        marginBottom: 5,
+        fontSize: 15,
     },
     stallDescription: {
         marginBottom: 5,
     },
+    searchInput: {
+        marginBottom: 10,
+        fontSize: 15,
+    }
 });

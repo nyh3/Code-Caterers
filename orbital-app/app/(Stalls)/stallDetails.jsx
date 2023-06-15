@@ -10,8 +10,8 @@ export default function StallDetailScreen() {
   const router = useRouter();
 
   useEffect(() => {
-      fetchMenuDetails();
-      fetchStallDetails();
+    fetchMenuDetails();
+    fetchStallDetails();
   }, []);
 
   const fetchMenuDetails = async () => {
@@ -51,7 +51,7 @@ export default function StallDetailScreen() {
     } catch (error) {
       console.error('Error fetching menu details:', error.message);
     }
-    };
+  };
 
   if (!stall) {
     return (
@@ -63,7 +63,7 @@ export default function StallDetailScreen() {
   }
 
   const handleMenuPress = (menu) => {
-    router.push({ pathname: '/menuDetails', params: { id: menu} });
+    router.push({ pathname: '/menuDetails', params: { id: menu } });
     console.log('Menu item pressed:', menu);
   };
 
@@ -83,7 +83,6 @@ export default function StallDetailScreen() {
     <View style={styles.container}>
       <Image source={{ uri: stall.stallImage }} style={styles.image} />
       <Text style={styles.name}>{stall.name}</Text>
-      <Text>Helooo</Text>
 
       <FlatList
         data={menu}
@@ -98,39 +97,45 @@ export default function StallDetailScreen() {
 
 const styles = StyleSheet.create({
   container: {
-      justifyContent: 'flex-start',
-      backgroundColor: '#FFF5FA',
-      flex: 1,
-      marginHorizontal: 10,
-      alignItems: 'center', 
+    justifyContent: 'flex-start',
+    backgroundColor: '#FFF5FA',
+    flex: 1,
+    paddingHorizontal: 15,
+    paddingVertical: 35,
   },
   image: {
-    width: 200, 
-    height: 200, 
-    marginBottom: 16,
+    alignSelf: 'center',
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+    borderRadius: 100,
   },
   name: {
     fontWeight: 'bold',
-    fontSize: 26,
+    fontSize: 20,
+    alignSelf: 'center',
   },
   menuList: {
     paddingTop: 20,
   },
+  menuItemDetails: {
+    alignSelf: 'center',
+  },
   menuItem: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 10,
     paddingHorizontal: 10,
   },
   menuItemImage: {
-    width: 50,
-    height: 50,
+    width: 70,
+    height: 70,
     marginRight: 10,
   },
   menuItemTitle: {
     fontWeight: 'bold',
+    fontSize: 15
   },
   menuItemPrice: {
-    color: '#888',
+    color: '#2C0080',
   },
 });

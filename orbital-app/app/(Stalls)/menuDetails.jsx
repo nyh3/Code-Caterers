@@ -1,4 +1,4 @@
-import { View, Text, Image, ActivityIndicator, FlatList, Button, StyleSheet } from 'react-native';
+import { View, Text, Image, ActivityIndicator, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'expo-router';
 import { supabase } from '../../lib/supabase';
@@ -35,11 +35,11 @@ export default function MenuDetailScreen() {
   };
 
   const fetchReviews = async () => {
-    try{
+    try {
       const { data: reviewsData, error: reviewsError } = await supabase
-      .from('review')
-      .select('*')
-      .eq('menu_id', menuId.id);
+        .from('review')
+        .select('*')
+        .eq('menu_id', menuId.id);
 
       if (reviewsError) {
         console.error('Error fetching reviews:', reviewsError.message);
@@ -63,19 +63,19 @@ export default function MenuDetailScreen() {
   const handleAddReview = (menu) => {
     router.push({ pathname: '/newReview', params: { id: menu } });
   };
-    
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.container}>
       <Image source={{ uri: menu.image }} style={styles.image} />
-      <Text>{menu.name}</Text>
-      <Button title="Add Review" onPress={() => handleAddReview(menu.id)} style={styles.buttonContainer}/>
+      <Text style={styles.menuName}>{menu.name}</Text>
+      <TouchableOpacity onPress={() => handleAddReview(menu.id)} style={styles.buttonContainer}><Text style={styles.button}>Add Review</Text></TouchableOpacity>
       <FlatList
         data={reviews}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View>
-            <Text>Rating: {item.rating}</Text>
-            <Text>Comment: {item.review_text}</Text>
+            <Text style={styles.rating}>Rating: {item.rating}</Text>
+            <Text style={styles.comment}>Comment: {item.review_text}</Text>
             {/* Add more details here */}
           </View>
         )}
@@ -86,19 +86,44 @@ export default function MenuDetailScreen() {
 
 const styles = StyleSheet.create({
   container: {
-      flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: '#FFF5FA',
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 35,
   },
   buttonContainer: {
-    marginHorizontal: 5,
-    marginBottom: 10,
     backgroundColor: '#FFECF6',
     borderWidth: 1,
     borderColor: '#FFBBDF',
+    height: 40,
+  },
+  button: {
+    alignSelf: 'center',
+    textAlignVertical: 'center',
     color: '#2C0080',
-},
-image: {
+    fontWeight: 'bold',
+    marginTop: 7,
+  },
+  image: {
+    alignSelf: 'center',
     width: 200,
     height: 200,
-    marginBottom: 15,
-},
+    marginBottom: 10,
+    borderRadius: 100,
+  },
+  menuName: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    alignSelf: 'center',
+    marginBottom: 10,
+  },
+  rating: {
+    marginTop: 20,
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  comment: {
+    fontSize: 14,
+  }
 })  

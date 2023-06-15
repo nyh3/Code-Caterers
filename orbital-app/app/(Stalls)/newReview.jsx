@@ -9,95 +9,111 @@ import { useAuth } from "../../contexts/auth";
 import { useRouter } from "expo-router";
 
 export default function AddReview() {
-    const [ rating, setRating ] = useState(0);
-    const [ comment, setComment ] = useState('');
-    const [ image, setImage ] = useState(''); 
-    const menuId = useSearchParams();
-    const userId = useAuth();
-    const router = useRouter();
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+  const [image, setImage] = useState('');
+  const menuId = useSearchParams();
+  const userId = useAuth();
+  const router = useRouter();
 
-    const handleAddImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
-        }
+  const handleAddImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  }
+
+  const handleRatingChange = (rating) => {
+    setRating(rating);
+  };
+
+  const handleCommentChange = (text) => {
+    setComment(text);
+  };
+
+  const handleSubmit = async () => {
+    // Submit the review to Supabase
+    console.log(menuId);
+    console.log(menuId.id);
+    console.log(userId.userId);
+    const { data, error } = await supabase
+      .from('review')
+      .insert({
+        rating: rating,
+        review_text: comment,
+        image: image,
+        menu_id: menuId.id,
+        user_id: userId.userId,
+      });
+    if (error) {
+      console.error('Error submitting review:', error.message);
+      return;
     }
 
-    const handleRatingChange = (rating) => {
-        setRating(rating);
-      };
-    
-    const handleCommentChange = (text) => {
-    setComment(text);
-    };
-    
-    const handleSubmit = async () => {
-        // Submit the review to Supabase
-        console.log(menuId);
-        console.log(menuId.id);
-        console.log(userId.userId);
-        const { data, error } = await supabase
-        .from('review')
-        .insert({
-          rating: rating,
-          review_text: comment,
-          image: image,
-          menu_id: menuId.id,
-          user_id: userId.userId,
-        });
-        if (error) {
-          console.error('Error submitting review:', error.message);
-          return;
-        }
-    
-        // Reset form fields
-        setRating(0);
-        setComment('');
-        setImage('');
-        router.push({ pathname: '/menuDetails', params: { id: menuId.id} });
-    };
+    // Reset form fields
+    setRating(0);
+    setComment('');
+    setImage('');
+    router.push({ pathname: '/menuDetails', params: { id: menuId.id } });
+  };
 
-    return (
+  return (
     <View style={styles.container}>
-      <Text>Rate:</Text>
+      <Text style={styles.heading}>Ratings:</Text>
       <AirbnbRating
         count={5}
         defaultRating={rating}
         size={20}
         onFinishRating={handleRatingChange}
       />
-
-      <Text>Comment:</Text>
+      <Button onPress={handleAddImage} style={styles.buttonContainer}><Text style={styles.button}>Upload Image</Text></Button>
+      {image && <Image source={{ uri: image }} style={styles.image} />}
+      <Text style={styles.heading}>Comments:</Text>
       <TextInput
         value={comment}
         onChangeText={handleCommentChange}
         multiline
-        style={{ height: 100, borderColor: 'gray', borderWidth: 1 }}
+        style={styles.input}
       />
-
-      <Button title="Upload Image" onPress={handleAddImage} style={styles.buttonContainer}/>
-      {image && <Image source={{ uri: image }} style={styles.image} />}
-
-      <Button title="Submit" onPress={handleSubmit} style={styles.buttonContainer}/>
+      <Button onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.button}>Submit</Text></Button>
     </View>
-    )
+  )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    buttonContainer: {
-        marginHorizontal: 5,
-        marginBottom: 10,
-        backgroundColor: '#FFECF6',
-        borderWidth: 1,
-        borderColor: '#FFBBDF',
-        color: '#2C0080',
-    },
-    image: {
-        width: 200,
-        height: 200,
-        marginBottom: 15,
-    },
+  container: {
+    justifyContent: 'flex-start',
+    backgroundColor: '#FFF5FA',
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 35,
+  },
+  heading: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    marginBottom: 5,
+  },
+  input: {
+    backgroundColor: '#FFECF6',
+    minHeight: 100,
+    borderWidth: 1,
+    borderColor: '#FFBBDF',
+    borderRadius: 2,
+    fontSize: 15,
+  },
+  buttonContainer: {
+    marginVertical: 20,
+    backgroundColor: '#FFECF6',
+    borderWidth: 1,
+    borderColor: '#FFBBDF',
+  },
+  button: {
+    color: '#2C0080',
+    fontWeight: 'bold',
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 15,
+  },
 })  

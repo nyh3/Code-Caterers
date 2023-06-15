@@ -83,6 +83,8 @@ const styles = StyleSheet.create({
     },
     menuItemDetails: {
         flex: 1,
+        alignSelf: 'center',
+        marginHorizontal: 10,
     },
     menuItemName: {
         fontWeight: 'bold',

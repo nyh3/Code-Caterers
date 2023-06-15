@@ -60,9 +60,9 @@ export default function Account() {
       <TextInput
         autoCapitalize='none'
         value={username}
-        onChangeText={setUsername} 
+        onChangeText={setUsername}
         style={styles.input}
-        />
+      />
 
       <Button
         style={styles.buttonContainer}

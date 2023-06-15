@@ -69,7 +69,7 @@ export default function ReviewsPage() {
           ) : null}
           {reviewedReviews.length > 0 ? (
             <View>
-              <Text style={styles.sectionTitle}>Reviewed Reviews</Text>
+              <Text style={styles.sectionTitle}>Reviews written:</Text>
               <FlatList
                 data={reviewedReviews}
                 renderItem={renderItem}
@@ -85,14 +85,16 @@ export default function ReviewsPage() {
 
 const styles = StyleSheet.create({
   container: {
+    justifyContent: 'flex-start',
+    backgroundColor: '#FFF5FA',
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 30,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   reviewItem: {
     marginBottom: 20,
