@@ -55,6 +55,8 @@ export default function FilterPage() {
         const { data, error } = await supabase.from('cuisine').select();
         if (error) {
           console.error('Error retrieving cuisines:', error.message);
+          console.log('Cuisine data:', data);
+          console.log('Cuisine error:', error);
           return;
         }
         setCuisines(data);
@@ -70,16 +72,46 @@ export default function FilterPage() {
           console.error('Error retrieving food options:', error.message);
           return;
         }
-        setFoodOptions(data);
+
+        const optionsWithDetails = await Promise.all(
+          data.map(async (option) => {
+            const cuisine = await supabase
+              .from('cuisine')
+              .select('name')
+              .eq('id', option.cuisineId)
+              .single();
+
+            const location = await supabase
+              .from('location')
+              .select('name')
+              .eq('id', option.locationId)
+              .single();
+
+            return {
+              ...option,
+              cuisineId: option.cuisineId ? option.cuisineId.toString() : '',
+              locationId: option.locationId ? option.locationId.toString() : '',
+              cuisine: cuisine ? cuisine.name : '',
+              location: location ? location.name : '',
+            };
+          })
+        );
+
+        console.log(optionsWithDetails);
+        setFoodOptions(optionsWithDetails);
       } catch (error) {
         console.error('Error retrieving food options:', error.message);
       }
     };
 
-    fetchFoodOptions();
-    fetchDietaryRestrictions();
-    fetchLocations();
-    fetchCuisines();
+    const fetchData = async () => {
+      await fetchLocations();
+      await fetchCuisines();
+      fetchDietaryRestrictions();
+      fetchFoodOptions();
+    };
+
+    fetchData();
   }, []);
 
   const handleLocationSelection = async (locationId) => {
@@ -91,13 +123,14 @@ export default function FilterPage() {
         .single();
 
       if (data) {
-        setLocationId(data.id);
+        setLocationId(data.id.toString());
         setSelectedLocation(data.name);
       } else {
         console.error('Location not found');
       }
 
       setLocationMenuVisible(false);
+      handleFilter();
     } catch (error) {
       console.error('Error retrieving location:', error.message);
     }
@@ -110,15 +143,19 @@ export default function FilterPage() {
         .select()
         .eq('id', cuisineId)
         .single();
+
       if (data) {
-        setCuisineId(data.id);
+        setCuisineId(data.id.toString());
         setSelectedCuisine(data.name);
       }
+
       setCuisineMenuVisible(false);
+      handleFilter();
     } catch (error) {
       console.error('Error retrieving cuisine:', error.message);
     }
   };
+
 
   const handleFilter = () => {
     const filteredOptions = foodOptions.filter((option) => {
@@ -136,14 +173,13 @@ export default function FilterPage() {
       if (budget && option.price > parseInt(budget, 10)) {
         return false;
       }
-
-      // Filter by cuisine (still working on this)
-      if (cuisineId && option.cuisineId !== cuisineId) {
+      // Filter by cuisine
+      if (cuisineId !== null && option.cuisineId !== parseInt(cuisineId)) {
         return false;
       }
 
-      // Filter by location (still working on this)
-      if (locationId && option.locationId !== locationId) {
+      // Filter by location
+      if (locationId !== null && option.locationId !== parseInt(locationId)) {
         return false;
       }
 
@@ -157,14 +193,15 @@ export default function FilterPage() {
 
     // Fetch cuisine and location details (still working on this)
     const filteredOptionsWithDetails = filteredOptions.map((option) => {
-      const cuisine = cuisines.find((cuisine) => cuisine.id === option.cuisineId);
-      const location = locations.find((location) => location.id === option.locationId);
+      const cuisine = cuisines.find((cuisine) => cuisine.id === parseInt(option.cuisineId));
+      const location = locations.find((location) => location.id === parseInt(option.locationId));
       return {
         ...option,
         cuisine: cuisine ? cuisine.name : '',
         location: location ? location.name : '',
       };
     });
+
     setFilteredFoodOptions(filteredOptionsWithDetails);
   };
 
@@ -279,7 +316,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFF5FA',
     flex: 1,
-    marginHorizontal: 10,
+    paddingHorizontal: 10,
   },
   heading: {
     fontSize: 20,
