@@ -2,6 +2,7 @@ import { View, Text, Image, ActivityIndicator, StyleSheet, FlatList, TouchableOp
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useSearchParams, useRouter } from 'expo-router';
+import { AirbnbRating } from 'react-native-ratings';
 
 export default function StallDetailScreen() {
   const [menu, setMenu] = useState([]);
@@ -83,7 +84,11 @@ export default function StallDetailScreen() {
     <View style={styles.container}>
       <Image source={{ uri: stall.stallImage }} style={styles.image} />
       <Text style={styles.name}>{stall.name}</Text>
-
+      <AirbnbRating
+                    startingValue={stall.rating}
+                    imageSize={20}
+                    isDisabled={true} // Set isDisabled prop to true
+                  />
       <FlatList
         data={menu}
         renderItem={renderMenuItem}

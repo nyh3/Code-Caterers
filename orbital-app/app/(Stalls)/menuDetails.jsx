@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useRouter } from 'expo-router';
+import { AirbnbRating } from 'react-native-ratings';
 
 export default function MenuDetailScreen() {
   const menuId = useSearchParams();
@@ -68,6 +69,11 @@ export default function MenuDetailScreen() {
     <View style={styles.container}>
       <Image source={{ uri: menu.image }} style={styles.image} />
       <Text style={styles.menuName}>{menu.name}</Text>
+      <AirbnbRating
+                    startingValue={menu.rating}
+                    imageSize={20}
+                    isDisabled={true} // Set isDisabled prop to true
+                  />
       <TouchableOpacity onPress={() => handleAddReview(menu.id)} style={styles.buttonContainer}><Text style={styles.button}>Add Review</Text></TouchableOpacity>
       <FlatList
         data={reviews}

@@ -3,12 +3,14 @@ import { Image, View, StyleSheet, Text, TouchableOpacity, FlatList } from "react
 import { ListItem } from 'react-native-elements';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from "../../contexts/auth";
+import { AirbnbRating } from 'react-native-ratings';
 
 export default function ReviewPage() {
-    const userId = useAuth();
+    const { userId } = useAuth();
     const [reviews, setReviews] = useState([]);
     const [menuReviewsVisibility, setMenuReviewsVisibility] = useState({});
     const [menu, setMenu] = useState([]);
+    const [overallRating, setOverallRating] = useState(0);
 
     useEffect(() => {
         fetchStallId();
@@ -17,12 +19,14 @@ export default function ReviewPage() {
     const fetchStallId = async () => {
         const { data, error } = await supabase
             .from('Stall')
-            .select('id')
-            .eq('owner_id', userId.userId)
+            .select('id, rating')
+            .eq('owner_id', userId)
             .single();
 
         if (!error) {
             const stallId = data.id;
+            const rating = data.rating;
+            setOverallRating(rating);
             fetchMenuId(stallId);
         }
     };
@@ -88,9 +92,11 @@ export default function ReviewPage() {
             <Text style={styles.header}>
                 Reviews:
             </Text>
-            <Text style={styles.ratings}>
-                Ratings: use database to calculate overall ratings
-            </Text>
+            <AirbnbRating
+                    startingValue={overallRating}
+                    imageSize={20}
+                    isDisabled={true} // Set isDisabled prop to true
+                  />
             <FlatList
                 data={Object.values(menu)}
                 keyExtractor={(item) => item.id.toString()}
