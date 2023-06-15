@@ -60,8 +60,9 @@ export default function UpdateStall() {
             <TextInput
                 autoCapitalize='none'
                 value={name}
-                onChangeText={setname} />
-
+                onChangeText={setname}
+                style={styles.input}
+            />
             <Button
                 style={styles.buttonContainer}
                 onPress={handleSubmit}><Text style={styles.button}>Update Stall Details</Text></Button>
@@ -125,4 +126,8 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginLeft: 10,
     },
+    input: {
+        marginBottom: 5,
+        backgroundColor: '#FFECF6'
+    }
 });

@@ -82,6 +82,8 @@ const styles = StyleSheet.create({
     },
     promotionDetails: {
         flex: 1,
+        alignSelf: 'center',
+        marginHorizontal: 10,
     },
     promotionTitle: {
         fontWeight: 'bold',
