@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity, TextInput } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
