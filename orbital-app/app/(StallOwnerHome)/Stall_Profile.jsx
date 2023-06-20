@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Image, ScrollView, StyleSheet } from 'react-native';
 import { Text, TextInput, Button, Menu, Provider, ActivityIndicator } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
@@ -22,6 +22,7 @@ export default function StallProfilePage() {
     const [cuisineId, setCuisineId] = useState(null);
     const [locations, setLocations] = useState([]);
     const [cuisines, setCuisines] = useState([]);
+    const [description, setDescription] = useState('');
     const { userId } = useAuth();
 
     useEffect(() => {
@@ -133,7 +134,8 @@ export default function StallProfilePage() {
                     cuisine_ID: cuisineId,
                     has_air_con: hasAirCon,
                     is_halal: isHalal,
-                    is_vegetarian: isVegetarian
+                    is_vegetarian: isVegetarian,
+                    description: description
                 }
             ]).select().single();
 
@@ -150,6 +152,7 @@ export default function StallProfilePage() {
             setHasAirCon(false);
             setIsHalal(false);
             setIsVegetarian(false);
+            setDescription('');
         } catch (error) {
             console.error('Error inserting stall owner:', error.message);
         }
@@ -170,6 +173,14 @@ export default function StallProfilePage() {
                     value={stallName}
                     onChangeText={setStallName}
                     style={styles.input}
+                />
+                <TextInput
+                label="Description"
+                autoCapitalize='none'
+                value={description}
+                onChangeText={setDescription}
+                multiline
+                style={styles.input}
                 />
                 <Text style={styles.label}>What is the location of the stall?</Text>
                 <Menu
@@ -246,6 +257,7 @@ export default function StallProfilePage() {
                 >
                     {isVegetarian ? 'Yes' : 'No'}
                 </Button>
+                <Text>{errMsg}</Text>
                 <Button onPress={handleSubmit}style={styles.buttonContainer}><Text style={styles.buttonText}>Submit</Text></Button>
                 <View style={styles.marginLeftContainer}>
                     <Link href="../(StallOwnerHome)/Home">

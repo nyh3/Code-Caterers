@@ -14,6 +14,7 @@ export default function UpdateStall() {
     const [image, setImage] = useState('');
     const { userId } = useAuth();
     const router = useRouter();
+    const [description, setDescription] = useState('');
 
     const handleAddImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
@@ -38,7 +39,7 @@ export default function UpdateStall() {
             const { data: { publicUrl } } = supabase.storage.from('StallImage').getPublicUrl(data.path);
             uploadedImage = publicUrl;
         }
-        const { data, error } = await supabase.from('Stall').update({ stallImage: uploadedImage, name: name }).eq('owner_id', userId);
+        const { data, error } = await supabase.from('Stall').update({ stallImage: uploadedImage, name: name, description: description }).eq('owner_id', userId);
         if (error != null) {
             setLoading(false);
             console.log('2:', error);
@@ -61,6 +62,15 @@ export default function UpdateStall() {
                 autoCapitalize='none'
                 value={name}
                 onChangeText={setname}
+                style={styles.input}
+            />
+
+            <Text style={styles.bold}>Description:</Text>
+            <TextInput
+                autoCapitalize='none'
+                value={description}
+                onChangeText={setDescription}
+                multiline
                 style={styles.input}
             />
             <Button
