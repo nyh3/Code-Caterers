@@ -39,7 +39,7 @@ export default function MenuDetailScreen() {
     try {
       const { data: reviewsData, error: reviewsError } = await supabase
         .from('review')
-        .select('*')
+        .select('*, profile (username, image)')
         .eq('menu_id', menuId.id);
 
       if (reviewsError) {
@@ -73,20 +73,36 @@ export default function MenuDetailScreen() {
         defaultRating={parseFloat(menu.rating) || 0} // Use a default value of 0 if stall.rating is null
         size={30}
         isDisabled
+        showRating={false}
         minRating={0} // Set the minimum selectable value to 0
         maxRating={5} // Set the maximum selectable value to 5
       />
       <Text>Price: ${menu.price}</Text>
       <Text>{menu.description}</Text>
-      <TouchableOpacity onPress={() => handleAddReview(menu.id)} style={styles.buttonContainer}><Text style={styles.button}>Add Review</Text></TouchableOpacity>
+      <TouchableOpacity onPress={() => handleAddReview(menu.id)} style={styles.buttonContainer}>
+        <Text style={styles.button}>Add Review</Text>
+      </TouchableOpacity>
       <FlatList
         data={reviews}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View>
-            <Text style={styles.rating}>Rating: {item.rating}</Text>
-            <Text style={styles.comment}>Comment: {item.review_text}</Text>
-            {/* Add more details here */}
+          <View style={styles.reviewContainer}>
+            <Image source={{ uri: item.profile.image }} style={styles.profileImage} />
+            <View style={styles.reviewDetails}>
+              <Text style={styles.username}>{item.profile.username}</Text>
+              <View style={styles.ratingContainer}>
+                <AirbnbRating
+                  defaultRating={parseFloat(menu.rating) || 0}
+                  size={15}
+                  isDisabled
+                  showRating={false}
+                  minRating={0}
+                  maxRating={5}
+                  style={styles.rating}
+                />
+              </View>
+              <Text style={styles.comment}>Comment: {item.review_text}</Text>
+            </View>
           </View>
         )}
       />
@@ -107,13 +123,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FFBBDF',
     height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
   },
   button: {
-    alignSelf: 'center',
-    textAlignVertical: 'center',
     color: '#2C0080',
     fontWeight: 'bold',
-    marginTop: 7,
+    fontSize: 16,
   },
   image: {
     alignSelf: 'center',
@@ -128,12 +145,32 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 10,
   },
-  rating: {
-    marginTop: 20,
+  reviewContainer: {
+    flexDirection: 'row',
+    marginBottom: 15,
+  },
+  profileImage: {
+    width: 70,
+    height: 70,
+    marginRight: 10,
+    borderRadius: 35,
+  },
+  reviewDetails: {
+    flex: 1,
+  },
+  username: {
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 16,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  rating: {
+    marginLeft: 5,
   },
   comment: {
     fontSize: 14,
-  }
-})  
+  },
+});
