@@ -20,16 +20,14 @@ export default function StallDetailScreen() {
     try {
       const { data, error } = await supabase
         .from('Menu')
-        .select('name, image, price, id')
+        .select('name, image, price, id, rating')
         .eq('stall_id', stallId.id);
 
       if (error) {
         console.error('Error fetching menu details:', error.message);
         return;
       }
-      console.log(data);
       setMenu(data);
-      console.log(menu);
     } catch (error) {
       console.error('Error fetching menu details:', error.message);
     }
@@ -74,6 +72,14 @@ export default function StallDetailScreen() {
         <Image source={{ uri: item.image }} style={styles.menuItemImage} />
         <View style={styles.menuItemDetails}>
           <Text style={styles.menuItemTitle}>{item.name}</Text>
+          <AirbnbRating
+            defaultRating={parseFloat(item.rating) || 0} // Use a default value of 0 if stall.rating is null
+            size={15}
+            isDisabled
+            showRating={false} // Set showRating prop to false
+            minRating={0} // Set the minimum selectable value to 0
+            maxRating={5} // Set the maximum selectable value to 5
+          />
           <Text style={styles.menuItemPrice}>${item.price}</Text>
         </View>
       </View>
@@ -85,10 +91,13 @@ export default function StallDetailScreen() {
       <Image source={{ uri: stall.stallImage }} style={styles.image} />
       <Text style={styles.name}>{stall.name}</Text>
       <AirbnbRating
-                    startingValue={stall.rating}
-                    imageSize={20}
-                    isDisabled={true} // Set isDisabled prop to true
-                  />
+        defaultRating={parseFloat(stall.rating) || 0} // Use a default value of 0 if stall.rating is null
+        size={30}
+        isDisabled
+        minRating={0} // Set the minimum selectable value to 0
+        maxRating={5} // Set the maximum selectable value to 5
+      />
+      <Text>{stall.description}</Text>
       <FlatList
         data={menu}
         renderItem={renderMenuItem}

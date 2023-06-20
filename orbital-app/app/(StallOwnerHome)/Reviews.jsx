@@ -93,10 +93,12 @@ export default function ReviewPage() {
                 Reviews:
             </Text>
             <AirbnbRating
-                    startingValue={overallRating}
-                    imageSize={20}
-                    isDisabled={true} // Set isDisabled prop to true
-                  />
+              defaultRating={parseFloat(overallRating) || 0} // Use a default value of 0 if stall.rating is null
+              size={30}
+              isDisabled
+              minRating={0} // Set the minimum selectable value to 0
+              maxRating={5} // Set the maximum selectable value to 5
+            />
             <FlatList
                 data={Object.values(menu)}
                 keyExtractor={(item) => item.id.toString()}

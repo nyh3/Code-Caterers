@@ -70,10 +70,14 @@ export default function MenuDetailScreen() {
       <Image source={{ uri: menu.image }} style={styles.image} />
       <Text style={styles.menuName}>{menu.name}</Text>
       <AirbnbRating
-                    startingValue={menu.rating}
-                    imageSize={20}
-                    isDisabled={true} // Set isDisabled prop to true
-                  />
+        defaultRating={parseFloat(menu.rating) || 0} // Use a default value of 0 if stall.rating is null
+        size={30}
+        isDisabled
+        minRating={0} // Set the minimum selectable value to 0
+        maxRating={5} // Set the maximum selectable value to 5
+      />
+      <Text>Price: ${menu.price}</Text>
+      <Text>{menu.description}</Text>
       <TouchableOpacity onPress={() => handleAddReview(menu.id)} style={styles.buttonContainer}><Text style={styles.button}>Add Review</Text></TouchableOpacity>
       <FlatList
         data={reviews}
