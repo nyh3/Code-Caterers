@@ -77,7 +77,7 @@ export default function MenuDetailScreen() {
         minRating={0} // Set the minimum selectable value to 0
         maxRating={5} // Set the maximum selectable value to 5
       />
-      <Text>Price: ${menu.price}</Text>
+      <Text style={styles.price}>Price: ${menu.price}</Text>
       <Text>{menu.description}</Text>
       <TouchableOpacity onPress={() => handleAddReview(menu.id)} style={styles.buttonContainer}>
         <Text style={styles.button}>Add Review</Text>
@@ -101,7 +101,11 @@ export default function MenuDetailScreen() {
                   style={styles.rating}
                 />
               </View>
-              <Text style={styles.comment}>Comment: {item.review_text}</Text>
+              <Text style={styles.comment}>{item.review_text}</Text>
+              {item.image && (
+                <Image source={{ uri: item.image }} style={styles.reviewImage} />
+              )}
+              <Text>{item.updated_at}</Text>
             </View>
           </View>
         )}
@@ -148,10 +152,13 @@ const styles = StyleSheet.create({
   reviewContainer: {
     flexDirection: 'row',
     marginBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)', // Adjust the opacity to control the faintness
+    paddingBottom: 10, // Add some spacing at the bottom to separate the line from the content
   },
   profileImage: {
-    width: 70,
-    height: 70,
+    width: 40,
+    height: 40,
     marginRight: 10,
     borderRadius: 35,
   },
@@ -173,4 +180,13 @@ const styles = StyleSheet.create({
   comment: {
     fontSize: 14,
   },
+  reviewImage: {
+    width: 70,
+    height: 70,
+  },
+  price: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'red',
+  }
 });
