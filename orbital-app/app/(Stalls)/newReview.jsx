@@ -11,7 +11,7 @@ import { useRouter } from "expo-router";
 export default function AddReview() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(null);
   const menuId = useSearchParams();
   const userId = useAuth();
   const router = useRouter();
@@ -45,6 +45,7 @@ export default function AddReview() {
         menu_id: menuId.id,
         user_id: userId.userId,
       });
+      
     if (error) {
       console.error('Error submitting review:', error.message);
       return;

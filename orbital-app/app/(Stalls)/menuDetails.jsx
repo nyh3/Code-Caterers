@@ -20,7 +20,7 @@ export default function MenuDetailScreen() {
     console.log(menuId);
     try {
       const { data, error } = await supabase
-        .from('Menu')
+        .from('menu')
         .select('*')
         .eq('id', menuId.id)
         .single();
@@ -39,7 +39,7 @@ export default function MenuDetailScreen() {
     try {
       const { data: reviewsData, error: reviewsError } = await supabase
         .from('review')
-        .select('*')
+        .select('*, profile (username, image)')
         .eq('menu_id', menuId.id);
 
       if (reviewsError) {
@@ -70,19 +70,43 @@ export default function MenuDetailScreen() {
       <Image source={{ uri: menu.image }} style={styles.image} />
       <Text style={styles.menuName}>{menu.name}</Text>
       <AirbnbRating
-                    startingValue={menu.rating}
-                    imageSize={20}
-                    isDisabled={true} // Set isDisabled prop to true
-                  />
-      <TouchableOpacity onPress={() => handleAddReview(menu.id)} style={styles.buttonContainer}><Text style={styles.button}>Add Review</Text></TouchableOpacity>
+        defaultRating={parseFloat(menu.rating) || 0} // Use a default value of 0 if stall.rating is null
+        size={30}
+        isDisabled
+        showRating={false}
+        minRating={0} // Set the minimum selectable value to 0
+        maxRating={5} // Set the maximum selectable value to 5
+      />
+      <Text style={styles.price}>Price: ${menu.price}</Text>
+      <Text>{menu.description}</Text>
+      <TouchableOpacity onPress={() => handleAddReview(menu.id)} style={styles.buttonContainer}>
+        <Text style={styles.button}>Add Review</Text>
+      </TouchableOpacity>
       <FlatList
         data={reviews}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View>
-            <Text style={styles.rating}>Rating: {item.rating}</Text>
-            <Text style={styles.comment}>Comment: {item.review_text}</Text>
-            {/* Add more details here */}
+          <View style={styles.reviewContainer}>
+            <Image source={{ uri: item.profile.image }} style={styles.profileImage} />
+            <View style={styles.reviewDetails}>
+              <Text style={styles.username}>{item.profile.username}</Text>
+              <View style={styles.ratingContainer}>
+                <AirbnbRating
+                  defaultRating={parseFloat(menu.rating) || 0}
+                  size={15}
+                  isDisabled
+                  showRating={false}
+                  minRating={0}
+                  maxRating={5}
+                  style={styles.rating}
+                />
+              </View>
+              <Text style={styles.comment}>{item.review_text}</Text>
+              {item.image && (
+                <Image source={{ uri: item.image }} style={styles.reviewImage} />
+              )}
+              <Text>{item.updated_at}</Text>
+            </View>
           </View>
         )}
       />
@@ -103,13 +127,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FFBBDF',
     height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
   },
   button: {
-    alignSelf: 'center',
-    textAlignVertical: 'center',
     color: '#2C0080',
     fontWeight: 'bold',
-    marginTop: 7,
+    fontSize: 16,
   },
   image: {
     alignSelf: 'center',
@@ -124,12 +149,44 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 10,
   },
-  rating: {
-    marginTop: 20,
+  reviewContainer: {
+    flexDirection: 'row',
+    marginBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)', // Adjust the opacity to control the faintness
+    paddingBottom: 10, // Add some spacing at the bottom to separate the line from the content
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+    borderRadius: 35,
+  },
+  reviewDetails: {
+    flex: 1,
+  },
+  username: {
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 16,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  rating: {
+    marginLeft: 5,
   },
   comment: {
     fontSize: 14,
+  },
+  reviewImage: {
+    width: 70,
+    height: 70,
+  },
+  price: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'red',
   }
-})  
+});

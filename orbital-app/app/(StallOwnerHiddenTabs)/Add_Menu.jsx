@@ -25,7 +25,7 @@ export default function AddMenuPage() {
       const fetchStallId = async () => {
         try {
           const { data, error } = await supabase
-            .from('Stall')
+            .from('stall')
             .select('id')
             .eq('owner_id', userId)
             .single();
@@ -69,7 +69,7 @@ export default function AddMenuPage() {
             uploadedImage = publicUrl;
         }
         console.log(stall);
-        const { data, error } = await supabase.from('Menu').insert({ name: name, image: uploadedImage, description: description, price: parseFloat(price), stall_id: stall.id}).select().single();
+        const { data, error } = await supabase.from('menu').insert({ name: name, image: uploadedImage, description: description, price: parseFloat(price), stall_id: stall.id}).select().single();
 
         if (error != null) {
             setLoading(false);

@@ -4,6 +4,7 @@ import { supabase } from "../../lib/supabase";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/auth";
 import { useRouter } from "expo-router";
+import { AirbnbRating } from "react-native-ratings";
 
 export default function ReviewsPage() {
   const { userId } = useAuth();
@@ -19,7 +20,7 @@ export default function ReviewsPage() {
     try {
       const { data, error} = await supabase
         .from('review')
-        .select('*')
+        .select('*, menu ( name, stall ( name ) )')
         .eq('user_id', userId);
 
       if (error) {
@@ -44,11 +45,25 @@ export default function ReviewsPage() {
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleEditReview(item.id)} style={styles.reviewItem}>
       <View>
-        <Text style={styles.rating}>Rating: {item.rating}</Text>
-        <Text style={styles.comment}>Comment: {item.review_text}</Text>
+        <Text style={styles.menuItem}>{item.menu.name} from {item.menu.stall.name}</Text>
+        <AirbnbRating
+          defaultRating={parseFloat(item.rating) || 0}
+          size={15}
+          isDisabled
+          showRating={false}
+          minRating={0}
+          maxRating={5}
+          style={styles.rating}
+        />
+        <Text style={styles.comment}>{item.review_text}</Text>
+        {item.image && (
+          <Image source={{ uri: item.image }} style={styles.reviewImage} />
+        )}
       </View>
+      <Text>{item.updated_at}</Text>
+      <View style={styles.line} />
     </TouchableOpacity>
-  );
+  );  
   
   return (
     <View style={styles.container}>
@@ -69,7 +84,7 @@ export default function ReviewsPage() {
           ) : null}
           {reviewedReviews.length > 0 ? (
             <View>
-              <Text style={styles.sectionTitle}>Reviews written:</Text>
+              <Text style={styles.sectionTitle}>Rated: </Text>
               <FlatList
                 data={reviewedReviews}
                 renderItem={renderItem}
@@ -113,5 +128,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontStyle: 'italic',
     marginBottom: 10,
+  },
+  reviewImage: {
+    width: 70,
+    height: 70,
+  },
+  line: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.2)',
+    marginVertical: 10,
+  },
+  menuItem: {
+    fontWeight: 'bold',
+    fontSize: 20
   },
 });

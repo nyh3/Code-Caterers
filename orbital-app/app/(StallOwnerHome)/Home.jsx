@@ -13,7 +13,7 @@ export default function Home() {
     useEffect(() => {
         const fetchStallData = async () => {
             const { data, error } = await supabase
-                .from('Stall')
+                .from('stall')
                 .select('stallImage, name')
                 .eq('owner_id', userId);
 
