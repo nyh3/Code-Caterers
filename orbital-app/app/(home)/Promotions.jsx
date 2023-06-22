@@ -13,7 +13,7 @@ export default function PromotionPage() {
 
     const fetchMenuItems = async () => {
         try {
-            const { data, error } = await supabase.from('Promotion').select('*');
+            const { data, error } = await supabase.from('promotion').select('*');
             if (error) {
                 console.error('Error fetching promotion details:', error.message);
                 return;

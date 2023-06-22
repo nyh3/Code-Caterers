@@ -22,7 +22,7 @@ export default function StallPage() {
   const fetchStalls = async () => {
     try {
       const { data, error } = await supabase
-        .from('Stall')
+        .from('stall')
         .select('*, location ( name ), cuisine (name)')
         .ilike('name', `%${searchQuery}%`);
       if (error) {

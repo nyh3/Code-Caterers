@@ -18,7 +18,7 @@ export default function ReviewPage() {
 
     const fetchStallId = async () => {
         const { data, error } = await supabase
-            .from('Stall')
+            .from('stall')
             .select('id, rating')
             .eq('owner_id', userId)
             .single();
@@ -33,7 +33,7 @@ export default function ReviewPage() {
 
     const fetchMenuId = async (stallId) => {
         const { data, error } = await supabase
-          .from('Menu')
+          .from('menu')
           .select('id, name')
           .eq('stall_id', stallId);
       
@@ -96,6 +96,7 @@ export default function ReviewPage() {
               defaultRating={parseFloat(overallRating) || 0} // Use a default value of 0 if stall.rating is null
               size={30}
               isDisabled
+              showRating={false}
               minRating={0} // Set the minimum selectable value to 0
               maxRating={5} // Set the maximum selectable value to 5
             />

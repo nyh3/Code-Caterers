@@ -39,7 +39,7 @@ export default function UpdateStall() {
             const { data: { publicUrl } } = supabase.storage.from('StallImage').getPublicUrl(data.path);
             uploadedImage = publicUrl;
         }
-        const { data, error } = await supabase.from('Stall').update({ stallImage: uploadedImage, name: name, description: description }).eq('owner_id', userId);
+        const { data, error } = await supabase.from('stall').update({ stallImage: uploadedImage, name: name, description: description }).eq('owner_id', userId);
         if (error != null) {
             setLoading(false);
             console.log('2:', error);

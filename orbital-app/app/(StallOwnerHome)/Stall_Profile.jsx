@@ -125,7 +125,7 @@ export default function StallProfilePage() {
         }
 
         try {
-            const { data, error } = await supabase.from('Stall').insert([
+            const { data, error } = await supabase.from('stall').insert([
                 {
                     owner_id: userId,
                     stallImage: uploadedImage,

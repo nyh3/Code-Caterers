@@ -19,7 +19,7 @@ export default function StallDetailScreen() {
     console.log(stallId);
     try {
       const { data, error } = await supabase
-        .from('Menu')
+        .from('menu')
         .select('name, image, price, id, rating')
         .eq('stall_id', stallId.id);
 
@@ -36,7 +36,7 @@ export default function StallDetailScreen() {
   const fetchStallDetails = async () => {
     try {
       const { data, error } = await supabase
-        .from('Stall')
+        .from('stall')
         .select('*, location ( name ), cuisine (name)')
         .eq('id', stallId.id)
         .single();

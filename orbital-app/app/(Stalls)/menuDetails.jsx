@@ -20,7 +20,7 @@ export default function MenuDetailScreen() {
     console.log(menuId);
     try {
       const { data, error } = await supabase
-        .from('Menu')
+        .from('menu')
         .select('*')
         .eq('id', menuId.id)
         .single();

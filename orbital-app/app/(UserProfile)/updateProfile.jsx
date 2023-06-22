@@ -47,7 +47,7 @@ export default function Account() {
     }
     setLoading(false);
     router.push('../(home)/profile');
-    console.log('Menu item inserted successfully:', data);
+    console.log('Profile updated successfully:', data);
   }
 
   return (

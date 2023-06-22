@@ -24,7 +24,7 @@ export default function PromotionForm() {
       const fetchStallId = async () => {
         try {
           const { data, error } = await supabase
-            .from('Stall')
+            .from('stall')
             .select('id')
             .eq('owner_id', userId)
             .single();
@@ -67,7 +67,7 @@ export default function PromotionForm() {
             const { data: { publicUrl } } = supabase.storage.from('PromotionImage').getPublicUrl(data.path);
             uploadedImage = publicUrl;
         }
-        const { data, error } = await supabase.from('Promotion').insert({ image: uploadedImage, title: title, description: description, stall_id: stall.id}).select().single();
+        const { data, error } = await supabase.from('promotion').insert({ image: uploadedImage, title: title, description: description, stall_id: stall.id}).select().single();
 
         if (error != null) {
             setLoading(false);

@@ -15,7 +15,7 @@ export default function MenuPage() {
 
     const fetchMenuItems = async () => {
         try {
-            const { data, error } = await supabase.from('Menu').select('*');
+            const { data, error } = await supabase.from('menu').select('*');
             if (error) {
                 console.error('Error fetching menu items:', error.message);
                 return;
