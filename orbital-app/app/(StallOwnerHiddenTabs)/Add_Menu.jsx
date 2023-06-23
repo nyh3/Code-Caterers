@@ -106,6 +106,7 @@ export default function AddMenuPage() {
                 label="Description"
                 value={description}
                 onChangeText={setDescription}
+                multiline
                 style={styles.input}
             />
             <TextInput
