@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { ScrollView, View, Text, TextInput, Switch, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { Button, Menu, Provider } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/auth';
 
 export default function FilterPage() {
-  const [dietaryRestrictions, setDietaryRestrictions] = useState('');
+  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
   const [budget, setBudget] = useState('');
   const [hasAirCon, setHasAirCon] = useState(false);
+  const [hasHalal, setHasHalal] = useState(false);
+  const [isVegetarian, setIsVegetarian] = useState(false);
   const [filteredFoodOptions, setFilteredFoodOptions] = useState([]);
   const [selectedCuisine, setSelectedCuisine] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -23,7 +25,10 @@ export default function FilterPage() {
   useEffect(() => {
     const fetchDietaryRestrictions = async () => {
       try {
-        const { data, error } = await supabase.from('profile').select('dietary_restrictions').eq('id', userId);
+        const { data, error } = await supabase
+          .from('profile')
+          .select('dietary_restrictions')
+          .eq('id', userId);
         if (error) {
           console.error('Error retrieving dietary restrictions:', error.message);
           return;
@@ -40,8 +45,6 @@ export default function FilterPage() {
         const { data, error } = await supabase.from('location').select();
         if (error) {
           console.error('Error retrieving locations:', error.message);
-          console.log('Location data:', data);
-          console.log('Location error:', error);
           return;
         }
         setLocations(data);
@@ -55,8 +58,6 @@ export default function FilterPage() {
         const { data, error } = await supabase.from('cuisine').select();
         if (error) {
           console.error('Error retrieving cuisines:', error.message);
-          console.log('Cuisine data:', data);
-          console.log('Cuisine error:', error);
           return;
         }
         setCuisines(data);
@@ -67,246 +68,213 @@ export default function FilterPage() {
 
     const fetchFoodOptions = async () => {
       try {
-        const { data, error } = await supabase.from('foodOptions').select();
+        const { data, error } = await supabase
+          .from('menu')
+          .select('*, stall(*, cuisine(*), location(*))');
         if (error) {
           console.error('Error retrieving food options:', error.message);
           return;
         }
-
-        const optionsWithDetails = await Promise.all(
-          data.map(async (option) => {
-            const cuisine = await supabase
-              .from('cuisine')
-              .select('name')
-              .eq('id', option.cuisineId)
-              .single();
-
-            const location = await supabase
-              .from('location')
-              .select('name')
-              .eq('id', option.locationId)
-              .single();
-
-            return {
-              ...option,
-              cuisineId: option.cuisineId ? option.cuisineId.toString() : '',
-              locationId: option.locationId ? option.locationId.toString() : '',
-              cuisine: cuisine ? cuisine.name : '',
-              location: location ? location.name : '',
-            };
-          })
-        );
-
-        console.log(optionsWithDetails);
-        setFoodOptions(optionsWithDetails);
+        setFoodOptions(data);
       } catch (error) {
         console.error('Error retrieving food options:', error.message);
       }
     };
 
-    const fetchData = async () => {
-      await fetchLocations();
-      await fetchCuisines();
-      fetchDietaryRestrictions();
-      fetchFoodOptions();
-    };
+    fetchDietaryRestrictions();
+    fetchLocations();
+    fetchCuisines();
+    fetchFoodOptions();
+  }, [userId]);
 
-    fetchData();
-  }, []);
+  useEffect(() => {
+    const filterFoodOptions = () => {
+      let filteredOptions = foodOptions;
 
-  const handleLocationSelection = async (locationId) => {
-    try {
-      const { data } = await supabase
-        .from('location')
-        .select()
-        .eq('id', locationId)
-        .single();
-
-      if (data) {
-        setLocationId(data.id.toString());
-        setSelectedLocation(data.name);
-      } else {
-        console.error('Location not found');
-      }
-
-      setLocationMenuVisible(false);
-      handleFilter();
-    } catch (error) {
-      console.error('Error retrieving location:', error.message);
-    }
-  };
-
-  const handleCuisineSelection = async (cuisineId) => {
-    try {
-      const { data } = await supabase
-        .from('cuisine')
-        .select()
-        .eq('id', cuisineId)
-        .single();
-
-      if (data) {
-        setCuisineId(data.id.toString());
-        setSelectedCuisine(data.name);
-      }
-
-      setCuisineMenuVisible(false);
-      handleFilter();
-    } catch (error) {
-      console.error('Error retrieving cuisine:', error.message);
-    }
-  };
-
-
-  const handleFilter = () => {
-    const filteredOptions = foodOptions.filter((option) => {
-      // Filter by dietary restrictions. if user has no dietary restrictions, will show all options.
-      // If user has dietary restrictions, willl only show menu with that dietary restriction. 
-      if (dietaryRestrictions.length > 0) {
-        for (const restriction of dietaryRestrictions) {
-          if (!option.dietaryRestrictions.includes(restriction)) {
-            return false;
-          }
+      // Filter by dietary restrictions
+      filteredOptions = filteredOptions.filter((option) => {
+        if (!option.dietary_restrictions) {
+          return true; // Include the option if dietary_restrictions is null or undefined
         }
+        return option.dietary_restrictions.every((restriction) => !dietaryRestrictions.includes(restriction));
+      });      
+
+      // Filter by budget
+      filteredOptions = filteredOptions.filter((option) => {
+        // Apply budget filter
+        if (budget && option.price > parseInt(budget)) {
+          return false;
+        }
+        return true;
+      });
+
+      // Filter by air conditioning
+      if (hasAirCon) {
+        filteredOptions = filteredOptions.filter((option) => option.stall.has_air_con);
       }
 
-      // Filter by budget. Shows menu with budget > price.
-      if (budget && option.price > parseInt(budget, 10)) {
-        return false;
+      // Filter by halal
+      if (hasHalal) {
+        filteredOptions = filteredOptions.filter((option) => option.stall.is_halal);
       }
+
+      // Filter by vegetarian
+      if (isVegetarian) {
+        filteredOptions = filteredOptions.filter((option) => option.stall.is_vegetarian);
+      }
+
       // Filter by cuisine
-      if (cuisineId !== null && option.cuisineId !== parseInt(cuisineId)) {
-        return false;
+      if (cuisineId) {
+        filteredOptions = filteredOptions.filter((option) => option.stall.cuisine.id === cuisineId);
       }
 
       // Filter by location
-      if (locationId !== null && option.locationId !== parseInt(locationId)) {
-        return false;
+      if (locationId) {
+        filteredOptions = filteredOptions.filter((option) => option.stall.location.id === locationId);
       }
 
-      // Filter by air conditioning. If choose air-conditioning, will only give air-conditioned results. 
-      // If choose no air-conditioning, will give both no air-conditioned & air-conditioned results.
-      if (hasAirCon && !option.hasAirCon) {
-        return false;
-      }
-      return true;
-    });
+      setFilteredFoodOptions(filteredOptions.slice(0, 3));
+    };
 
-    // Fetch cuisine and location details (still working on this)
-    const filteredOptionsWithDetails = filteredOptions.map((option) => {
-      const cuisine = cuisines.find((cuisine) => cuisine.id === parseInt(option.cuisineId));
-      const location = locations.find((location) => location.id === parseInt(option.locationId));
-      return {
-        ...option,
-        cuisine: cuisine ? cuisine.name : '',
-        location: location ? location.name : '',
-      };
-    });
+    filterFoodOptions();
+  }, [dietaryRestrictions, budget, hasAirCon, hasHalal, isVegetarian, cuisineId, locationId, foodOptions]);
 
-    setFilteredFoodOptions(filteredOptionsWithDetails);
+  const handleLocationMenu = () => setLocationMenuVisible(!locationMenuVisible);
+
+  const handleCuisineMenu = () => setCuisineMenuVisible(!cuisineMenuVisible);
+
+  const handleLocationSelection = (location) => {
+    setSelectedLocation(location.name);
+    setLocationId(location.id);
+    setLocationMenuVisible(false);
   };
 
-  const resetFilter = () => {
-    setBudget('');
-    setHasAirCon(false);
-    setSelectedCuisine(null);
+  const handleCuisineSelection = (cuisine) => {
+    setSelectedCuisine(cuisine.name);
+    setCuisineId(cuisine.id);
+    setCuisineMenuVisible(false);
+  };
+
+  const resetFilters = () => {
     setSelectedLocation(null);
+    setSelectedCuisine(null);
     setLocationId(null);
     setCuisineId(null);
-    setFilteredFoodOptions([]);
+    setBudget(0);
+    setHasAirCon(false);
+    setHasHalal(false);
+    setIsVegetarian(false);
   };
 
   return (
-    <Provider>
-      <ScrollView style={styles.container}>
+    < Provider>
+      <ScrollView>
+        <View style={styles.container}>
         <Text style={styles.heading}>Select your preferences:</Text>
-        <Text style={styles.dietaryRestrictions}>Dietary Restrictions:</Text>
-        <Text style={styles.restriction}>{dietaryRestrictions}</Text>
-        <TextInput
+          <Text style={styles.dietaryRestrictions}>Dietary Restrictions:</Text>
+          <Text style={styles.restriction}>{dietaryRestrictions}</Text>
+          <TextInput
           style={styles.input}
           placeholder="Budget"
           placeholderTextColor="#2C0080"
-          value={budget}
+          value={budget.toString()}
           onChangeText={setBudget}
           keyboardType="numeric"
         />
-        <Text style={styles.label}>Select Cuisine:</Text>
-        <Menu
-          visible={cuisineMenuVisible}
-          onDismiss={() => setCuisineMenuVisible(false)}
-          anchor={
-            <Button
-              mode="contained"
-              onPress={() => setCuisineMenuVisible(true)}
-              style={styles.buttons}
-              labelStyle={styles.buttonText}
-            >
-              {selectedCuisine ? selectedCuisine : 'Select Cuisine'}
-            </Button>
-          }
-        >
-          {cuisines.map((cuisine) => (
-            <Menu.Item
-              key={cuisine.id}
-              onPress={() => handleCuisineSelection(cuisine.id)}
-              title={cuisine.name}
-            />
-          ))}
-        </Menu>
-        <Text style={styles.label}>Select Location:</Text>
-        <Menu
-          visible={locationMenuVisible}
-          onDismiss={() => setLocationMenuVisible(false)}
-          anchor={
-            <Button
-              mode="contained"
-              onPress={() => setLocationMenuVisible(true)}
-              style={styles.buttons}
-              labelStyle={styles.buttonText}
-            >
-              {selectedLocation ? selectedLocation : 'Select Location'}
-            </Button>
-          }
-        >
-          {locations.map((location) => (
-            <Menu.Item
-              key={location.id}
-              onPress={() => handleLocationSelection(location.id)}
-              title={location.name}
-            />
-          ))}
 
-        </Menu>
-        <View style={styles.row}>
+<Text style={styles.label}>Select Location:</Text>
+          <Menu
+            visible={locationMenuVisible}
+            onDismiss={handleLocationMenu}
+            anchor={
+             <Button 
+                style={styles.buttons} 
+                mode="contained" 
+                labelStyle={styles.buttonText} 
+                onPress={handleLocationMenu}>
+                  {selectedLocation || 'Select Location'}
+              </Button>
+              }
+          >
+            {locations.map((location) => (
+              <Menu.Item
+                key={location.id}
+                onPress={() => handleLocationSelection(location)}
+                title={location.name}
+              />
+            ))}
+          </Menu>
+
+           <Text style={styles.label}>Select Cuisine:</Text>
+          <Menu
+            visible={cuisineMenuVisible}
+            onDismiss={handleCuisineMenu}
+            anchor={
+              <Button 
+                style={styles.buttons}
+                mode="contained" 
+                labelStyle={styles.buttonText}
+                onPress={handleCuisineMenu}>
+                  {selectedCuisine || 'Select Cuisine'}
+              </Button>
+              }
+          >
+            {cuisines.map((cuisine) => (
+              <Menu.Item key={cuisine.id} onPress={() => handleCuisineSelection(cuisine)} title={cuisine.name} />
+            ))}
+          </Menu>
+
           <Text style={styles.label}>Air Conditioning</Text>
-          <Switch
-            value={hasAirCon}
-            onValueChange={(value) => { setHasAirCon(value); }}
+          <Switch 
+            value={hasAirCon} 
+            onValueChange={(value) => setHasAirCon(value)}
+            style={styles.switch}
+            trackColor={{ false: '#FFECF6', true: '#FFBBDF' }}
+            thumbColor={hasAirCon ? '#FFECF6' : '#FFBBDF'} 
+          />
+
+          <Text style={styles.label}>Halal</Text>
+          <Switch 
+            value={hasHalal} 
+            onValueChange={(value) => setHasHalal(value)} 
             style={styles.switch}
             trackColor={{ false: '#FFECF6', true: '#FFBBDF' }}
             thumbColor={hasAirCon ? '#FFECF6' : '#FFBBDF'}
           />
-        </View>
-        <TouchableOpacity style={styles.button} onPress={handleFilter}>
-          <Text style={styles.buttonText}>Apply Filter</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.resetButton} onPress={resetFilter}>
+
+          <Text style={styles.label}>Vegetarian</Text>
+          <Switch  
+            value={isVegetarian} 
+            onValueChange={(value) => setIsVegetarian(value)} 
+            style={styles.switch}
+            trackColor={{ false: '#FFECF6', true: '#FFBBDF' }}
+            thumbColor={hasAirCon ? '#FFECF6' : '#FFBBDF'}
+          />
+
+          <Button 
+            style={styles.resetButton} 
+            mode="contained" 
+            onPress={resetFilters}
+          >
           <Text style={styles.buttonText}>Reset Filter</Text>
-        </TouchableOpacity>
-        <Text style={styles.heading}>Here your 3 Recommendations:</Text>
-        {filteredFoodOptions.length > 0 ? (
-          filteredFoodOptions.map((option) => (
-            <View key={option.id} style={styles.option}>
-              <Text style={styles.optionName}>{option.name}</Text>
+          </Button>
+
+          <Text style={styles.heading}>Here your 3 Recommendations:</Text>
+          {filteredFoodOptions.length > 0 ? (
+            filteredFoodOptions.map((option) => (
+              <TouchableOpacity style={styles.option} key={option.id} onPress={() => {/* Handle option selection */}}>
+                <Text style={styles.optionName}>{option.name}</Text>
               <Text style={styles.optionDetails}>Price: ${option.price}</Text>
               <Text style={styles.optionDetails}>Dietary Restrictions: {option.dietaryRestrictions}</Text>
               <Text style={styles.optionDetails}>Cuisine: {option.cuisine}</Text>
               <Text style={styles.optionDetails}>Location: {option.location}</Text>
               <Text style={styles.optionDetails}>Air Conditioning: {option.hasAirCon ? 'Yes' : 'No'}</Text>
-            </View>
-          ))
-        ) : (
-          <Text style={styles.label}>No options match your criteria.</Text>
-        )}
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.label}>No options match your criteria.</Text>
+          )}
+        </View>
       </ScrollView>
     </Provider>
   );
@@ -389,9 +357,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FFBBDF',
     padding: 10,
-    marginRight: 280,
-    marginVertical: 10,
-  },
+    flex: 1, // Add this line
+    marginBottom: 10,
+  },  
   option: {
     marginBottom: 16,
     padding: 16,
