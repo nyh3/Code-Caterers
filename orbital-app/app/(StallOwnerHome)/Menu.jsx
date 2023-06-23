@@ -4,18 +4,30 @@ import { Text as PaperText, Button } from 'react-native-paper';
 import { Link } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
+import { useAuth } from '../../contexts/auth';
 
 export default function MenuPage() {
     const [menuItems, setMenuItems] = useState([]);
     const isFocused = useIsFocused();
+    const { userId } = useAuth();
 
     useEffect(() => {
         fetchMenuItems();
     }, [isFocused]);
 
     const fetchMenuItems = async () => {
+        const { data: stallId, error } = await supabase
+            .from('stall')
+            .select('id')
+            .eq('owner_id', userId)
+            .single();
+
+        if (error) {
+            console.error('Error fetching stall id:', error.message);
+            return;
+        }
         try {
-            const { data, error } = await supabase.from('menu').select('*');
+            const { data, error } = await supabase.from('menu').select('*').eq('stall_id', stallId.id);
             if (error) {
                 console.error('Error fetching menu items:', error.message);
                 return;
