@@ -33,7 +33,7 @@ export default function FilterPage() {
           console.error('Error retrieving dietary restrictions:', error.message);
           return;
         }
-        const restrictions = data.map((item) => item.dietary_restrictions);
+        const restrictions = data[0]?.dietary_restrictions || [];
         setDietaryRestrictions(restrictions);
       } catch (error) {
         console.error('Error retrieving dietary restrictions:', error.message);
@@ -133,7 +133,20 @@ export default function FilterPage() {
         filteredOptions = filteredOptions.filter((option) => option.stall.location.id === locationId);
       }
 
-      setFilteredFoodOptions(filteredOptions.slice(0, 3));
+      // Sort by rating (descending order)
+      filteredOptions.sort((a, b) => b.rating - a.rating);
+
+      // Get the top 3 options with the highest rating
+      const topThreeOptions = filteredOptions.slice(0, 3);
+
+      // If there are ties in the rating, sort by stall rating (descending order)
+      if (topThreeOptions.length < 3) {
+        filteredOptions.sort((a, b) => b.stall.rating - a.stall.rating);
+        const additionalOptions = filteredOptions.slice(0, 3 - topThreeOptions.length);
+        setFilteredFoodOptions([...topThreeOptions, ...additionalOptions]);
+      } else {
+        setFilteredFoodOptions(topThreeOptions);
+      }
     };
 
     filterFoodOptions();
@@ -171,8 +184,13 @@ export default function FilterPage() {
       <ScrollView>
         <View style={styles.container}>
         <Text style={styles.heading}>Select your preferences:</Text>
-          <Text style={styles.dietaryRestrictions}>Dietary Restrictions:</Text>
-          <Text style={styles.restriction}>{dietaryRestrictions}</Text>
+        <Text style={styles.dietaryRestrictions}>Dietary Restrictions:</Text>
+        {dietaryRestrictions.map((restriction, index) => (
+        <View key={index} style={styles.restrictionContainer}>
+          <Text style={styles.restrictionText}>{restriction}</Text>
+        </View>
+      ))}
+          <Text style={styles.dietaryRestrictions}>Budget:</Text>
           <TextInput
           style={styles.input}
           placeholder="Budget"
@@ -182,7 +200,7 @@ export default function FilterPage() {
           keyboardType="numeric"
         />
 
-<Text style={styles.label}>Select Location:</Text>
+          <Text style={styles.label}>Select Location:</Text>
           <Menu
             visible={locationMenuVisible}
             onDismiss={handleLocationMenu}
@@ -259,7 +277,7 @@ export default function FilterPage() {
           <Text style={styles.buttonText}>Reset Filter</Text>
           </Button>
 
-          <Text style={styles.heading}>Here your 3 Recommendations:</Text>
+          <Text style={styles.heading}>Here are your 3 Recommendations:</Text>
           {filteredFoodOptions.length > 0 ? (
             filteredFoodOptions.map((option) => (
               <TouchableOpacity style={styles.option} key={option.id} onPress={() => {/* Handle option selection */}}>
@@ -374,5 +392,20 @@ const styles = StyleSheet.create({
   optionDetails: {
     fontSize: 14,
     marginBottom: 4,
+  },
+  restrictionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    marginBottom: 5,
+    backgroundColor: '#FFECF6',
+    height: 40,
+  },
+  restrictionText: {
+    fontSize: 15,
+    color: 'black',
+    paddingLeft: 18,
+    paddingTop: 10,
   },
 });

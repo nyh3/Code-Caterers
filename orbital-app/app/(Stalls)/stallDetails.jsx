@@ -54,7 +54,7 @@ export default function StallDetailScreen() {
   if (!stall) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Error</Text>
+        <Text>loading</Text>
         <ActivityIndicator size="large" />
       </View>
     );
