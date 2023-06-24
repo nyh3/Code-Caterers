@@ -1,21 +1,34 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Text, Image } from 'react-native';
+import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity } from 'react-native';
 import { Text as PaperText, Button } from 'react-native-paper';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
+import { useAuth } from '../../contexts/auth';
 
 export default function MenuPage() {
     const [menuItems, setMenuItems] = useState([]);
     const isFocused = useIsFocused();
+    const { userId } = useAuth();
+    const router = useRouter();
 
     useEffect(() => {
         fetchMenuItems();
     }, [isFocused]);
 
     const fetchMenuItems = async () => {
+        const { data: stallId, error } = await supabase
+            .from('stall')
+            .select('id')
+            .eq('owner_id', userId)
+            .single();
+
+        if (error) {
+            console.error('Error fetching stall id:', error.message);
+            return;
+        }
         try {
-            const { data, error } = await supabase.from('menu').select('*');
+            const { data, error } = await supabase.from('menu').select('*').eq('stall_id', stallId.id);
             if (error) {
                 console.error('Error fetching menu items:', error.message);
                 return;
@@ -27,15 +40,22 @@ export default function MenuPage() {
     };
 
     const renderMenuItem = ({ item }) => (
-        <View style={styles.menuItem}>
-            <Image source={{ uri: item.image }} style={styles.menuItemImage} />
-            <View style={styles.menuItemDetails}>
-                <Text style={styles.menuItemName}>{item.name}</Text>
-                <Text style={styles.menuItemDescription}>{item.description}</Text>
-                <Text style={styles.menuItemPrice}>Price: ${item.price}</Text>
+        <TouchableOpacity onPress={() => handleMenuItemPress(item)}>
+            <View style={styles.menuItem}>
+                <Image source={{ uri: item.image }} style={styles.menuItemImage} />
+                <View style={styles.menuItemDetails}>
+                    <Text style={styles.menuItemName}>{item.name}</Text>
+                    <Text style={styles.menuItemDescription}>{item.description}</Text>
+                    <Text style={styles.menuItemPrice}>Price: ${item.price}</Text>
+                </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
+
+    const handleMenuItemPress = (item) => {
+        // Handle the press event for a menu item here
+        router.push({ pathname: '/Edit_Menu', params: { id: item.id } });
+    };
 
     return (
         <View style={styles.container}>

@@ -1,18 +1,16 @@
-import { useState, useEffect } from 'react'
-import { supabase } from '../../lib/supabase'
-import { StyleSheet, View } from 'react-native'
-import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper'
-import { useRouter } from 'expo-router'
-import { useAuth } from '../../contexts/auth'
+import { useState, useEffect } from 'react';
+import { supabase } from '../../lib/supabase';
+import { StyleSheet, View } from 'react-native';
+import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper';
+import { useAuth } from '../../contexts/auth';
 import { Link } from 'expo-router';
 
 export default function DietaryRestrictions() {
   const [loading, setLoading] = useState(false);
-  const [dietary_restrictions, setDietaryRestrictions] = useState('');
+  const [dietary_restrictions, setDietaryRestrictions] = useState([]);
   const [newRestriction, setNewRestriction] = useState('');
   const [errMsg, setErrMsg] = useState('');
   const { userId } = useAuth();
-  const router = useRouter();
 
   useEffect(() => {
     const fetchDietaryRestrictions = async () => {
@@ -25,7 +23,7 @@ export default function DietaryRestrictions() {
           console.error('Error retrieving dietary restrictions:', error.message);
           return;
         }
-        const restrictions = data[0]?.dietary_restrictions || '';
+        const restrictions = data[0]?.dietary_restrictions || [];
         setDietaryRestrictions(restrictions);
       } catch (error) {
         console.error('Error retrieving dietary restrictions:', error.message);
@@ -34,11 +32,25 @@ export default function DietaryRestrictions() {
     fetchDietaryRestrictions();
   }, []);
 
+  const handleAddRestriction = () => {
+    if (newRestriction.trim() === '') return;
+
+    const updatedRestrictions = [...dietary_restrictions, newRestriction.trim()];
+    setDietaryRestrictions(updatedRestrictions);
+    setNewRestriction('');
+  };
+
+  const handleDeleteRestriction = (restriction) => {
+    const updatedRestrictions = dietary_restrictions.filter((item) => item !== restriction);
+    setDietaryRestrictions(updatedRestrictions);
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
+
     const { data, error } = await supabase
       .from('profile')
-      .update({ dietary_restrictions: newRestriction })
+      .update({ dietary_restrictions })
       .eq('id', userId);
 
     if (error != null) {
@@ -49,7 +61,7 @@ export default function DietaryRestrictions() {
     }
 
     setLoading(false);
-    router.push('../(home)/profile');
+    setErrMsg('Dietary restrictions updated successfully');
     console.log('Dietary restrictions updated successfully:', data);
   };
 
@@ -57,7 +69,12 @@ export default function DietaryRestrictions() {
     <View style={styles.wholeThing}>
       <Text style={styles.header}>Dietary Restrictions:</Text>
       <Text style={styles.bold}>Dietary restrictions or allergies declared:</Text>
-      <Text style={styles.restriction}>{dietary_restrictions}</Text>
+      {dietary_restrictions.map((restriction, index) => (
+        <View key={index} style={styles.restrictionContainer}>
+          <Text style={styles.restrictionText}>{restriction}</Text>
+          <Button onPress={() => handleDeleteRestriction(restriction)}>Delete</Button>
+        </View>
+      ))}
       <Text style={styles.bold}>Update your dietary restrictions or food allergies:</Text>
       <TextInput
         autoCapitalize="characters"
@@ -65,6 +82,9 @@ export default function DietaryRestrictions() {
         onChangeText={setNewRestriction}
         style={styles.input}
       />
+      <Button style={styles.buttonContainer} onPress={handleAddRestriction}>
+        <Text style={styles.button}>Add Restriction</Text>
+      </Button>
       <Button style={styles.buttonContainer} onPress={handleSubmit}>
         <Text style={styles.button}>Update Dietary Restrictions</Text>
       </Button>
@@ -72,7 +92,9 @@ export default function DietaryRestrictions() {
       <Text></Text>
       <View style={styles.marginLeftContainer}>
         <Link href="../(home)/profile">
-          <Button style={styles.discardContainer}><Text style={styles.button}>Discard & Return</Text></Button>
+          <Button style={styles.discardContainer}>
+            <Text style={styles.button}>Discard & Return</Text>
+          </Button>
         </Link>
       </View>
       {loading && <ActivityIndicator />}
@@ -98,7 +120,7 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 5,
-    backgroundColor: '#FFECF6'
+    backgroundColor: '#FFECF6',
   },
   wholeThing: {
     justifyContent: 'flex-start',
@@ -120,12 +142,18 @@ const styles = StyleSheet.create({
     color: '#2C0080',
     fontWeight: 'bold',
   },
-  restriction: {
+  restrictionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    marginBottom: 5,
+    backgroundColor: '#FFECF6',
     height: 40,
+  },
+  restrictionText: {
     fontSize: 15,
     color: 'black',
-    marginBottom: 15,
-    backgroundColor: '#FFECF6',
     paddingLeft: 18,
     paddingTop: 10,
   },

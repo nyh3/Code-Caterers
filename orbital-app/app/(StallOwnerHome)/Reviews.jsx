@@ -71,7 +71,15 @@ export default function ReviewPage() {
       
         if (isVisible) {
           const menuReviews = reviews.filter((review) => review.menu_id === menuId);
-      
+          
+          if (menuReviews.length === 0) {
+            return (
+              <View style={styles.noReviewsContainer}>
+                <Text style={styles.noReviewsText}>No reviews</Text>
+              </View>
+            );
+          }
+
           return (
             <View>
               {menuReviews.map((review) => (
@@ -248,5 +256,14 @@ const styles = StyleSheet.create({
   dropdownHeaderText: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  noReviewsContainer: {
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  noReviewsText: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: 'gray',
   },
 });

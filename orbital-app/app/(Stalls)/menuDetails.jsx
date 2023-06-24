@@ -79,6 +79,17 @@ export default function MenuDetailScreen() {
       />
       <Text style={styles.price}>Price: ${menu.price}</Text>
       <Text>{menu.description}</Text>
+      <View style={styles.dietaryRestrictionsContainer}>
+      {menu.dietary_restrictions && menu.dietary_restrictions.length > 0 ? (
+        menu.dietary_restrictions.map((restriction, index) => (
+          <View style={styles.dietaryRestrictionTag} key={index}>
+            <Text style={styles.dietaryRestrictionText}>{restriction}</Text>
+          </View>
+        ))
+      ) : (
+        <Text>No dietary restrictions</Text>
+      )}
+    </View>
       <TouchableOpacity onPress={() => handleAddReview(menu.id)} style={styles.buttonContainer}>
         <Text style={styles.button}>Add Review</Text>
       </TouchableOpacity>
@@ -188,5 +199,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: 'red',
-  }
+  },
+  dietaryRestrictionsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 10,
+  },
+  dietaryRestrictionTag: {
+    backgroundColor: '#FFECF6',
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  dietaryRestrictionText: {
+    color: '#2C0080',
+    fontWeight: 'bold',
+  },
 });
