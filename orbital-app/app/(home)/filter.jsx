@@ -3,6 +3,7 @@ import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet, TextInput
 import { Button, Menu, Provider } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/auth';
+import { useRouter } from 'expo-router';
 
 export default function FilterPage() {
   const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
@@ -21,6 +22,7 @@ export default function FilterPage() {
   const [cuisines, setCuisines] = useState([]);
   const [foodOptions, setFoodOptions] = useState([]);
   const { userId } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchDietaryRestrictions = async () => {
@@ -179,6 +181,10 @@ export default function FilterPage() {
     setIsVegetarian(false);
   };
 
+  const handleMenuPress = (menu) => {
+    router.push({ pathname: '/menuDetails', params: { id: menu } });
+  };
+
   return (
     < Provider>
       <ScrollView>
@@ -280,7 +286,7 @@ export default function FilterPage() {
           <Text style={styles.heading}>Here are your 3 Recommendations:</Text>
           {filteredFoodOptions.length > 0 ? (
             filteredFoodOptions.map((option) => (
-              <TouchableOpacity style={styles.option} key={option.id} onPress={() => {/* Handle option selection */}}>
+              <TouchableOpacity style={styles.option} key={option.id} onPress={() => {handleMenuPress(option.id)}}>
                 <Text style={styles.optionName}>{option.name}</Text>
               <Text style={styles.optionDetails}>Price: ${option.price}</Text>
               <Text style={styles.optionDetails}>Dietary Restrictions: {option.dietaryRestrictions}</Text>

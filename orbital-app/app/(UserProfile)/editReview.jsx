@@ -6,10 +6,11 @@ import * as ImagePicker from 'expo-image-picker';
 import { AirbnbRating } from 'react-native-ratings';
 import { useSearchParams, useRouter } from "expo-router";
 
-export default function AddReview() {
+export default function EditReview() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [image, setImage] = useState(null);
+  const [info, setInfo] = useState(null);
   const [existingImages, setExistingImages] = useState([]);
   const reviewId = useSearchParams();
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function AddReview() {
     try {
       const { data, error } = await supabase
         .from('review')
-        .select('*')
+        .select('*, menu ( name, stall ( name ) )')
         .eq('id', reviewId.id)
         .single();
 
@@ -32,6 +33,7 @@ export default function AddReview() {
       }
 
       if (data) {
+        setInfo(data);
         setRating(data.rating);
         setComment(data.review_text);
         setExistingImages(data.image ? [data.image] : []);
@@ -79,11 +81,15 @@ export default function AddReview() {
     setRating(0);
     setComment('');
     setImage(null);
+    setInfo(null);
     router.push("reviews");
   };
 
   return (
     <View style={styles.container}>
+      {info && info.menu && (
+        <Text style={styles.heading2}>{info.menu.name} from {info.menu.stall.name}</Text>
+      )}
       <Text style={styles.heading}>Ratings:</Text>
       <AirbnbRating
         count={5}
@@ -119,6 +125,11 @@ const styles = StyleSheet.create({
   heading: {
     fontWeight: 'bold',
     fontSize: 15,
+    marginBottom: 5,
+  },
+  heading2: {
+    fontWeight: 'bold',
+    fontSize: 20,
     marginBottom: 5,
   },
   input: {
