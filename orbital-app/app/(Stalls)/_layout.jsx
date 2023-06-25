@@ -12,7 +12,7 @@ export default function UserProfileLayout() {
             <Stack.Screen
                 name="stallDetails"
                 options={{
-                title: "stall",
+                title: "Stall",
                 }}
             />
             <Stack.Screen
