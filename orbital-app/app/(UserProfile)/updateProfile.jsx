@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { StyleSheet, View, Image } from 'react-native'
 import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper'
@@ -7,13 +7,36 @@ import { useRouter } from 'expo-router'
 import { useAuth } from '../../contexts/auth'
 import { Link } from 'expo-router';
 
-export default function Account() {
+export default function UpdateProfile() {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState('');
   const [errMsg, setErrMsg] = useState('');
   const [image, setImage] = useState('');
   const { userId } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.from('profile').select('username, image').eq('id', userId).single();
+      if (error) {
+        console.error(error);
+        setErrMsg(error.message);
+      } else if (data) {
+        setUsername(data.username);
+        setImage(data.image);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setErrMsg(error.message);
+      setLoading(false);
+    }
+  };
 
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
@@ -54,7 +77,11 @@ export default function Account() {
     <View style={styles.wholeThing}>
 
       <Button style={styles.buttonContainer} onPress={handleAddImage}><Text style={styles.button}>Change Profile Image</Text></Button>
-      {image && <Image source={{ uri: image }} style={styles.image} />}
+      {image !== '' ? (
+        <Image source={{ uri: image }} style={styles.image} />
+      ) : (
+        <View style={styles.placeholderImage} />
+      )}
 
       <Text style={styles.bold}>Username:</Text>
       <TextInput
@@ -119,6 +146,14 @@ const styles = StyleSheet.create({
     height: 200,
     marginVertical: 30,
     borderRadius: 100,
+  },
+  placeholderImage: {
+    alignSelf: 'center',
+    width: 200,
+    height: 200,
+    marginVertical: 30,
+    borderRadius: 100,
+    backgroundColor: 'lightgray',
   },
   discardContainer: {
     backgroundColor: '#FFECF6',

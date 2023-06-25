@@ -118,9 +118,6 @@ export default function ReviewPage() {
     
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>
-                Reviews:
-            </Text>
             <AirbnbRating
               defaultRating={parseFloat(overallRating) || 0} // Use a default value of 0 if stall.rating is null
               size={30}

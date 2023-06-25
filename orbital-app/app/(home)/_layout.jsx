@@ -12,7 +12,9 @@ export default function HomeLayout() {
                     <Ionicons name="home" size={size} color={color} />
                   ),
                 tabBarInactiveTintColor: 'gray',
-                tabBarActiveTintColor: 'blue', }} />
+                tabBarActiveTintColor: 'blue', 
+                title: "Home",
+                }} />
         <Tabs.Screen 
             name="filter" 
             options={{ 
@@ -21,7 +23,9 @@ export default function HomeLayout() {
                     <Ionicons name="filter" size={size} color={color} />
                   ),
                 tabBarInactiveTintColor: 'gray',
-                tabBarActiveTintColor: 'blue', }} />
+                tabBarActiveTintColor: 'blue', 
+                title: "Filter",
+                }} />
         <Tabs.Screen 
             name="profile" 
             options={{ 
@@ -30,7 +34,9 @@ export default function HomeLayout() {
                     <Ionicons name="person" size={size} color={color} />
                   ),
                 tabBarInactiveTintColor: 'gray',
-                tabBarActiveTintColor: 'blue', }} />
+                tabBarActiveTintColor: 'blue', 
+                title: "Profile",
+                }} />
         <Tabs.Screen 
             name="Promotions" 
             options={{ 
@@ -39,7 +45,9 @@ export default function HomeLayout() {
                     <Ionicons name="megaphone" size={size} color={color} />
                   ),
                 tabBarInactiveTintColor: 'gray',
-                tabBarActiveTintColor: 'blue', }} />
+                tabBarActiveTintColor: 'blue', 
+                title: "Promotions",
+                }} />
     </Tabs>
     )
 }

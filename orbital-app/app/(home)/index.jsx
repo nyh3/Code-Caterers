@@ -89,13 +89,13 @@ export default function StallPage() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Stalls:</Text>
       <TextInput
         style={styles.searchInput}
         placeholder="Search..."
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
+      <Text style={styles.heading}>Stalls found:</Text>
       <FlatList
         data={stalls}
         renderItem={renderStall}
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   heading: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     marginVertical: 15,
   },

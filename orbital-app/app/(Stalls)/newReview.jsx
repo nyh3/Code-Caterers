@@ -23,25 +23,26 @@ export default function AddReview() {
     }
   }
 
-  const handleRatingChange = (rating) => {
-    setRating(rating);
-  };
-
-  const handleCommentChange = (text) => {
-    setComment(text);
-  };
-
   const handleSubmit = async () => {
     // Submit the review to Supabase
-    console.log(menuId);
-    console.log(menuId.id);
-    console.log(userId.userId);
+    let uploadedImage = null;
+    if (image != null) {
+      const { data, error } = await supabase.storage.from('ReviewImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
+
+      if (error != null) {
+        console.log(error);
+        return;
+      }
+      console.log('user:', userId);
+      const { data: { publicUrl } } = supabase.storage.from('ReviewImage').getPublicUrl(data.path);
+      uploadedImage = publicUrl;
+    }
     const { data, error } = await supabase
       .from('review')
       .insert({
         rating: rating,
         review_text: comment,
-        image: image,
+        image: uploadedImage,
         menu_id: menuId.id,
         user_id: userId.userId,
       });
@@ -65,14 +66,14 @@ export default function AddReview() {
         count={5}
         defaultRating={rating}
         size={20}
-        onFinishRating={handleRatingChange}
+        onFinishRating={setRating}
       />
       <Button onPress={handleAddImage} style={styles.buttonContainer}><Text style={styles.button}>Upload Image</Text></Button>
       {image && <Image source={{ uri: image }} style={styles.image} />}
       <Text style={styles.heading}>Comments:</Text>
       <TextInput
         value={comment}
-        onChangeText={handleCommentChange}
+        onChangeText={setComment}
         multiline
         style={styles.input}
       />

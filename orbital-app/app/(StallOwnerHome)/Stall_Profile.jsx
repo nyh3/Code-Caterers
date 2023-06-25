@@ -161,7 +161,6 @@ export default function StallProfilePage() {
     return (
         <Provider>
             <ScrollView style={styles.container}>
-                <Text style={styles.heading}>Stall Profile</Text>
                 <Button style={styles.buttonContainer} onPress={handleAddImage}>
                 <Text style={styles.buttonText}>Insert Stall Image</Text>    
                 </Button>
