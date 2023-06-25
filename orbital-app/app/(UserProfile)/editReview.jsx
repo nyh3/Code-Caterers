@@ -54,8 +54,10 @@ export default function EditReview() {
     // Submit the review to Supabase
     let uploadedImage = null;
     if (image != null) {
-      const { data, error } = await supabase.storage.from('ReviewImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
-
+      const { data, error } = await supabase.storage
+        .from('ReviewImage')
+        .upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
+  
       if (error != null) {
         console.log(error);
         return;
@@ -63,28 +65,34 @@ export default function EditReview() {
       const { data: { publicUrl } } = supabase.storage.from('ReviewImage').getPublicUrl(data.path);
       uploadedImage = publicUrl;
     }
+  
+    let reviewUpdate = {
+      rating: rating,
+      review_text: comment,
+    };
+  
+    if (uploadedImage !== null) {
+      reviewUpdate.image = uploadedImage;
+    }
+  
     const { data, error } = await supabase
       .from('review')
-      .update({
-        rating: rating,
-        review_text: comment,
-        image: uploadedImage,
-      })
+      .update(reviewUpdate)
       .eq('id', reviewId.id);
-
+  
     if (error) {
       console.error('Error submitting review:', error.message);
       return;
     }
-
+  
     // Reset form fields
     setRating(0);
     setComment('');
     setImage(null);
     setInfo(null);
-    router.push("reviews");
+    router.push('reviews');
   };
-
+  
   return (
     <View style={styles.container}>
       {info && info.menu && (

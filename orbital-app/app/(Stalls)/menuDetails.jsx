@@ -14,7 +14,7 @@ export default function MenuDetailScreen() {
   useEffect(() => {
     fetchMenuDetails();
     fetchReviews();
-  }, []);
+  }, [menuId]);
 
   const fetchMenuDetails = async () => {
     console.log(menuId);
@@ -103,7 +103,7 @@ export default function MenuDetailScreen() {
               <Text style={styles.username}>{item.profile.username}</Text>
               <View style={styles.ratingContainer}>
                 <AirbnbRating
-                  defaultRating={parseFloat(menu.rating) || 0}
+                  defaultRating={parseFloat(item.rating) || 0}
                   size={15}
                   isDisabled
                   showRating={false}
