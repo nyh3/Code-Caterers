@@ -37,7 +37,7 @@ export default function Home() {
     }
 
     const handleUpdateStall = () => {
-        router.push('(StallOwnerHome)/Update_Stall');
+        router.push('(StallOwnerHiddenTabs)/Update_Stall');
     }
     const handleStallProfile = () => {
         router.push('(StallOwnerHome)/Stall_Profile');
