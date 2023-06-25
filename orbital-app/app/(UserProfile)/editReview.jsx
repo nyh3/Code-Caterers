@@ -1,54 +1,74 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { Text, Button, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import * as ImagePicker from 'expo-image-picker';
 import { AirbnbRating } from 'react-native-ratings';
-import { useSearchParams } from "expo-router";
+import { useSearchParams, useRouter } from "expo-router";
 
 export default function AddReview() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
-  const [image, setImage] = useState([]);
+  const [image, setImage] = useState(null);
+  const [existingImages, setExistingImages] = useState([]);
   const reviewId = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    fetchReviewData();
+  }, []);
+
+  const fetchReviewData = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('review')
+        .select('*')
+        .eq('id', reviewId.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching review data:', error.message);
+        return;
+      }
+
+      if (data) {
+        setRating(data.rating);
+        setComment(data.review_text);
+        setExistingImages(data.image ? [data.image] : []);
+      }
+    } catch (error) {
+      console.error('Error fetching review data:', error.message);
+    }
+  };
 
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
     if (!result.canceled) {
-      const fileExtension = result.uri.split('.').pop();
-      const fileName = `review_${Date.now()}.${fileExtension}`;
-
-      const { data, error } = await supabase.storage
-        .from('ReviewImage')
-        .upload(fileName, result.uri);
-
-      if (error) {
-        console.error('Error uploading image:', error.message);
-        return;
-      }
-      const imageUrl = data[0].url;
-      setImage([...image, imageUrl]);
+      setImage(result.assets[0].uri);
     }
   }
 
-  const handleRatingChange = (rating) => {
-    setRating(rating);
-  };
-
-  const handleCommentChange = (text) => {
-    setComment(text);
-  };
-
   const handleSubmit = async () => {
     // Submit the review to Supabase
+    let uploadedImage = null;
+    if (image != null) {
+      const { data, error } = await supabase.storage.from('ReviewImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
+
+      if (error != null) {
+        console.log(error);
+        return;
+      }
+      const { data: { publicUrl } } = supabase.storage.from('ReviewImage').getPublicUrl(data.path);
+      uploadedImage = publicUrl;
+    }
     const { data, error } = await supabase
       .from('review')
       .update({
         rating: rating,
         review_text: comment,
-        images: image,
+        image: uploadedImage,
       })
-      .eq('id', reviewId);
+      .eq('id', reviewId.id);
 
     if (error) {
       console.error('Error submitting review:', error.message);
@@ -58,7 +78,8 @@ export default function AddReview() {
     // Reset form fields
     setRating(0);
     setComment('');
-    setImage([]);
+    setImage(null);
+    router.push("reviews");
   };
 
   return (
@@ -68,22 +89,23 @@ export default function AddReview() {
         count={5}
         defaultRating={rating}
         size={20}
-        onFinishRating={handleRatingChange}
+        onFinishRating={setRating}
       />
-      <Button onPress={handleAddImage} style={styles.buttonContainer}><Text style={styles.button}>Upload Image</Text></Button>
-      {image.map((imageUri) => (
-        <Image key={imageUri} source={{ uri: imageUri }} style={{ width: 100, height: 100 }} />
+      <Button onPress={handleAddImage} style={styles.buttonContainer}><Text style={styles.button}>Change Image</Text></Button>
+      {existingImages.map((imageUri) => (
+        <Image key={imageUri} source={{ uri: imageUri }} style={styles.existingImage} />
       ))}
+      {image && <Image source={{ uri: image }} style={styles.newImage} />}
       <Text style={styles.heading}>Comments:</Text>
       <TextInput
         value={comment}
-        onChangeText={handleCommentChange}
+        onChangeText={setComment}
         multiline
         style={styles.input}
       />
       <Button onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.button}>Submit</Text></Button>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -117,9 +139,14 @@ const styles = StyleSheet.create({
     color: '#2C0080',
     fontWeight: 'bold',
   },
-  image: {
-    width: 200,
-    height: 200,
-    marginBottom: 15,
+  existingImage: {
+    width: 70,
+    height: 70,
+    marginBottom: 10,
   },
-})  
+  newImage: {
+    width: 70,
+    height: 70,
+    marginBottom: 10,
+  },
+});

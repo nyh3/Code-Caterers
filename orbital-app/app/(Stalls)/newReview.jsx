@@ -23,25 +23,26 @@ export default function AddReview() {
     }
   }
 
-  const handleRatingChange = (rating) => {
-    setRating(rating);
-  };
-
-  const handleCommentChange = (text) => {
-    setComment(text);
-  };
-
   const handleSubmit = async () => {
     // Submit the review to Supabase
-    console.log(menuId);
-    console.log(menuId.id);
-    console.log(userId.userId);
+    let uploadedImage = null;
+    if (image != null) {
+      const { data, error } = await supabase.storage.from('ReviewImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
+
+      if (error != null) {
+        console.log(error);
+        return;
+      }
+      console.log('user:', userId);
+      const { data: { publicUrl } } = supabase.storage.from('ReviewImage').getPublicUrl(data.path);
+      uploadedImage = publicUrl;
+    }
     const { data, error } = await supabase
       .from('review')
       .insert({
         rating: rating,
         review_text: comment,
-        image: image,
+        image: uploadedImage,
         menu_id: menuId.id,
         user_id: userId.userId,
       });
