@@ -66,14 +66,14 @@ export default function AddReview() {
         count={5}
         defaultRating={rating}
         size={20}
-        onFinishRating={handleRatingChange}
+        onFinishRating={setRating}
       />
       <Button onPress={handleAddImage} style={styles.buttonContainer}><Text style={styles.button}>Upload Image</Text></Button>
       {image && <Image source={{ uri: image }} style={styles.image} />}
       <Text style={styles.heading}>Comments:</Text>
       <TextInput
         value={comment}
-        onChangeText={handleCommentChange}
+        onChangeText={setComment}
         multiline
         style={styles.input}
       />
