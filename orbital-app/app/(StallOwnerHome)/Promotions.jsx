@@ -1,21 +1,35 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Text, Image } from 'react-native';
+import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity } from 'react-native';
 import { Text as PaperText, Button } from 'react-native-paper';
 import { Link } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
+import { useAuth } from '../../contexts/auth';
 
 export default function AddPromotionPage() {
     const [menuItems, setMenuItems] = useState([]);
     const isFocused = useIsFocused();
+    const router = useRouter();
+    const { userId } = useAuth();
 
     useEffect(() => {
         fetchMenuItems();
     }, [isFocused]);
 
     const fetchMenuItems = async () => {
+        const { data: stallId, error } = await supabase
+            .from('stall')
+            .select('id')
+            .eq('owner_id', userId)
+            .single();
+
+        if (error) {
+            console.error('Error fetching stall id:', error.message);
+            return;
+        }
         try {
-            const { data, error } = await supabase.from('promotion').select('*');
+            const { data, error } = await supabase.from('promotion').select('*').eq('stall_id', stallId.id);
             if (error) {
                 console.error('Error fetching promotion details:', error.message);
                 return;
@@ -26,14 +40,20 @@ export default function AddPromotionPage() {
         }
     };
 
+    const handlePromotionPress = (promotion) => {
+        router.push({ pathname: '/Edit_Promotion', params: { id: promotion } });
+      };
+
     const renderMenuItem = ({ item }) => (
-        <View style={styles.promotion}>
+        <TouchableOpacity onPress={() => handlePromotionPress(item.id)}>
+            <View style={styles.promotion}>
             <Image source={{ uri: item.image }} style={styles.promotionImage} />
             <View style={styles.promotionDetails}>
                 <Text style={styles.promotionTitle}>{item.title}</Text>
                 <Text style={styles.promotionDescription}>{item.description}</Text>
             </View>
-        </View>
+            </View>
+        </TouchableOpacity>
     );
 
     return (
