@@ -92,6 +92,25 @@ export default function EditReview() {
     setInfo(null);
     router.push('reviews');
   };
+
+  const handleDelete = async () => {
+    const { data, error } = await supabase
+      .from('review')
+      .delete()
+      .eq('id', reviewId.id);
+  
+    if (error) {
+      console.error('Error deleting review:', error.message);
+      return;
+    }
+  
+    // Reset form fields
+    setRating(0);
+    setComment('');
+    setImage(null);
+    setInfo(null);
+    router.push('reviews');
+  };
   
   return (
     <View style={styles.container}>
@@ -118,6 +137,7 @@ export default function EditReview() {
         style={styles.input}
       />
       <Button onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.button}>Submit</Text></Button>
+      <Button onPress={handleDelete} style={styles.buttonContainer}><Text style={styles.button}>Delete</Text></Button>
     </View>
   );
 }

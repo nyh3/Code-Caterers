@@ -7,17 +7,14 @@ import { useRouter } from "expo-router";
 import * as ImagePicker from 'expo-image-picker'
 
 export default function EditMenuPage() {
-  const menuId = useSearchParams();
-  const [name, setName] = useState('');
+  const promotionId = useSearchParams();
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null);
   const [errMsg, setErrMsg] = useState('');
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(null);
   const router = useRouter();
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
   const [originalImage, setOriginalImage] = useState(null);
-  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
-  const [newDietaryRestriction, setNewDietaryRestriction] = useState('');
 
   useEffect(() => {
     fetchMenuItem();
@@ -26,23 +23,21 @@ export default function EditMenuPage() {
   const fetchMenuItem = async () => {
     try {
       const { data, error } = await supabase
-        .from('menu')
+        .from('promotion')
         .select('*')
-        .eq('id', menuId.id)
+        .eq('id', promotionId.id)
         .single();
 
       if (error) {
-        console.error('Error fetching menu item:', error.message);
+        console.error('Error fetching promotion item:', error.message);
         return;
       }
 
-      setName(data.name);
+      setTitle(data.title);
       setDescription(data.description);
-      setPrice(data.price.toString());
       setOriginalImage(data.image);
-      setDietaryRestrictions(data.dietary_restrictions || []);
     } catch (error) {
-      console.error('Error fetching menu item:', error.message);
+      console.error('Error fetching promotion item:', error.message);
     }
   };
 
@@ -55,15 +50,15 @@ export default function EditMenuPage() {
 
   const handleSubmit = async () => {
     setErrMsg('');
-    if (name === '') {
-      setErrMsg('Dish name cannot be empty')
+    if (title === '') {
+      setErrMsg('Promotion title cannot be empty')
       return;
     }
     setLoading(true);
     let uploadedImage = originalImage;
     if (image !== null) {
       const { data, error } = await supabase.storage
-        .from('MenuImage')
+        .from('PromotionImage')
         .upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
 
       if (error != null) {
@@ -73,17 +68,17 @@ export default function EditMenuPage() {
         return;
       }
 
-      const { data: { publicUrl } } = supabase.storage.from('MenuImage').getPublicUrl(data.path);
+      const { data: { publicUrl } } = supabase.storage.from('PromotionImage').getPublicUrl(data.path);
       uploadedImage = publicUrl;
     }
 
-    const { data, error } = await supabase.from('menu').update({
-      name: name,
+    const { data, error } = await supabase.from('promotion').update({
+      title: title,
       image: uploadedImage,
       description: description,
-      price: parseFloat(price),
-      dietary_restrictions: dietaryRestrictions,
-    }).eq('id', menuId.id).single();
+    })
+    .eq('id', promotionId.id)
+    .single();
 
     if (error != null) {
       setLoading(false);
@@ -93,33 +88,21 @@ export default function EditMenuPage() {
     }
 
     setLoading(false);
-    router.push('../(StallOwnerHome)/Menu');
-    console.log('Menu item updated successfully:', data);
+    router.push('/Promotions');
+    console.log('Promotion item updated successfully:', data);
   };
 
   const handleDelete = async () => {
     try {
       await supabase
-        .from('menu')
+        .from('promotion')
         .delete()
-        .eq('id', menuId.id);
+        .eq('id', promotionId.id);
   
-      router.push('../(StallOwnerHome)/Menu');
+      router.push('/Promotions');
     } catch (error) {
-      console.error('Error deleting menu item:', error.message);
+      console.error('Error deleting promotion item:', error.message);
     }
-  };
-
-  const handleAddDietaryRestriction = () => {
-    if (newDietaryRestriction.trim() === '') return;
-    setDietaryRestrictions(prevRestrictions => [...prevRestrictions, newDietaryRestriction]);
-    setNewDietaryRestriction('');
-  };
-
-  const handleRemoveDietaryRestriction = (restriction) => {
-    setDietaryRestrictions(prevRestrictions =>
-      prevRestrictions.filter(item => item !== restriction)
-    );
   };
 
   return (
@@ -127,8 +110,8 @@ export default function EditMenuPage() {
       <Text style={styles.heading}>Edit Menu:</Text>
       <TextInput
         label="Name"
-        value={name}
-        onChangeText={setName}
+        value={title}
+        onChangeText={setTitle}
         style={styles.input}
       />
       <Button style={styles.buttonContainer} onPress={handleAddImage}>
@@ -147,43 +130,13 @@ export default function EditMenuPage() {
         multiline
         style={styles.input}
       />
-      <TextInput
-        label="Price"
-        value={price}
-        onChangeText={setPrice}
-        keyboardType="numeric"
-        style={styles.input}
-      />
-      <View style={styles.dietaryRestrictionsContainer}>
-        <TextInput
-          label="Dietary Restrictions"
-          value={newDietaryRestriction}
-          onChangeText={setNewDietaryRestriction}
-          style={styles.input}
-        />
-        {dietaryRestrictions.map((restriction, index) => (
-          <View style={styles.dietaryRestrictionItem} key={index}>
-            <Text style={styles.dietaryRestrictionText}>{restriction}</Text>
-            <Button
-              mode="text"
-              onPress={() => handleRemoveDietaryRestriction(restriction)}
-              style={styles.removeDietaryRestrictionButton}
-            >
-              <Text style={styles.removeDietaryRestrictionText}>Remove</Text>
-            </Button>
-          </View>
-        ))}
-        <Button mode="contained" onPress={handleAddDietaryRestriction} style={styles.buttonContainer}>
-          <Text style={styles.buttons}>Add Restrictions</Text>
-        </Button>
-      </View>
       <Button onPress={handleSubmit} style={styles.buttonContainer}>
         <Text style={styles.buttons}>Submit</Text>
       </Button>
       <Button onPress={handleDelete} style={styles.buttonContainer}>
         <Text style={styles.buttons}>Delete</Text>
       </Button>
-      <Link href="../(StallOwnerHome)/Menu">
+      <Link href="/Promotions">
         <Button style={styles.buttonContainer}>
           <Text style={styles.buttons}>Discard & Return</Text>
         </Button>
@@ -232,28 +185,5 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginRight: 15,
-  },
-  dietaryRestrictionsContainer: {
-    marginBottom: 15,
-  },
-  dietaryRestrictionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 5,
-    paddingHorizontal: 15,
-    backgroundColor: '#FFECF6',
-    height: 40,
-  },
-  dietaryRestrictionText: {
-    fontSize: 15,
-    color: 'black',
-  },
-  removeDietaryRestrictionButton: {
-    backgroundColor: 'transparent',
-  },
-  removeDietaryRestrictionText: {
-    color: '#2C0080',
-    fontWeight: 'bold',
   },
 });
