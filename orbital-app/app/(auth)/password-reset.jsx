@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import * as Linking from 'expo-linking';
 
-export function PasswordReset() { 
+export default function PasswordReset() { 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errMsg, setErrMsg] = useState('');
