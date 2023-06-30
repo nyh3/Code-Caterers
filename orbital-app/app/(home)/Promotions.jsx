@@ -1,15 +1,21 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Text, Image } from 'react-native';
+import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 export default function PromotionPage() {
     const [menuItems, setMenuItems] = useState([]);
     const isFocused = useIsFocused();
+    const router = useRouter();
 
     useEffect(() => {
         fetchMenuItems();
     }, [isFocused]);
+
+    const handlePromotionPress = (promotion) => {
+        router.push({ pathname: '/view_promotion', params: { id: promotion } });
+    }
 
     const fetchMenuItems = async () => {
         try {
@@ -25,13 +31,15 @@ export default function PromotionPage() {
     };
 
     const renderMenuItem = ({ item }) => (
-        <View style={styles.promotion}>
-            <Image source={{ uri: item.image }} style={styles.promotionImage} />
-            <View style={styles.promotionDetails}>
-                <Text style={styles.promotionTitle}>{item.title}</Text>
-                <Text style={styles.promotionDescription}>{item.description}</Text>
+        <TouchableOpacity onPress={() => handlePromotionPress(item.id)}>
+            <View style={styles.promotion}>
+                <Image source={{ uri: item.image }} style={styles.promotionImage} />
+                <View style={styles.promotionDetails}>
+                    <Text style={styles.promotionTitle}>{item.title}</Text>
+                    <Text style={styles.promotionDescription}>{item.description}</Text>
+                </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 
     return (

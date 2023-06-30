@@ -26,6 +26,14 @@ export default function UserProfileLayout() {
         return () => backHandler.remove();
       }, []);
 
+      const handleProfile = () => {
+        router.push('profile');
+      }
+
+      const handlePromotion = () => {
+        router.push('(home)/Promotions');
+      }
+
     return (
         <Stack>
             <Stack.Screen
@@ -46,17 +54,8 @@ export default function UserProfileLayout() {
                       resizeMode="contain"
                     />
                   </View>
-                ),
-                headerLeft: () => (
-                    <TouchableOpacity>
-                        <Ionicons
-                        name="arrow-back"
-                        size={24}
-                        color="black"
-                        style={styles.backButton}
-                        />
-                    </TouchableOpacity>
-                  )}} />
+                )}} />
+
             <Stack.Screen
             name="reviews" 
             options={{ 
@@ -68,7 +67,7 @@ export default function UserProfileLayout() {
                   alignSelf: "center", // Align the header title to the center
                 },
                 headerTitle: () => (
-                  <View style={styles.headerContainer}>
+                  <View style={styles.headerContainerMain}>
                     <Image
                       source={require('../../assets/headerlogo.png')}
                       style={styles.logo}
@@ -77,7 +76,7 @@ export default function UserProfileLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleProfile}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -86,6 +85,7 @@ export default function UserProfileLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+
             <Stack.Screen
             name="restrictions" 
             options={{ 
@@ -97,7 +97,7 @@ export default function UserProfileLayout() {
                   alignSelf: "center", // Align the header title to the center
                 },
                 headerTitle: () => (
-                  <View style={styles.headerContainer}>
+                  <View style={styles.headerContainerMain}>
                     <Image
                       source={require('../../assets/headerlogo.png')}
                       style={styles.logo}
@@ -106,7 +106,7 @@ export default function UserProfileLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleProfile}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -115,6 +115,7 @@ export default function UserProfileLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+
             <Stack.Screen
             name="updateProfile" 
             options={{ 
@@ -126,7 +127,7 @@ export default function UserProfileLayout() {
                   alignSelf: "center", // Align the header title to the center
                 },
                 headerTitle: () => (
-                  <View style={styles.headerContainer}>
+                  <View style={styles.headerContainerMain}>
                     <Image
                       source={require('../../assets/headerlogo.png')}
                       style={styles.logo}
@@ -135,7 +136,7 @@ export default function UserProfileLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleProfile}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -144,6 +145,7 @@ export default function UserProfileLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+
             <Stack.Screen
             name="saved" 
             options={{ 
@@ -155,7 +157,7 @@ export default function UserProfileLayout() {
                   alignSelf: "center", // Align the header title to the center
                 },
                 headerTitle: () => (
-                  <View style={styles.headerContainer}>
+                  <View style={styles.headerContainerMain}>
                     <Image
                       source={require('../../assets/headerlogo.png')}
                       style={styles.logo}
@@ -164,7 +166,37 @@ export default function UserProfileLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleProfile}>
+                        <Ionicons
+                        name="arrow-back"
+                        size={24}
+                        color="black"
+                        style={styles.backButton}
+                        />
+                    </TouchableOpacity>
+                  )}} />
+
+            <Stack.Screen
+            name="view_promotion" 
+            options={{ 
+                headerStyle: {
+                  height: 80, // Customize the header height
+                  backgroundColor: "#FFF5FA", // Customize the header background color
+                },
+                headerTitleStyle: {
+                  alignSelf: "center", // Align the header title to the center
+                },
+                headerTitle: () => (
+                  <View style={styles.headerContainerMain}>
+                    <Image
+                      source={require('../../assets/headerlogo.png')}
+                      style={styles.logo}
+                      resizeMode="contain"
+                    />
+                  </View>
+                ),
+                headerLeft: () => (
+                    <TouchableOpacity onPress={handlePromotion}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -178,14 +210,22 @@ export default function UserProfileLayout() {
 }
 
 const styles = StyleSheet.create({
-    headerContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    logo: {
-      width: 200,
-      height: 80,
-    },
-  });
+  headerContainerMain: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingRight: 40,
+  },
+  headerContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingRight: 140,
+  },
+  logo: {
+    width: 200,
+    height: 80,
+  },
+});

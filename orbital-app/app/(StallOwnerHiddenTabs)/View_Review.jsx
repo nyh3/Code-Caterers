@@ -2,13 +2,11 @@ import { View, Text, Image, ActivityIndicator, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'expo-router';
 import { supabase } from '../../lib/supabase';
-import { useRouter } from 'expo-router';
 import { AirbnbRating } from 'react-native-ratings';
 
 export default function ViewReviewScreen() {
   const reviewId = useSearchParams();
   const [review, setReview] = useState(null);
-  const router = useRouter();
 
   useEffect(() => {
     fetchReviewDetails();
@@ -26,7 +24,6 @@ export default function ViewReviewScreen() {
         console.error('Error fetching review details:', error.message);
         return;
       }
-      console.log('help', data);
       setReview(data);
     } catch (error) {
       console.error('Error fetching review details:', error.message);
@@ -65,7 +62,7 @@ export default function ViewReviewScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#FFF5FA',
     flex: 1,
