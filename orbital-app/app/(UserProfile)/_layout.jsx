@@ -26,6 +26,10 @@ export default function UserProfileLayout() {
         return () => backHandler.remove();
       }, []);
 
+      const handleProfile = () => {
+        router.push('profile');
+      }
+
     return (
         <Stack>
             <Stack.Screen
@@ -46,17 +50,8 @@ export default function UserProfileLayout() {
                       resizeMode="contain"
                     />
                   </View>
-                ),
-                headerLeft: () => (
-                    <TouchableOpacity>
-                        <Ionicons
-                        name="arrow-back"
-                        size={24}
-                        color="black"
-                        style={styles.backButton}
-                        />
-                    </TouchableOpacity>
-                  )}} />
+                )}} />
+
             <Stack.Screen
             name="reviews" 
             options={{ 
@@ -77,7 +72,7 @@ export default function UserProfileLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleProfile}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -86,6 +81,7 @@ export default function UserProfileLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+
             <Stack.Screen
             name="restrictions" 
             options={{ 
@@ -106,7 +102,7 @@ export default function UserProfileLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleProfile}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -115,6 +111,7 @@ export default function UserProfileLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+
             <Stack.Screen
             name="updateProfile" 
             options={{ 
@@ -135,7 +132,7 @@ export default function UserProfileLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleProfile}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -144,6 +141,7 @@ export default function UserProfileLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+
             <Stack.Screen
             name="saved" 
             options={{ 
@@ -164,7 +162,7 @@ export default function UserProfileLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleProfile}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -183,6 +181,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
+      paddingRight: 40,
     },
     logo: {
       width: 200,

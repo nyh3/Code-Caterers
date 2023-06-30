@@ -6,6 +6,18 @@ import { useRouter } from "expo-router";
 export default function AuthLayout() {
     const router = useRouter();
 
+    const handleMenu = () => {
+      router.push('Menu');
+    }
+
+    const handlePromotion = () => {
+      router.push('Promotions');
+    }
+    
+    const handleReview = () => {
+      router.push('Reviews');
+    }
+
     return (
         <Stack>
             <Stack.Screen
@@ -28,7 +40,7 @@ export default function AuthLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleMenu}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -37,6 +49,7 @@ export default function AuthLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+
             <Stack.Screen
             name="Edit_Menu" 
             options={{ 
@@ -57,7 +70,7 @@ export default function AuthLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleMenu}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -66,6 +79,7 @@ export default function AuthLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+
             <Stack.Screen
             name="Edit_Profile" 
             options={{ 
@@ -95,6 +109,7 @@ export default function AuthLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+
             <Stack.Screen
             name="Edit_Promotion" 
             options={{ 
@@ -115,7 +130,7 @@ export default function AuthLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handlePromotion}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -124,6 +139,7 @@ export default function AuthLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+
             <Stack.Screen
             name="Promotion_Form" 
             options={{ 
@@ -144,7 +160,7 @@ export default function AuthLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handlePromotion}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -153,6 +169,7 @@ export default function AuthLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+
             <Stack.Screen
             name="View_Review" 
             options={{ 
@@ -173,7 +190,7 @@ export default function AuthLayout() {
                   </View>
                 ),
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleReview}>
                         <Ionicons
                         name="arrow-back"
                         size={24}
@@ -182,6 +199,7 @@ export default function AuthLayout() {
                         />
                     </TouchableOpacity>
                   )}} />
+                  
             <Stack.Screen
             name="Update_Stall" 
             options={{ 
@@ -221,6 +239,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
+      paddingRight: 40,
     },
     logo: {
       width: 200,

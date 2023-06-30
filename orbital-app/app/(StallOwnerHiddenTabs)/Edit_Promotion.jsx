@@ -107,11 +107,12 @@ export default function EditMenuPage() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Edit Menu:</Text>
+      <Text style={styles.heading}>Edit Promotion:</Text>
       <TextInput
         label="Name"
         value={title}
         onChangeText={setTitle}
+        multiline
         style={styles.input}
       />
       <Button style={styles.buttonContainer} onPress={handleAddImage}>

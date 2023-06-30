@@ -11,13 +11,13 @@ export default function UserOrOwner() {
   const handleUser = async() => {
     console.log(group);
     setGroup('User');
-    router.replace("/loginUser");
+    router.push("/loginUser");
   }
 
   const handleOwner = async() => {
     console.log(group);
     setGroup('Owner');
-    router.replace("/loginOwner");
+    router.push("/loginOwner");
   }
      return (
         <View style={styles.container}>
