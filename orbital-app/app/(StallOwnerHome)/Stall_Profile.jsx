@@ -4,12 +4,13 @@ import { Text, TextInput, Button, Menu, Provider, ActivityIndicator } from 'reac
 import { supabase } from '../../lib/supabase';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from "../../contexts/auth";
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 export default function StallProfilePage() {
     const [stallImage, setStallImage] = useState(null);
     const [errMsg, setErrMsg] = useState('');
     const [loading, setLoading] = useState(false);
+    const [stallId, setStallId] = useState(null);
     const [stallName, setStallName] = useState('');
     const [selectedCuisine, setSelectedCuisine] = useState(null);
     const [selectedLocation, setSelectedLocation] = useState(null);
@@ -24,8 +25,48 @@ export default function StallProfilePage() {
     const [cuisines, setCuisines] = useState([]);
     const [description, setDescription] = useState('');
     const { userId } = useAuth();
+    const router = useRouter();
 
     useEffect(() => {
+        const fetchStallDetails = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('stall')
+                    .select('*, location(name), cuisine(name), stallImage')
+                    .eq('id', stallId)
+                    .single();
+
+                if (error) {
+                    console.error('Error retrieving stall details:', error.message);
+                    return;
+                }
+                const stall = data;
+                setStallName(stall.name);
+                setSelectedLocation(stall.location.name);
+                setSelectedCuisine(stall.cuisine.name);
+                setHasAirCon(stall.has_air_con);
+                setIsHalal(stall.is_halal);
+                setIsVegetarian(stall.is_vegetarian);
+                setDescription(stall.description);
+
+                if (stall.stallImage) {
+                    const { publicURL, error: imageError } = await supabase.storage
+                        .from('StallImage')
+                        .getPublicUrl(stall.stallImage);
+
+                    if (imageError) {
+                        console.error('Error retrieving stall image:', imageError.message);
+                        return;
+                    }
+                    setStallImage(publicURL);
+                }
+            } catch (error) {
+                console.error('Error retrieving stall details:', error.message);
+            }
+        };
+        if (stallId) {
+            fetchStallDetails();
+        }
         const fetchLocations = async () => {
             try {
                 const { data, error } = await supabase.from('location').select();
@@ -55,7 +96,7 @@ export default function StallProfilePage() {
         }
         fetchLocations();
         fetchCuisines();
-    }, []);
+    }, [stallId]);
 
     const handleAddImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -112,47 +153,65 @@ export default function StallProfilePage() {
             const { data, error } = await supabase.storage
                 .from('StallImage')
                 .upload(`${new Date().getTime()}`, { uri: stallImage, type: 'jpg', name: 'name.jpg' });
-
             if (error !== null) {
                 console.log(error);
                 setErrMsg(error.message);
                 setLoading(false);
                 return;
             }
-
             const { data: { publicUrl } } = supabase.storage.from('StallImage').getPublicUrl(data.path);
             uploadedImage = publicUrl;
         }
 
         try {
-            const { data, error } = await supabase.from('stall').insert([
-                {
-                    owner_id: userId,
-                    stallImage: uploadedImage,
-                    name: stallName,
-                    location_ID: locationId,
-                    cuisine_ID: cuisineId,
-                    has_air_con: hasAirCon,
-                    is_halal: isHalal,
-                    is_vegetarian: isVegetarian,
-                    description: description
+            const existingStall = await supabase
+                .from('stall')
+                .select()
+                .eq('owner_id', userId)
+                .single();
+            if (existingStall.data) {
+                const { data, error } = await supabase.from('stall').update([
+                    {
+                        owner_id: userId,
+                        stallImage: uploadedImage,
+                        name: stallName,
+                        location_ID: locationId,
+                        cuisine_ID: cuisineId,
+                        has_air_con: hasAirCon,
+                        is_halal: isHalal,
+                        is_vegetarian: isVegetarian,
+                        description: description
+                    }
+                ]).eq('id', existingStall.data.id).single();
+                if (error) {
+                    console.error('Error updating stall', error.message);
+                    return;
                 }
-            ]).select().single();
-
-            if (error) {
-                console.error('Error inserting stall owner:', error.message);
-                return;
+                console.log('Stall updated successfully:', data);
+            } else {
+                const { data, error } = await supabase.from('stall').insert([
+                    {
+                        owner_id: userId,
+                        stallImage: uploadedImage,
+                        name: stallName,
+                        location_ID: locationId,
+                        cuisine_ID: cuisineId,
+                        has_air_con: hasAirCon,
+                        is_halal: isHalal,
+                        is_vegetarian: isVegetarian,
+                        description: description
+                    }
+                ]).select().single();
+                if (error) {
+                    console.error('Error inserting stall', error.message);
+                    return;
+                }
+                console.log('Stall inserted successfully:', data);
+                setStallId(data.id);
             }
 
-            console.log('Stall owner inserted successfully:', data);
-            setStallImage(null);
-            setStallName('');
-            setSelectedLocation('');
-            setSelectedCuisine('');
-            setHasAirCon(false);
-            setIsHalal(false);
-            setIsVegetarian(false);
-            setDescription('');
+            router.push('../(StallOwnerHome)/Home');
+            setLoading(false);
         } catch (error) {
             console.error('Error inserting stall owner:', error.message);
         }
@@ -162,10 +221,12 @@ export default function StallProfilePage() {
         <Provider>
             <ScrollView style={styles.container}>
                 <Button style={styles.buttonContainer} onPress={handleAddImage}>
-                <Text style={styles.buttonText}>Insert Stall Image</Text>    
+                    <Text style={styles.buttonText}>Insert Stall Image</Text>
                 </Button>
-                {stallImage && (
+                {stallImage !== '' ? (
                     <Image source={{ uri: stallImage }} style={styles.stallImage} />
+                ) : (
+                    null
                 )}
                 <TextInput
                     label="Stall Name"
@@ -174,12 +235,12 @@ export default function StallProfilePage() {
                     style={styles.input}
                 />
                 <TextInput
-                label="Description"
-                autoCapitalize='none'
-                value={description}
-                onChangeText={setDescription}
-                multiline
-                style={styles.input}
+                    label="Description"
+                    autoCapitalize='none'
+                    value={description}
+                    onChangeText={setDescription}
+                    multiline
+                    style={styles.input}
                 />
                 <Text style={styles.label}>What is the location of the stall?</Text>
                 <Menu
@@ -203,8 +264,8 @@ export default function StallProfilePage() {
                             title={location.name}
                         />
                     ))}
-
                 </Menu>
+
                 <Text style={styles.label}>What is the cuisine?</Text>
                 <Menu
                     visible={cuisineMenuVisible}
@@ -256,14 +317,13 @@ export default function StallProfilePage() {
                 >
                     {isVegetarian ? 'Yes' : 'No'}
                 </Button>
-                <Text>{errMsg}</Text>
-                <Button onPress={handleSubmit}style={styles.buttonContainer}><Text style={styles.buttonText}>Submit</Text></Button>
+                <Button onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.buttonText}>Submit Stall Details</Text></Button>
+                {loading && <ActivityIndicator style={styles.ActivityIndicator} />}
                 <View style={styles.marginLeftContainer}>
                     <Link href="../(StallOwnerHome)/Home">
                         <Button style={styles.discardContainer}><Text style={styles.buttonText}>Discard & Return</Text></Button>
                     </Link>
                 </View>
-                {loading && <ActivityIndicator />}
             </ScrollView>
         </Provider >
     );
@@ -273,7 +333,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFF5FA',
-        marginHorizontal: 10
+        paddingHorizontal: 10
     },
     heading: {
         fontSize: 20,
@@ -326,4 +386,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginLeft: 10,
     },
+    ActivityIndicator: {
+        marginVertical: 10,
+    }
 });

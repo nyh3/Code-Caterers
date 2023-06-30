@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF5FA',
     justifyContent: 'flex-start',
-    marginHorizontal: 10,
+    paddingHorizontal: 10,
   },
   header: {
     fontWeight: 'bold',

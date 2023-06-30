@@ -24,6 +24,8 @@ export default function Home() {
 
             if (data && data.length > 0) {
                 setStallData(data[0]);
+            } else {
+                router.push('(StallOwnerHome)/Stall_Profile');
             }
         };
 
@@ -36,9 +38,6 @@ export default function Home() {
         return <ActivityIndicator />;
     }
 
-    const handleUpdateStall = () => {
-        router.push('(StallOwnerHiddenTabs)/Update_Stall');
-    }
     const handleStallProfile = () => {
         router.push('(StallOwnerHome)/Stall_Profile');
     }
@@ -58,8 +57,7 @@ export default function Home() {
         <View style={styles.container}>
             <Image source={{ uri: stallImage }} style={styles.image} />
             <Text style={styles.name}>{name}</Text>
-            <Button onPress={handleUpdateStall} style={styles.buttons}>Update Stall</Button>
-            <Button onPress={handleStallProfile} style={styles.buttons}>Stall Profile</Button>
+            <Button onPress={handleStallProfile} style={styles.buttons}>Update Stall Profile</Button>
             <Button onPress={handleMenu} style={styles.buttons}>Menu</Button>
             <Button onPress={handlePromotions} style={styles.buttons}>Promotions</Button>
             <Button onPress={handleReviews} style={styles.buttons}>Reviews</Button>
@@ -74,7 +72,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFF5FA',
         justifyContent: 'flex-start',
-        marginHorizontal: 10,
+        paddingHorizontal: 10,
     },
     image: {
         alignSelf: 'center',
@@ -88,7 +86,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         alignSelf: 'center',
         fontSize: 25,
-        marginBottom: 15,
+        marginBottom: 10,
     },
     buttons: {
         marginTop: 5,
