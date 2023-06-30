@@ -99,7 +99,7 @@ export default function FilterPage() {
           return true; // Include the option if dietary_restrictions is null or undefined
         }
         return option.dietary_restrictions.every((restriction) => !dietaryRestrictions.includes(restriction));
-      });      
+      });
 
       // Filter by budget
       filteredOptions = filteredOptions.filter((option) => {
@@ -189,36 +189,36 @@ export default function FilterPage() {
     < Provider>
       <ScrollView>
         <View style={styles.container}>
-        <Text style={styles.heading}>Select your preferences:</Text>
-        <Text style={styles.dietaryRestrictions}>Dietary Restrictions:</Text>
-        {dietaryRestrictions.map((restriction, index) => (
-        <View key={index} style={styles.restrictionContainer}>
-          <Text style={styles.restrictionText}>{restriction}</Text>
-        </View>
-      ))}
-          <Text style={styles.dietaryRestrictions}>Budget:</Text>
+          <Text style={styles.heading}>Select your preferences:</Text>
+          <Text style={styles.dietaryRestrictions}>Dietary Restrictions Retrieved:</Text>
+          {dietaryRestrictions.map((restriction, index) => (
+            <View key={index} style={styles.restrictionContainer}>
+              <Text style={styles.restrictionText}>{restriction}</Text>
+            </View>
+          ))}
+          <Text style={styles.dietaryRestrictions}>Input Budget:</Text>
           <TextInput
-          style={styles.input}
-          placeholder="Budget"
-          placeholderTextColor="#2C0080"
-          value={budget.toString()}
-          onChangeText={setBudget}
-          keyboardType="numeric"
-        />
+            style={styles.input}
+            placeholder="Budget"
+            placeholderTextColor="#2C0080"
+            value={budget.toString()}
+            onChangeText={setBudget}
+            keyboardType="numeric"
+          />
 
           <Text style={styles.label}>Select Location:</Text>
           <Menu
             visible={locationMenuVisible}
             onDismiss={handleLocationMenu}
             anchor={
-             <Button 
-                style={styles.buttons} 
-                mode="contained" 
-                labelStyle={styles.buttonText} 
+              <Button
+                style={styles.buttons}
+                mode="contained"
+                labelStyle={styles.buttonText}
                 onPress={handleLocationMenu}>
-                  {selectedLocation || 'Select Location'}
+                {selectedLocation || 'Select Location'}
               </Button>
-              }
+            }
           >
             {locations.map((location) => (
               <Menu.Item
@@ -229,70 +229,74 @@ export default function FilterPage() {
             ))}
           </Menu>
 
-           <Text style={styles.label}>Select Cuisine:</Text>
+          <Text style={styles.label}>Select Cuisine:</Text>
           <Menu
             visible={cuisineMenuVisible}
             onDismiss={handleCuisineMenu}
             anchor={
-              <Button 
+              <Button
                 style={styles.buttons}
-                mode="contained" 
+                mode="contained"
                 labelStyle={styles.buttonText}
                 onPress={handleCuisineMenu}>
-                  {selectedCuisine || 'Select Cuisine'}
+                {selectedCuisine || 'Select Cuisine'}
               </Button>
-              }
+            }
           >
             {cuisines.map((cuisine) => (
               <Menu.Item key={cuisine.id} onPress={() => handleCuisineSelection(cuisine)} title={cuisine.name} />
             ))}
           </Menu>
 
-          <Text style={styles.label}>Air Conditioning</Text>
-          <Switch 
-            value={hasAirCon} 
-            onValueChange={(value) => setHasAirCon(value)}
-            style={styles.switch}
-            trackColor={{ false: '#FFECF6', true: '#FFBBDF' }}
-            thumbColor={hasAirCon ? '#FFECF6' : '#FFBBDF'} 
-          />
+          <View style={styles.switchContainer}>
+            <Text style={styles.label}>Select Air Conditioning:</Text>
+            <Switch
+              value={hasAirCon}
+              onValueChange={(value) => setHasAirCon(value)}
+              style={styles.switch}
+              trackColor={{ false: '#FFECF6', true: '#FFBBDF' }}
+              thumbColor={hasAirCon ? '#FFECF6' : '#FFBBDF'}
+            />
+          </View>
+          <View style={styles.switchContainer}>
+            <Text style={styles.label}>Select Halal:</Text>
+            <Switch
+              value={hasHalal}
+              onValueChange={(value) => setHasHalal(value)}
+              style={styles.switch}
+              trackColor={{ false: '#FFECF6', true: '#FFBBDF' }}
+              thumbColor={hasHalal ? '#FFECF6' : '#FFBBDF'}
+            />
+          </View>
+          <View style={styles.switchContainer}>
+            <Text style={styles.label}>Select Vegetarian:</Text>
+            <Switch
+              value={isVegetarian}
+              onValueChange={(value) => setIsVegetarian(value)}
+              style={styles.switch}
+              trackColor={{ false: '#FFECF6', true: '#FFBBDF' }}
+              thumbColor={isVegetarian ? '#FFECF6' : '#FFBBDF'}
+            />
+          </View>
 
-          <Text style={styles.label}>Halal</Text>
-          <Switch 
-            value={hasHalal} 
-            onValueChange={(value) => setHasHalal(value)} 
-            style={styles.switch}
-            trackColor={{ false: '#FFECF6', true: '#FFBBDF' }}
-            thumbColor={hasAirCon ? '#FFECF6' : '#FFBBDF'}
-          />
-
-          <Text style={styles.label}>Vegetarian</Text>
-          <Switch  
-            value={isVegetarian} 
-            onValueChange={(value) => setIsVegetarian(value)} 
-            style={styles.switch}
-            trackColor={{ false: '#FFECF6', true: '#FFBBDF' }}
-            thumbColor={hasAirCon ? '#FFECF6' : '#FFBBDF'}
-          />
-
-          <Button 
-            style={styles.resetButton} 
-            mode="contained" 
+          <Button
+            style={styles.resetButton}
+            mode="contained"
             onPress={resetFilters}
           >
-          <Text style={styles.buttonText}>Reset Filter</Text>
+            <Text style={styles.buttonText}>Reset Filter</Text>
           </Button>
 
           <Text style={styles.heading}>Here are your 3 Recommendations:</Text>
           {filteredFoodOptions.length > 0 ? (
             filteredFoodOptions.map((option) => (
-              <TouchableOpacity style={styles.option} key={option.id} onPress={() => {handleMenuPress(option.id)}}>
+              <TouchableOpacity style={styles.option} key={option.id} onPress={() => { handleMenuPress(option.id) }}>
                 <Text style={styles.optionName}>{option.name}</Text>
-              <Text style={styles.optionDetails}>Price: ${option.price}</Text>
-              <Text style={styles.optionDetails}>Dietary Restrictions: {option.dietaryRestrictions}</Text>
-              <Text style={styles.optionDetails}>Cuisine: {option.cuisine}</Text>
-              <Text style={styles.optionDetails}>Location: {option.location}</Text>
-              <Text style={styles.optionDetails}>Air Conditioning: {option.hasAirCon ? 'Yes' : 'No'}</Text>
+                <Text style={styles.optionDetails}>Price: ${option.price}</Text>
+                <Text style={styles.optionDetails}>Dietary Restrictions: {option.dietaryRestrictions}</Text>
+                <Text style={styles.optionDetails}>Cuisine: {option.cuisine}</Text>
+                <Text style={styles.optionDetails}>Location: {option.location}</Text>
+                <Text style={styles.optionDetails}>Air Conditioning: {option.hasAirCon ? 'Yes' : 'No'}</Text>
               </TouchableOpacity>
             ))
           ) : (
@@ -362,6 +366,11 @@ const styles = StyleSheet.create({
   switch: {
     marginLeft: 'auto',
   },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
   button: {
     backgroundColor: '#FFECF6',
     borderWidth: 1,
@@ -380,10 +389,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFECF6',
     borderWidth: 1,
     borderColor: '#FFBBDF',
-    padding: 10,
-    flex: 1, // Add this line
+    padding: 3,
+    flex: 1,
     marginBottom: 10,
-  },  
+  },
   option: {
     marginBottom: 16,
     padding: 16,
@@ -403,7 +412,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     marginBottom: 5,
     backgroundColor: '#FFECF6',
     height: 40,
@@ -411,7 +420,5 @@ const styles = StyleSheet.create({
   restrictionText: {
     fontSize: 15,
     color: 'black',
-    paddingLeft: 18,
-    paddingTop: 10,
   },
 });
