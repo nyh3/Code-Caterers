@@ -88,8 +88,7 @@ export default function DietaryRestrictions() {
       <Button style={styles.buttonContainer} onPress={handleSubmit}>
         <Text style={styles.button}>Update Dietary Restrictions</Text>
       </Button>
-      {errMsg !== '' && <Text>{errMsg}</Text>}
-      <Text></Text>
+      {errMsg !== '' && <Text style={styles.errormsg}>{errMsg}</Text>}
       <View style={styles.marginLeftContainer}>
         <Link href="../(home)/profile">
           <Button style={styles.discardContainer}>
@@ -154,8 +153,6 @@ const styles = StyleSheet.create({
   restrictionText: {
     fontSize: 15,
     color: 'black',
-    paddingLeft: 18,
-    paddingTop: 10,
   },
   discardContainer: {
     backgroundColor: '#FFECF6',
@@ -163,7 +160,11 @@ const styles = StyleSheet.create({
     borderColor: '#FFBBDF',
   },
   marginLeftContainer: {
-    marginTop: 5,
+    marginTop: 15,
     marginLeft: 10,
   },
+  errormsg: {
+    marginTop: 10,
+    marginLeft: 15,
+  }
 });
