@@ -1,10 +1,11 @@
-import { useState } from 'react'
-import { supabase } from '../../lib/supabase'
-import { StyleSheet, View, Image } from 'react-native'
-import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper'
-import * as ImagePicker from 'expo-image-picker'
-import { useRouter } from 'expo-router'
-import { useAuth } from '../../contexts/auth'
+//not in use
+import { useState, useEffect } from 'react';
+import { supabase } from '../../lib/supabase';
+import { StyleSheet, View, Image } from 'react-native';
+import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper';
+import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
+import { useAuth } from '../../contexts/auth';
 import { Link } from 'expo-router';
 
 export default function UpdateStall() {
@@ -12,54 +13,96 @@ export default function UpdateStall() {
     const [name, setname] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [image, setImage] = useState('');
+    const [description, setDescription] = useState('');
     const { userId } = useAuth();
     const router = useRouter();
-    const [description, setDescription] = useState('');
+    const [stallId, setStallId] = useState(null);
+
+    useEffect(() => {
+        fetchStallData();
+    }, []);
+
+    const fetchStallData = async () => {
+        const { data, error } = await supabase
+            .from('stall')
+            .select('name, description')
+            .eq('owner_id', userId)
+            .single();
+
+        if (error) {
+            console.log('Error fetching stall data:', error);
+            return;
+        }
+
+        if (data) {
+            setStallId(data.id);
+            setname(data.name);
+            setDescription(data.description);
+        }
+    };
 
     const handleAddImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        });
         if (!result.canceled) {
             setImage(result.assets[0].uri);
         }
-    }
+    };
 
     const handleSubmit = async () => {
         setLoading(true);
         let uploadedImage = null;
-        if (image != null) {
-            const { data, error } = await supabase.storage.from('StallImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
+        if (image) {
+            const { data, error } = await supabase.storage
+                .from('StallImage')
+                .upload(`${new Date().getTime()}`, {
+                    uri: image,
+                    type: 'jpg',
+                    name: 'name.jpg',
+                });
 
-            if (error != null) {
-                console.log(error);
-                setErrMsg(error.message)
+            if (error) {
+                console.log('Upload image error:', error);
+                setErrMsg(error.message);
                 setLoading(false);
                 return;
             }
-            console.log('stall:', userId);
-            const { data: { publicUrl } } = supabase.storage.from('StallImage').getPublicUrl(data.path);
+
+            const { publicUrl } = await supabase.storage
+                .from('StallImage')
+                .getPublicUrl(data.path);
+
             uploadedImage = publicUrl;
         }
-        const { data, error } = await supabase.from('stall').update({ stallImage: uploadedImage, name: name, description: description }).eq('owner_id', userId);
-        if (error != null) {
-            setLoading(false);
-            console.log('2:', error);
+
+        const { error } = await supabase
+            .from('stall')
+            .update({ stallImage: uploadedImage, name, description })
+            .eq('id', stallId);
+
+        if (error) {
+            console.log('Update stall error:', error);
             setErrMsg(error.message);
+            setLoading(false);
             return;
         }
+
         setLoading(false);
         router.push('../(StallOwnerHome)/Home');
-        console.log('Menu item inserted successfully:', data);
-    }
+        console.log('Stall Profile updated successfully');
+    };
 
     return (
         <View style={styles.wholeThing}>
-
-            <Button style={styles.buttonContainer} onPress={handleAddImage}><Text style={styles.button}>Change Stall Image</Text></Button>
+            <Button style={styles.buttonContainer} onPress={handleAddImage}>
+                <Text style={styles.button}>Change Stall Image</Text>
+            </Button>
             {image && <Image source={{ uri: image }} style={styles.image} />}
 
             <Text style={styles.bold}>Stall Name:</Text>
             <TextInput
-                autoCapitalize='none'
+                autoCapitalize="none"
                 value={name}
                 onChangeText={setname}
                 style={styles.input}
@@ -67,21 +110,24 @@ export default function UpdateStall() {
 
             <Text style={styles.bold}>Description:</Text>
             <TextInput
-                autoCapitalize='none'
+                autoCapitalize="none"
                 value={description}
                 onChangeText={setDescription}
                 multiline
                 style={styles.input}
             />
-            <Button
-                style={styles.buttonContainer}
-                onPress={handleSubmit}><Text style={styles.button}>Update Stall Details</Text></Button>
 
-            {errMsg !== "" && <Text>{errMsg}</Text>}
+            <Button style={styles.buttonContainer} onPress={handleSubmit}>
+                <Text style={styles.button}>Update Stall Details</Text>
+            </Button>
+
+            {errMsg !== '' && <Text>{errMsg}</Text>}
             <Text></Text>
             <View style={styles.marginLeftContainer}>
                 <Link href="../(StallOwnerHome)/Home">
-                    <Button style={styles.discardContainer}><Text style={styles.button}>Discard & Return</Text></Button>
+                    <Button style={styles.discardContainer}>
+                        <Text style={styles.button}>Discard & Return</Text>
+                    </Button>
                 </Link>
             </View>
             {loading && <ActivityIndicator />}
@@ -138,6 +184,6 @@ const styles = StyleSheet.create({
     },
     input: {
         marginBottom: 5,
-        backgroundColor: '#FFECF6'
-    }
+        backgroundColor: '#FFECF6',
+    },
 });
