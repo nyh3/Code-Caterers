@@ -36,7 +36,6 @@ export default function PromotionPage() {
                 <Image source={{ uri: item.image }} style={styles.promotionImage} />
                 <View style={styles.promotionDetails}>
                     <Text style={styles.promotionTitle}>{item.title}</Text>
-                    <Text style={styles.promotionDescription}>{item.description}</Text>
                 </View>
             </View>
         </TouchableOpacity>
