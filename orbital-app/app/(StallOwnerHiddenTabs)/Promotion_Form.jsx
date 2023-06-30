@@ -122,8 +122,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFF5FA',
         justifyContent: 'flex-start',
-        marginHorizontal: 10,
-        marginTop:30,
     },
     heading: {
         fontSize: 20,

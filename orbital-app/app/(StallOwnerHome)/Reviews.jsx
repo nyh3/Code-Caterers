@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Image, View, StyleSheet, Text, TouchableOpacity, FlatList } from "react-native";
-import { ListItem } from 'react-native-elements';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from "../../contexts/auth";
 import { AirbnbRating } from 'react-native-ratings';
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function ReviewPage() {
     const { userId } = useAuth();
@@ -12,6 +12,7 @@ export default function ReviewPage() {
     const [menuReviewsVisibility, setMenuReviewsVisibility] = useState({});
     const [menu, setMenu] = useState([]);
     const [overallRating, setOverallRating] = useState(0);
+    const router = useRouter();
 
     useEffect(() => {
         fetchStallId();
@@ -64,57 +65,61 @@ export default function ReviewPage() {
           ...prevVisibility,
           [menuId]: !prevVisibility[menuId],
         }));
-      };      
+      }; 
       
-      const renderMenuReviews = (menuId) => {
-        const isVisible = menuReviewsVisibility[menuId];
+    const handleReviewPress = (review) => {
+      router.push({ pathname: '/View_Review', params: { id: review } });
+    };
       
-        if (isVisible) {
-          const menuReviews = reviews.filter((review) => review.menu_id === menuId);
-          
-          if (menuReviews.length === 0) {
-            return (
-              <View style={styles.noReviewsContainer}>
-                <Text style={styles.noReviewsText}>No reviews</Text>
-              </View>
-            );
-          }
-
+    const renderMenuReviews = (menuId) => {
+      const isVisible = menuReviewsVisibility[menuId];
+    
+      if (isVisible) {
+        const menuReviews = reviews.filter((review) => review.menu_id === menuId);
+        
+        if (menuReviews.length === 0) {
           return (
-            <View>
-              {menuReviews.map((review) => (
-                <TouchableOpacity key={`${menuId}-${review.id}`}>
-                  <View style={styles.reviewContainer}>
-                    <View style={styles.userContainer}>
-                      <Image source={{ uri: review.profile.image }} style={styles.profileImage} />
-                      <View style={styles.userInfo}>
-                        <Text style={styles.username}>{review.profile.username}</Text>
-                      </View>
-                    </View>
-                    <View style={styles.ratingContainer}>
-                      <AirbnbRating
-                        defaultRating={parseFloat(review.rating) || 0}
-                        size={15}
-                        isDisabled
-                        showRating={false}
-                        minRating={0}
-                        maxRating={5}
-                        style={styles.rating}
-                      />
-                    </View>
-                    <Text style={styles.comment}>{review.review_text}</Text>
-                    {review.image && (
-                      <Image source={{ uri: review.image }} style={styles.reviewImage} />
-                    )}
-                    <Text>{review.updated_at}</Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
+            <View style={styles.noReviewsContainer}>
+              <Text style={styles.noReviewsText}>No reviews</Text>
             </View>
           );
         }
-        return null;
-      };      
+
+        return (
+          <View>
+            {menuReviews.map((review) => (
+              <TouchableOpacity key={`${menuId}-${review.id}`} onPress={() => handleReviewPress(review.id)}>
+                <View style={styles.reviewContainer}>
+                  <View style={styles.userContainer}>
+                    <Image source={{ uri: review.profile.image }} style={styles.profileImage} />
+                    <View style={styles.userInfo}>
+                      <Text style={styles.username}>{review.profile.username}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.ratingContainer}>
+                    <AirbnbRating
+                      defaultRating={parseFloat(review.rating) || 0}
+                      size={15}
+                      isDisabled
+                      showRating={false}
+                      minRating={0}
+                      maxRating={5}
+                      style={styles.rating}
+                    />
+                  </View>
+                  <Text style={styles.comment}>{review.review_text}</Text>
+                  {review.image && (
+                    <Image source={{ uri: review.image }} style={styles.reviewImage} />
+                  )}
+                  <Text>{review.updated_at}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        );
+      }
+      return null;
+    };      
     
     return (
         <View style={styles.container}>

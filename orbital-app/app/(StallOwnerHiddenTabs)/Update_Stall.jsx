@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         flex: 1,
         backgroundColor: '#FFF5FA',
-        marginTop: 30,
     },
     buttonContainer: {
         backgroundColor: '#FFECF6',

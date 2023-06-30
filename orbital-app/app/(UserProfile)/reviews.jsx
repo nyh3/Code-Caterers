@@ -5,16 +5,18 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/auth";
 import { useRouter } from "expo-router";
 import { AirbnbRating } from "react-native-ratings";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function ReviewsPage() {
   const { userId } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const isFocused = useIsFocused();
   const router = useRouter();
 
   useEffect(() => {
     fetchUserReviews();
-  }, []);
+  }, [isFocused]);
 
   const fetchUserReviews = async () => {
     try {
