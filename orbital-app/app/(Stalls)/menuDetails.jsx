@@ -3,13 +3,17 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../../contexts/auth'
 import { AirbnbRating } from 'react-native-ratings';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function MenuDetailScreen() {
   const menuId = useSearchParams();
   const [reviews, setReviews] = useState([]);
   const [menu, setMenu] = useState(null);
   const router = useRouter();
+  const [isSaved, setIsSaved] = useState(false);
+  const { userId } = useAuth();
 
   useEffect(() => {
     fetchMenuDetails();
@@ -19,21 +23,61 @@ export default function MenuDetailScreen() {
   const fetchMenuDetails = async () => {
     console.log(menuId);
     try {
-      const { data, error } = await supabase
-        .from('menu')
-        .select('*')
-        .eq('id', menuId.id)
-        .single();
+      const [menuData, savedData] = await Promise.all([
+        supabase
+          .from('menu')
+          .select('*')
+          .eq('id', menuId.id)
+          .single(),
+        supabase
+          .from('profile')
+          .select('menu_id')
+          .eq('id', userId) // Update the condition to 'id' if the user ID column is named 'id'
+          .eq('menu_id', [menuId.id])
+          .single(),
+      ]);
 
-      if (error) {
-        console.error('Error fetching menu details:', error.message);
+      if (menuData.error) {
+        console.error('Error fetching menu details:', menuData.error.message);
         return;
       }
-      setMenu(data);
+
+      setMenu(menuData.data);
+
+      if (savedData.error) {
+        console.error('Error fetching saved status:', savedData.error.message);
+        return;
+      }
+
+      setIsSaved(Boolean(savedData.data?.menu_id === menuId.id));
     } catch (error) {
       console.error('Error fetching menu details:', error.message);
     }
   };
+
+  const handleSaveToggle = async () => {
+    try {
+      if (isSaved) {
+        // If already saved, remove it from the profile table
+        await supabase
+          .from('profile')
+          .delete()
+          .eq('id', userId)
+          .eq('menu_id', menu.id); // Update the condition to 'menu_id'
+  
+        setIsSaved(false); // Toggle the saved status
+      } else {
+        // If not saved, add it to the profile table
+        await supabase.from('profile').insert([
+          { id: userId, menu_id: menu.id }, // Update 'menu_id' to 'menu_id'
+        ]);
+  
+        setIsSaved(true); // Toggle the saved status
+      }
+    } catch (error) {
+      console.error('Error saving/unsaving menu:', error.message);
+    }
+  };  
 
   const fetchReviews = async () => {
     try {
@@ -67,6 +111,13 @@ export default function MenuDetailScreen() {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={handleSaveToggle} style={styles.heartButton}>
+        <Ionicons
+          name={isSaved ? 'heart' : 'heart-outline'}
+          size={24}
+          color={isSaved ? '#FF84A8' : 'black'}
+        />
+      </TouchableOpacity>
       <Image source={{ uri: menu.image }} style={styles.image} />
       <Text style={styles.menuName}>{menu.name}</Text>
       <AirbnbRating
@@ -80,16 +131,16 @@ export default function MenuDetailScreen() {
       <Text style={styles.price}>Price: ${menu.price}</Text>
       <Text>{menu.description}</Text>
       <View style={styles.dietaryRestrictionsContainer}>
-      {menu.dietary_restrictions && menu.dietary_restrictions.length > 0 ? (
-        menu.dietary_restrictions.map((restriction, index) => (
-          <View style={styles.dietaryRestrictionTag} key={index}>
-            <Text style={styles.dietaryRestrictionText}>{restriction}</Text>
-          </View>
-        ))
-      ) : (
-        <Text>No dietary restrictions</Text>
-      )}
-    </View>
+        {menu.dietary_restrictions && menu.dietary_restrictions.length > 0 ? (
+          menu.dietary_restrictions.map((restriction, index) => (
+            <View style={styles.dietaryRestrictionTag} key={index}>
+              <Text style={styles.dietaryRestrictionText}>{restriction}</Text>
+            </View>
+          ))
+        ) : (
+          <Text>No dietary restrictions</Text>
+        )}
+      </View>
       <TouchableOpacity onPress={() => handleAddReview(menu.id)} style={styles.buttonContainer}>
         <Text style={styles.button}>Add Review</Text>
       </TouchableOpacity>
@@ -164,8 +215,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 15,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 0, 0, 0.1)', // Adjust the opacity to control the faintness
-    paddingBottom: 10, // Add some spacing at the bottom to separate the line from the content
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
+    paddingBottom: 10,
   },
   profileImage: {
     width: 40,
@@ -198,7 +249,8 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'red',
+    marginVertical: 5,
+    color: '#FF6699',
   },
   dietaryRestrictionsContainer: {
     flexDirection: 'row',
@@ -216,5 +268,10 @@ const styles = StyleSheet.create({
   dietaryRestrictionText: {
     color: '#2C0080',
     fontWeight: 'bold',
+  },
+  heartButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
 });
