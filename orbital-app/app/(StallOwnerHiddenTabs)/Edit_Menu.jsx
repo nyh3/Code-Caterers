@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, ScrollView } from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link, useSearchParams } from 'expo-router';
 import { supabase } from "../../lib/supabase";
@@ -123,7 +123,8 @@ export default function EditMenuPage() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+      <View style={styles.container}>
       <Text style={styles.heading}>Edit Menu:</Text>
       <TextInput
         label="Name"
@@ -191,6 +192,7 @@ export default function EditMenuPage() {
       {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
       {loading && <ActivityIndicator />}
     </View>
+    </ScrollView> 
   );
 }
 
@@ -253,5 +255,8 @@ const styles = StyleSheet.create({
   removeDietaryRestrictionText: {
     color: '#2C0080',
     fontWeight: 'bold',
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
   },
 });

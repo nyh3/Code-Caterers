@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from 'expo-router';
 import { supabase } from "../../lib/supabase";
@@ -118,65 +118,67 @@ export default function AddMenuPage() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Add Menu:</Text>
-      <TextInput
-        label="Name"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-      />
-      <Button style={styles.buttonContainer} onPress={handleAddImage}>
-        <Text style={styles.buttons}>Add Image</Text>
-      </Button>
-      {image && <Image source={{ uri: image }} style={styles.image} />}
-      <TextInput
-        label="Description"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-        style={styles.input}
-      />
-      <TextInput
-        label="Price"
-        value={price}
-        onChangeText={setPrice}
-        keyboardType="numeric"
-        style={styles.input}
-      />
-      <TextInput
-        label="Dietary Restrictions"
-        value={newDietaryRestriction}
-        onChangeText={setNewDietaryRestriction}
-        style={styles.input}
-      />
-      <View style={styles.dietaryRestrictionsContainer}>
-        {dietaryRestrictions.map((restriction, index) => (
-          <View key={index} style={styles.dietaryRestrictionItem}>
-            <Text style={styles.dietaryRestrictionText}>{restriction}</Text>
-            <TouchableOpacity
-              onPress={() => handleRemoveDietaryRestriction(index)}
-              style={styles.removeDietaryRestrictionButton}
-            >
-              <Text style={styles.removeDietaryRestrictionText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
-      <Button onPress={handleAddDietaryRestriction} style={styles.buttonContainer}>
-        <Text style={styles.buttons}>Add Dietary Restriction</Text>
-      </Button>
-      
-      <Button onPress={handleSubmit} style={styles.buttonContainer}>
-        <Text style={styles.buttons}>Submit</Text>
-      </Button>
-      <Link href="../(StallOwnerHome)/Menu">
-        <Button style={styles.buttonContainer}>
-          <Text style={styles.buttons}>Discard & Return</Text>
+    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+      <View style={styles.container}>
+        <Text style={styles.heading}>Add Menu:</Text>
+        <TextInput
+          label="Name"
+          value={name}
+          onChangeText={setName}
+          style={styles.input}
+        />
+        <Button style={styles.buttonContainer} onPress={handleAddImage}>
+          <Text style={styles.buttons}>Add Image</Text>
         </Button>
-      </Link>
-      {loading && <ActivityIndicator />}
-    </View>
+        {image && <Image source={{ uri: image }} style={styles.image} />}
+        <TextInput
+          label="Description"
+          value={description}
+          onChangeText={setDescription}
+          multiline
+          style={styles.input}
+        />
+        <TextInput
+          label="Price"
+          value={price}
+          onChangeText={setPrice}
+          keyboardType="numeric"
+          style={styles.input}
+        />
+        <TextInput
+          label="Dietary Restrictions"
+          value={newDietaryRestriction}
+          onChangeText={setNewDietaryRestriction}
+          style={styles.input}
+        />
+        <View style={styles.dietaryRestrictionsContainer}>
+          {dietaryRestrictions.map((restriction, index) => (
+            <View key={index} style={styles.dietaryRestrictionItem}>
+              <Text style={styles.dietaryRestrictionText}>{restriction}</Text>
+              <TouchableOpacity
+                onPress={() => handleRemoveDietaryRestriction(index)}
+                style={styles.removeDietaryRestrictionButton}
+              >
+                <Text style={styles.removeDietaryRestrictionText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+        <Button onPress={handleAddDietaryRestriction} style={styles.buttonContainer}>
+          <Text style={styles.buttons}>Add Dietary Restriction</Text>
+        </Button>
+        
+        <Button onPress={handleSubmit} style={styles.buttonContainer}>
+          <Text style={styles.buttons}>Submit</Text>
+        </Button>
+        <Link href="../(StallOwnerHome)/Menu">
+          <Button style={styles.buttonContainer}>
+            <Text style={styles.buttons}>Discard & Return</Text>
+          </Button>
+        </Link>
+        {loading && <ActivityIndicator />}
+      </View>
+    </ScrollView>
   );
 }
 
@@ -234,6 +236,9 @@ const styles = StyleSheet.create({
     removeDietaryRestrictionText: {
       color: '#2C0080',
       fontWeight: 'bold',
+    },
+    scrollViewContainer: {
+      flexGrow: 1,
     },
   });
   
