@@ -147,6 +147,7 @@ export default function AddMenuPage() {
         />
         <TextInput
           label="Dietary Restrictions"
+          autoCapitalize="characters"
           value={newDietaryRestriction}
           onChangeText={setNewDietaryRestriction}
           style={styles.input}
