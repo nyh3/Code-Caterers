@@ -68,6 +68,7 @@ export default function DietaryRestrictions() {
   return (
     <View style={styles.wholeThing}>
       <Text style={styles.header}>Dietary Restrictions:</Text>
+      <Text style={styles.warning}>Note: Do not put halal and vegetarian as your dietary restrictions</Text>
       <Text style={styles.bold}>Dietary restrictions or allergies declared:</Text>
       {dietary_restrictions.map((restriction, index) => (
         <View key={index} style={styles.restrictionContainer}>
@@ -166,5 +167,9 @@ const styles = StyleSheet.create({
   errormsg: {
     marginTop: 10,
     marginLeft: 15,
+  },
+  warning: {
+    fontWeight: 'bold',
+    color: 'red',
   }
 });
