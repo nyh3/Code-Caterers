@@ -56,7 +56,7 @@ export default function SavedPage() {
   };
 
   const handleProfilePress = (profile) => {
-    router.push({ pathname: '/userprofile', params: { userId: profile.user_id } });
+    router.push({ pathname: '/userprofile', params: { id: profile.id } });
   };
   
 
