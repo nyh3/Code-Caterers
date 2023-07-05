@@ -1,4 +1,4 @@
-import { View, Text, Image, ActivityIndicator, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, Image, ActivityIndicator, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/auth';
@@ -21,17 +21,30 @@ export default function UserProfilePage() {
 
     useEffect(() => {
         if (otherUserId) {
-            fetchReviews();
-            fetchSavedMenus();
+            fetchReviews(); // Pass otherUserId as parameter
+            fetchSavedMenus(); // Pass otherUserId as parameter
         }
+    }, [otherUserId]);
+
+    useEffect(() => {
+        const refreshData = async () => {
+            if (otherUserId) {
+                await Promise.all([fetchReviews(), fetchSavedMenus()]);
+            }
+        };
+
+        refreshData();
     }, [otherUserId]);
 
     const fetchReviews = async () => {
         try {
             const { data: reviewsData, error: reviewsError } = await supabase
                 .from('review')
-                .select('*, menu (name, image, price)')
-                .eq('user_id', otherUserId); // Fetch reviews for the user with the specified ID
+                .select(
+                    'id, rating, review_text, image, updated_at, menu_id(*, stall(*, location(*))), profile:user_id (username, image)'
+                )
+                .eq('profile.other_user_id', otherUserId) // Filter reviews based on other_user_id field in profile relation
+                .order('updated_at', { ascending: false }); // Optional: Order the reviews by updated_at in descending order
 
             if (reviewsError) {
                 console.error('Error fetching reviews:', reviewsError.message);
@@ -46,10 +59,9 @@ export default function UserProfilePage() {
 
     const fetchSavedMenus = async () => {
         try {
-            // Fetch saved menus for other user
             const { data: savedMenusData, error: savedMenusError } = await supabase
                 .from('profile')
-                .select('*, menu (name, image, price)')
+                .select('menu_id(*, stall(*, location(*)))')
                 .eq('other_user_id', otherUserId);
 
             if (savedMenusError) {
@@ -62,6 +74,7 @@ export default function UserProfilePage() {
             console.error('Error fetching saved menus:', error.message);
         }
     };
+
 
     const fetchProfile = async () => {
         try {
@@ -86,7 +99,11 @@ export default function UserProfilePage() {
     };
 
     const handleMenuPress = (menuId) => {
-        router.push({ pathname: '/menu', params: { id: menuId } });
+        router.push({ pathname: '/menuDetails', params: { id: menuId } });
+    };
+
+    const handleReviewPress = (reviewId) => {
+        router.push({ pathname: '/View_Review', params: { id: reviewId } });
     };
 
     const handleSaveToggle = async () => {
@@ -153,14 +170,15 @@ export default function UserProfilePage() {
                 ) : (
                     <FlatList
                         data={savedMenus}
-                        keyExtractor={(item) => item.id.toString()}
+                        keyExtractor={(item) => item.menu_id.toString()}
                         renderItem={({ item }) => (
-                            <TouchableOpacity onPress={() => handleMenuPress(item.menu.id)}>
+                            <TouchableOpacity onPress={() => handleMenuPress(item.menu_id.id)}>
                                 <View style={styles.savedMenuContainer}>
-                                    <Image source={{ uri: item.menu.image }} style={styles.menuImage} />
+                                    <Image source={{ uri: item.menu_id.image }} style={styles.menuImage} />
                                     <View style={styles.savedMenuDetails}>
-                                        <Text style={styles.menuName}>{item.menu.name}</Text>
-                                        <Text style={styles.price}>Price: ${item.menu.price}</Text>
+                                        <Text style={styles.menuName}>{item.menu_id.name}</Text>
+                                        <Text style={styles.stallName}>{item.menu_id.stall.name}</Text>
+                                        <Text style={styles.location}>{item.menu_id.stall.location.name}</Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -173,14 +191,30 @@ export default function UserProfilePage() {
                         <Text>No reviews found.</Text>
                     ) : (
                         <FlatList
-                            data={reviews}
+                            data={reviews} //shows all reviews here
+                            //data={reviews.filter(item => item.profile && item.profile.user_id === otherUserId)} // otherUserId is null, trying to filter so that only otherUserId fetched is displayed
                             keyExtractor={(item) => item.id.toString()}
                             renderItem={({ item }) => (
-                                <TouchableOpacity onPress={() => handleMenuPress(item.menu.id)}>
+                                <TouchableOpacity onPress={() => handleReviewPress(item.id)}>
                                     <View style={styles.reviewItemContainer}>
-                                        <Image source={{ uri: item.menu.image }} style={styles.menuImage} />
-                                        <View style={styles.reviewDetails}>
-                                            <Text style={styles.menuName}>{item.menu.name}</Text>
+                                        <View style={styles.menuContainer}>
+                                            <Image source={{ uri: item.menu_id.image }} style={styles.menuImage} />
+                                            <View style={styles.menuDetails}>
+                                                <Text style={styles.menuName}>{item.menu_id.name}</Text>
+                                                <Text style={styles.price}>Price: ${item.menu_id.price}</Text>
+                                                <Text style={styles.stallName}>{item.menu_id.stall.name}</Text>
+                                                <Text style={styles.location}>{item.menu_id.stall.location.name}</Text>
+                                            </View>
+                                        </View>
+                                        {item.profile && item.profile.image ? (
+                                            <Image source={{ uri: item.profile.image }} style={styles.profileImage} />
+                                        ) : (
+                                            <View style={styles.profileImage} /> // Placeholder or default image
+                                        )}
+                                        <View style={styles.userInfo}>
+                                            <Text style={styles.text}>Review:</Text> 
+                                        </View>
+                                        <View style={styles.ratingContainer}>
                                             <AirbnbRating
                                                 defaultRating={parseFloat(item.rating) || 0}
                                                 size={15}
@@ -190,15 +224,13 @@ export default function UserProfilePage() {
                                                 maxRating={5}
                                                 style={styles.rating}
                                             />
-                                            <Text style={styles.comment}>{item.review_text}</Text>
-                                            {item.image && (
-                                                <Image source={{ uri: item.image }} style={styles.reviewImage} />
-                                            )}
-                                            <Text style={styles.timestamp}>{item.updated_at}</Text>
                                         </View>
+                                        <Text style={styles.comment}>{item.review_text}</Text>
+                                        {item.image && <Image source={{ uri: item.image }} style={styles.reviewImage} />}
+                                        <Text style={styles.timestamp}>{item.updated_at}</Text>
                                     </View>
                                 </TouchableOpacity>
-                            )}
+                            )}                    
                         />
                     )}
                 </View>
@@ -234,6 +266,14 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
     },
+    username: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    text: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
     heartIconContainer: {
         position: 'absolute',
         top: 16,
@@ -258,33 +298,55 @@ const styles = StyleSheet.create({
     tabButtonText: {
         fontWeight: 'bold',
     },
-    reviewContainer: {
-        flex: 1,
-    },
     reviewItemContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 16,
+        flexDirection: 'column',
+        backgroundColor: '#FFECF6',
+        padding: 10,
+        marginBottom: 10,
+        borderColor: '#FFF5FA',
+        borderWidth: 1,
+        borderRadius: 8,
+    },
+    menuContainer: {
+        flexDirection: 'row', // Arrange menu image, name, stall name, and location side by side
+        alignItems: 'center', // Center items horizontally in the row
+        marginBottom: 10, // Add some spacing between the menu details and other review elements
     },
     menuImage: {
         width: 80,
         height: 80,
         borderRadius: 8,
-        marginRight: 16,
+        marginRight: 15,
     },
-    reviewDetails: {
+    menuDetails: {
         flex: 1,
+        marginTop: 10,
     },
     menuName: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 4,
+        marginBottom: 2,
+        color: '#666',
     },
-    rating: {
+    location: {
+        fontSize: 13,
+        fontWeight: 'bold',
+        color: '#666',
+    },
+    stallName: {
+        fontSize: 13,
+        fontWeight: 'bold',
+        color: '#666',
+    },
+    ratingContainer: {
+        flexDirection: 'row', // Align rating and username in the same row
+        alignItems: 'center',
         marginBottom: 4,
+        marginLeft: 125,
     },
     comment: {
         marginBottom: 4,
+        color: '#666',
     },
     reviewImage: {
         width: '100%',
@@ -293,18 +355,20 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     timestamp: {
-        fontSize: 12,
-        color: '#888',
+        fontSize: 13,
     },
     savedMenuContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 16,
+        marginBottom: 10,
     },
     savedMenuDetails: {
         flex: 1,
+        marginTop: 10,
     },
     price: {
+        fontSize: 13,
         fontWeight: 'bold',
+        color: '#666',
     },
 });
