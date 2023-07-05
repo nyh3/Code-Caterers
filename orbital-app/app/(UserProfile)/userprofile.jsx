@@ -1,10 +1,10 @@
-import { ScrollView, View, Text, Image, ActivityIndicator, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ActivityIndicator, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/auth';
 import { AirbnbRating } from 'react-native-ratings';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router'; 
+import { useRouter, useSearchParams } from 'expo-router'; 
 
 export default function UserProfilePage() {
     const { userId } = useAuth();
@@ -12,8 +12,8 @@ export default function UserProfilePage() {
     const [savedMenus, setSavedMenus] = useState([]);
     const [isSaved, setIsSaved] = useState(false);
     const [profile, setProfile] = useState(null);
-    const [otherUserId, setOtherUserId] = useState(null); 
     const router = useRouter(); 
+    const otherUserId = useSearchParams();
 
     useEffect(() => {
         fetchProfile();
@@ -43,7 +43,7 @@ export default function UserProfilePage() {
                 .select(
                     'id, rating, review_text, image, updated_at, menu_id(*, stall(*, location(*))), profile:user_id (username, image)'
                 )
-                .eq('profile.other_user_id', otherUserId) // Filter reviews based on other_user_id field in profile relation
+                .eq('user_id', otherUserId.id) // Filter reviews based on other_user_id field in profile relation
                 .order('updated_at', { ascending: false }); 
 
             if (reviewsError) {
@@ -62,7 +62,7 @@ export default function UserProfilePage() {
             const { data: savedMenusData, error: savedMenusError } = await supabase
                 .from('profile')
                 .select('menu_id(*, stall(*, location(*)))')
-                .eq('other_user_id', otherUserId);
+                .eq('id', otherUserId.id);
 
             if (savedMenusError) {
                 console.error('Error fetching saved menus:', savedMenusError.message);
@@ -80,8 +80,8 @@ export default function UserProfilePage() {
         try {
             const { data: profileData, error: profileError } = await supabase
                 .from('profile')
-                .select('username, image, other_user_id')
-                .eq('other_user_id', userId)
+                .select('username, image')
+                .eq('id', otherUserId.id)
                 .limit(1);
 
             if (profileError) {
@@ -91,7 +91,6 @@ export default function UserProfilePage() {
 
             if (profileData.length > 0) {
                 setProfile(profileData[0]);
-                setOtherUserId(profileData[0].other_user_id);
             }
         } catch (error) {
             console.error('Error fetching profile data:', error.message);
