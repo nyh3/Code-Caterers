@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/auth';
 import { AirbnbRating } from 'react-native-ratings';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router'; // Import the useRouter hook
+import { useRouter } from 'expo-router'; 
 
 export default function UserProfilePage() {
     const { userId } = useAuth();
@@ -12,8 +12,8 @@ export default function UserProfilePage() {
     const [savedMenus, setSavedMenus] = useState([]);
     const [isSaved, setIsSaved] = useState(false);
     const [profile, setProfile] = useState(null);
-    const [otherUserId, setOtherUserId] = useState(null); // Add state for other user's ID
-    const router = useRouter(); // Initialize the useRouter hook
+    const [otherUserId, setOtherUserId] = useState(null); 
+    const router = useRouter(); 
 
     useEffect(() => {
         fetchProfile();
@@ -21,8 +21,8 @@ export default function UserProfilePage() {
 
     useEffect(() => {
         if (otherUserId) {
-            fetchReviews(); // Pass otherUserId as parameter
-            fetchSavedMenus(); // Pass otherUserId as parameter
+            fetchReviews();
+            fetchSavedMenus(); 
         }
     }, [otherUserId]);
 
@@ -44,7 +44,7 @@ export default function UserProfilePage() {
                     'id, rating, review_text, image, updated_at, menu_id(*, stall(*, location(*))), profile:user_id (username, image)'
                 )
                 .eq('profile.other_user_id', otherUserId) // Filter reviews based on other_user_id field in profile relation
-                .order('updated_at', { ascending: false }); // Optional: Order the reviews by updated_at in descending order
+                .order('updated_at', { ascending: false }); 
 
             if (reviewsError) {
                 console.error('Error fetching reviews:', reviewsError.message);
@@ -308,9 +308,9 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     menuContainer: {
-        flexDirection: 'row', // Arrange menu image, name, stall name, and location side by side
-        alignItems: 'center', // Center items horizontally in the row
-        marginBottom: 10, // Add some spacing between the menu details and other review elements
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        marginBottom: 10, 
     },
     menuImage: {
         width: 80,
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
         color: '#666',
     },
     ratingContainer: {
-        flexDirection: 'row', // Align rating and username in the same row
+        flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 4,
         marginLeft: 125,
