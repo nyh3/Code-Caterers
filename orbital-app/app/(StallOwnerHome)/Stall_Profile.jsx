@@ -29,75 +29,68 @@ export default function StallProfilePage() {
 
     useEffect(() => {
         const fetchStallDetails = async () => {
-            try {
-                const { data, error } = await supabase
-                    .from('stall')
-                    .select('*, location(name), cuisine(name), stallImage')
-                    .eq('id', stallId)
-                    .single();
-
-                if (error) {
-                    console.error('Error retrieving stall details:', error.message);
-                    return;
-                }
-                const stall = data;
-                setStallName(stall.name);
-                setSelectedLocation(stall.location.name);
-                setSelectedCuisine(stall.cuisine.name);
-                setHasAirCon(stall.has_air_con);
-                setIsHalal(stall.is_halal);
-                setIsVegetarian(stall.is_vegetarian);
-                setDescription(stall.description);
-
-                if (stall.stallImage) {
-                    const { publicURL, error: imageError } = await supabase.storage
-                        .from('StallImage')
-                        .getPublicUrl(stall.stallImage);
-
-                    if (imageError) {
-                        console.error('Error retrieving stall image:', imageError.message);
-                        return;
-                    }
-                    setStallImage(publicURL);
-                }
-            } catch (error) {
-                console.error('Error retrieving stall details:', error.message);
+          try {
+            const { data, error } = await supabase
+              .from('stall')
+              .select('*, location(name), cuisine(name)')
+              .eq('owner_id', userId)
+              .single();
+    
+            if (error) {
+              console.error('Error retrieving stall details:', error.message);
+              return;
             }
+    
+            const stall = data;
+            setStallId(stall.id);
+            setStallName(stall.name);
+            setSelectedLocation(stall.location.name);
+            setSelectedCuisine(stall.cuisine.name);
+            setHasAirCon(stall.has_air_con);
+            setIsHalal(stall.is_halal);
+            setIsVegetarian(stall.is_vegetarian);
+            setDescription(stall.description);
+            setStallImage(stall.stallImage);
+            setLocationId(stall.location_ID);
+            setCuisineId(stall.cuisine_ID);
+          } catch (error) {
+            console.error('Error retrieving stall details:', error.message);
+          }
         };
-        if (stallId) {
-            fetchStallDetails();
-        }
-        const fetchLocations = async () => {
-            try {
-                const { data, error } = await supabase.from('location').select();
-                if (error) {
-                    console.error('Error retrieving locations:', error.message);
-                    console.log('Location data:', data);
-                    console.log('Location error:', error);
-                    return;
-                }
-                setLocations(data);
-            } catch (error) {
-                console.error('Error retrieving locations:', error.message);
-            }
-        };
-
-        const fetchCuisines = async () => {
-            try {
-                const { data, error } = await supabase.from('cuisine').select();
-                if (error) {
-                    console.error('Error retrieving cuisines:', error.message);
-                    return;
-                }
-                setCuisines(data);
-            } catch (error) {
-                console.error('Error retrieving cuisines:', error.message);
-            }
-        }
+    
+        fetchStallDetails();
         fetchLocations();
         fetchCuisines();
-    }, [stallId]);
-
+      }, []);
+    
+      const fetchLocations = async () => {
+        try {
+          const { data, error } = await supabase.from('location').select();
+          if (error) {
+            console.error('Error retrieving locations:', error.message);
+            console.log('Location data:', data);
+            console.log('Location error:', error);
+            return;
+          }
+          setLocations(data);
+        } catch (error) {
+          console.error('Error retrieving locations:', error.message);
+        }
+      };
+    
+      const fetchCuisines = async () => {
+        try {
+          const { data, error } = await supabase.from('cuisine').select();
+          if (error) {
+            console.error('Error retrieving cuisines:', error.message);
+            return;
+          }
+          setCuisines(data);
+        } catch (error) {
+          console.error('Error retrieving cuisines:', error.message);
+        }
+      };
+      
     const handleAddImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images
@@ -164,58 +157,70 @@ export default function StallProfilePage() {
         }
 
         try {
-            const existingStall = await supabase
+            // Check if record already exists
+            const { data: existingStall, error: selectError } = await supabase
+              .from('stall')
+              .select()
+              .eq('owner_id', userId)
+              .single();
+        
+            if (existingStall) {
+              // Update existing record
+              const { data: updatedStall, error: updateError } = await supabase
                 .from('stall')
-                .select()
-                .eq('owner_id', userId)
+                .update({
+                  stallImage: uploadedImage,
+                  name: stallName,
+                  has_air_con: hasAirCon,
+                  is_halal: isHalal,
+                  is_vegetarian: isVegetarian,
+                  description: description,
+                  location_ID: locationId,
+                  cuisine_ID: cuisineId,
+                })
+                .eq('id', existingStall.id)
                 .single();
-            if (existingStall.data) {
-                const { data, error } = await supabase.from('stall').update([
-                    {
-                        owner_id: userId,
-                        stallImage: uploadedImage,
-                        name: stallName,
-                        location_ID: locationId,
-                        cuisine_ID: cuisineId,
-                        has_air_con: hasAirCon,
-                        is_halal: isHalal,
-                        is_vegetarian: isVegetarian,
-                        description: description
-                    }
-                ]).eq('id', existingStall.data.id).single();
-                if (error) {
-                    console.error('Error updating stall', error.message);
-                    return;
-                }
-                console.log('Stall updated successfully:', data);
+        
+              if (updateError) {
+                console.error('Error updating stall:', updateError.message);
+                setLoading(false);
+                return;
+              }
+        
+              console.log('Stall updated successfully:', updatedStall);
             } else {
-                const { data, error } = await supabase.from('stall').insert([
-                    {
-                        owner_id: userId,
-                        stallImage: uploadedImage,
-                        name: stallName,
-                        location_ID: locationId,
-                        cuisine_ID: cuisineId,
-                        has_air_con: hasAirCon,
-                        is_halal: isHalal,
-                        is_vegetarian: isVegetarian,
-                        description: description
-                    }
-                ]).select().single();
-                if (error) {
-                    console.error('Error inserting stall', error.message);
-                    return;
-                }
-                console.log('Stall inserted successfully:', data);
-                setStallId(data.id);
+              // Insert new record
+              const { data: insertedStall, error: insertError } = await supabase
+                .from('stall')
+                .insert({
+                  owner_id: userId,
+                  stallImage: uploadedImage,
+                  name: stallName,
+                  has_air_con: hasAirCon,
+                  is_halal: isHalal,
+                  is_vegetarian: isVegetarian,
+                  description: description,
+                  location_ID: locationId,
+                  cuisine_ID: cuisineId,
+                })
+                .single();
+        
+              if (insertError) {
+                console.error('Error inserting stall:', insertError.message);
+                setLoading(false);
+                return;
+              }
+        
+              console.log('Stall inserted successfully:', insertedStall);
             }
-
+        
             router.push('../(StallOwnerHome)/Home');
             setLoading(false);
-        } catch (error) {
-            console.error('Error inserting stall owner:', error.message);
-        }
-    };
+          } catch (error) {
+            console.error('Error upserting stall:', error.message);
+            setLoading(false);
+          }
+        };
 
     return (
         <Provider>

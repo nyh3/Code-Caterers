@@ -81,36 +81,6 @@ export default function AuthLayout() {
                   )}} />
 
             <Stack.Screen
-            name="Edit_Profile" 
-            options={{ 
-                headerStyle: {
-                  height: 80, // Customize the header height
-                  backgroundColor: "#FFF5FA", // Customize the header background color
-                },
-                headerTitleStyle: {
-                  alignSelf: "center", // Align the header title to the center
-                },
-                headerTitle: () => (
-                  <View style={styles.headerContainer}>
-                    <Image
-                      source={require('../../assets/headerlogo.png')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ),
-                headerLeft: () => (
-                    <TouchableOpacity>
-                        <Ionicons
-                        name="arrow-back"
-                        size={24}
-                        color="black"
-                        style={styles.backButton}
-                        />
-                    </TouchableOpacity>
-                  )}} />
-
-            <Stack.Screen
             name="Edit_Promotion" 
             options={{ 
                 headerStyle: {
@@ -191,36 +161,6 @@ export default function AuthLayout() {
                 ),
                 headerLeft: () => (
                     <TouchableOpacity onPress={handleReview}>
-                        <Ionicons
-                        name="arrow-back"
-                        size={24}
-                        color="black"
-                        style={styles.backButton}
-                        />
-                    </TouchableOpacity>
-                  )}} />
-                  
-            <Stack.Screen
-            name="Update_Stall" 
-            options={{ 
-                headerStyle: {
-                  height: 80, // Customize the header height
-                  backgroundColor: "#FFF5FA", // Customize the header background color
-                },
-                headerTitleStyle: {
-                  alignSelf: "center", // Align the header title to the center
-                },
-                headerTitle: () => (
-                  <View style={styles.headerContainer}>
-                    <Image
-                      source={require('../../assets/headerlogo.png')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ),
-                headerLeft: () => (
-                    <TouchableOpacity>
                         <Ionicons
                         name="arrow-back"
                         size={24}

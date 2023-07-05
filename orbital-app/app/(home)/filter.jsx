@@ -95,8 +95,8 @@ export default function FilterPage() {
 
       // Filter by dietary restrictions
       filteredOptions = filteredOptions.filter((option) => {
-        if (!option.dietary_restrictions) {
-          return true; // Include the option if dietary_restrictions is null or undefined
+        if (!option.dietary_restrictions || option.dietary_restrictions.length === 0) {
+          return true; // Include the option if dietary_restrictions is null, undefined, or empty
         }
         return option.dietary_restrictions.every((restriction) => !dietaryRestrictions.includes(restriction));
       });
