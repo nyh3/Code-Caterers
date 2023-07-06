@@ -4,9 +4,10 @@ import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link, useSearchParams } from 'expo-router';
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
-import * as ImagePicker from 'expo-image-picker'
+import * as ImagePicker from 'expo-image-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function EditMenuPage() {
+export default function EditPromotionPage() {
   const promotionId = useSearchParams();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -15,6 +16,11 @@ export default function EditMenuPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [originalImage, setOriginalImage] = useState(null);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [showClearEndDateButton, setShowClearEndDateButton] = useState(false);
 
   useEffect(() => {
     fetchMenuItem();
@@ -36,6 +42,8 @@ export default function EditMenuPage() {
       setTitle(data.title);
       setDescription(data.description);
       setOriginalImage(data.image);
+      setStartDate(new Date(data.start_date));
+      setEndDate(new Date(data.end_date));
     } catch (error) {
       console.error('Error fetching promotion item:', error.message);
     }
@@ -76,6 +84,8 @@ export default function EditMenuPage() {
       title: title,
       image: uploadedImage,
       description: description,
+      start_date: startDate,
+      end_date: endDate,
     })
     .eq('id', promotionId.id)
     .single();
@@ -105,6 +115,13 @@ export default function EditMenuPage() {
     }
   };
 
+  const formatDate = (date) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Edit Promotion:</Text>
@@ -131,6 +148,49 @@ export default function EditMenuPage() {
         multiline
         style={styles.input}
       />
+      <Button onPress={() => setShowStartDatePicker(true)} style={styles.buttonContainer}>
+        <Text style={styles.buttons}>Start Date: {formatDate(startDate)}</Text>
+      </Button>
+      {showStartDatePicker && (
+        <DateTimePicker
+          value={startDate}
+          mode="date"
+          display="default"
+          onChange={(event, date) => {
+            setShowStartDatePicker(false);
+            if (date) {
+              setStartDate(date);
+            }
+          }}
+        />
+      )}
+
+      <Button onPress={() => setShowEndDatePicker(true)} style={styles.buttonContainer}>
+        <Text style={styles.buttons}>End Date: {endDate ? formatDate(endDate) : 'No end date'}</Text>
+      </Button>
+      {showEndDatePicker && (
+        <DateTimePicker
+          value={endDate || new Date()}
+          mode="date"
+          display="default"
+          onChange={(event, date) => {
+            setShowEndDatePicker(false);
+            if (date) {
+              setEndDate(date);
+              setShowClearEndDateButton(true);
+            }
+          }}
+        />
+      )}
+      {showClearEndDateButton && (
+        <Button onPress={() => {
+          setEndDate(null);
+          setShowClearEndDateButton(false);
+        }} style={styles.buttonContainer}>
+          <Text style={styles.buttons}>Clear End Date</Text>
+        </Button>
+      )}
+
       <Button onPress={handleSubmit} style={styles.buttonContainer}>
         <Text style={styles.buttons}>Submit</Text>
       </Button>
