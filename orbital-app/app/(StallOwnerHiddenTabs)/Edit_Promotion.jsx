@@ -43,8 +43,8 @@ export default function EditMenuPage() {
 
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
     }
   };
 
@@ -109,7 +109,7 @@ export default function EditMenuPage() {
     <View style={styles.container}>
       <Text style={styles.heading}>Edit Promotion:</Text>
       <TextInput
-        label="Name"
+        label="Title"
         value={title}
         onChangeText={setTitle}
         multiline
