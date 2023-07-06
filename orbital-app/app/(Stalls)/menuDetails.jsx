@@ -31,45 +31,46 @@ export default function MenuDetailScreen() {
         supabase
           .from('profile')
           .select('menu_id')
-          .eq('id', userId) // Update the condition to 'id' if the user ID column is named 'id'
-          .eq('menu_id', [menuId.id])
+          .eq('id', userId)
           .single(),
       ]);
-
+  
       if (menuData.error) {
         console.error('Error fetching menu details:', menuData.error.message);
         return;
       }
-
+  
       setMenu(menuData.data);
-
+  
       if (savedData.error) {
         console.error('Error fetching saved status:', savedData.error.message);
         return;
       }
-
-      setIsSaved(Boolean(savedData.data?.menu_id === menuId.id));
+  
+      const isMenuSaved = savedData.data && savedData.data.menu_id === menuId.id;
+      setIsSaved(Boolean(isMenuSaved && savedData.data.menu_id !== null));
     } catch (error) {
       console.error('Error fetching menu details:', error.message);
     }
-  };
+  };  
 
   const handleSaveToggle = async () => {
     try {
       if (isSaved) {
-        // If already saved, remove it from the profile table
+        // If already saved, remove the menu_id from the profile table
         await supabase
           .from('profile')
-          .delete()
+          .update({ menu_id: null }) // Set the menu_id column to NULL
           .eq('id', userId)
-          .eq('menu_id', menu.id); // Update the condition to 'menu_id'
+          .eq('menu_id', menu.id);
   
         setIsSaved(false); // Toggle the saved status
       } else {
-        // If not saved, add it to the profile table
-        await supabase.from('profile').insert([
-          { id: userId, menu_id: menu.id }, // Update 'menu_id' to 'menu_id'
-        ]);
+        // If not saved, update the menu_id in the profile table
+        await supabase
+          .from('profile')
+          .update({ menu_id: menu.id })
+          .eq('id', userId);
   
         setIsSaved(true); // Toggle the saved status
       }
