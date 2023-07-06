@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { ScrollView, View, Text, Switch, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
 import { Button, Menu, Provider } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/auth';
 import { useRouter } from 'expo-router';
+import { AirbnbRating } from 'react-native-ratings';
 
 export default function FilterPage() {
   const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
@@ -143,7 +144,7 @@ export default function FilterPage() {
 
       // If there are ties in the rating, sort by stall rating (descending order)
       if (topThreeOptions.length < 3) {
-        filteredOptions.sort((a, b) => b.stall.rating - a.stall.rating);
+        filteredOptions.sort((a, b) => (b.stall.rating || 0) - (a.stall.rating || 0));
         const additionalOptions = filteredOptions.slice(0, 3 - topThreeOptions.length);
         setFilteredFoodOptions([...topThreeOptions, ...additionalOptions]);
       } else {
@@ -291,12 +292,46 @@ export default function FilterPage() {
           {filteredFoodOptions.length > 0 ? (
             filteredFoodOptions.map((option) => (
               <TouchableOpacity style={styles.option} key={option.id} onPress={() => { handleMenuPress(option.id) }}>
-                <Text style={styles.optionName}>{option.name}</Text>
-                <Text style={styles.optionDetails}>Price: ${option.price}</Text>
-                <Text style={styles.optionDetails}>Dietary Restrictions: {option.dietaryRestrictions}</Text>
-                <Text style={styles.optionDetails}>Cuisine: {option.cuisine}</Text>
-                <Text style={styles.optionDetails}>Location: {option.location}</Text>
-                <Text style={styles.optionDetails}>Air Conditioning: {option.hasAirCon ? 'Yes' : 'No'}</Text>
+                <View style={styles.optionContainer}>
+                  <Image source={{ uri: option.image }} style={styles.menuImage} />
+                  <View style={styles.optionDetailsContainer}>
+                    <Text style={styles.optionName}>{option.name} from {option.stall.name}</Text>
+                    <View style={styles.ratingContainer}>
+                    <Text style={styles.optionDetails}>Menu rating:</Text>
+                      <AirbnbRating
+                        defaultRating={parseFloat(option.rating) || 0}
+                        size={10}
+                        isDisabled
+                        showRating={false}
+                        minRating={0}
+                        maxRating={5}
+                      />
+                      <Text style={styles.ratingText}>{parseFloat(option.rating) || 0} / 5.0</Text>
+                    </View>
+
+                    <View style={styles.ratingContainer}>
+                    <Text style={styles.optionDetails}>Stall rating:</Text>
+                      <AirbnbRating
+                        defaultRating={parseFloat(option.stall.rating) || 0}
+                        size={10}
+                        isDisabled
+                        showRating={false}
+                        minRating={0}
+                        maxRating={5}
+                      />
+                      <Text style={styles.ratingText}>{parseFloat(option.stall.rating) || 0} / 5.0</Text>
+                    </View>
+
+                    {option.dietary_restrictions && option.dietary_restrictions.length > 0 && (
+                      <Text style={styles.optionDetails}>
+                        Dietary Restrictions: {option.dietary_restrictions.join(', ')}
+                      </Text>
+                    )}
+                    <Text style={styles.optionDetails}>Cuisine: {option.stall.cuisine.name}</Text>
+                    <Text style={styles.optionDetails}>Location: {option.stall.location.name}</Text>
+                    <Text style={styles.optionDetails}>Air Conditioning: {option.stall.has_air_con ? 'Yes' : 'No'}</Text>
+                  </View>
+                </View>
               </TouchableOpacity>
             ))
           ) : (
@@ -420,5 +455,29 @@ const styles = StyleSheet.create({
   restrictionText: {
     fontSize: 15,
     color: 'black',
+  },
+  optionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  menuImage: {
+    width: 80,
+    height: 80,
+    resizeMode: 'cover',
+    borderRadius: 10,
+  },
+  optionDetailsContainer: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  ratingText: {
+    marginLeft: 5,
+    fontSize: 12,
+    color: '#888',
   },
 });
