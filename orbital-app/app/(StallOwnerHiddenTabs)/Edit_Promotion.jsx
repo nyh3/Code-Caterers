@@ -17,7 +17,7 @@ export default function EditPromotionPage() {
   const router = useRouter();
   const [originalImage, setOriginalImage] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(null);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [showClearEndDateButton, setShowClearEndDateButton] = useState(false);
@@ -43,7 +43,11 @@ export default function EditPromotionPage() {
       setDescription(data.description);
       setOriginalImage(data.image);
       setStartDate(new Date(data.start_date));
-      setEndDate(new Date(data.end_date));
+      if (data.end_date) {
+        setEndDate(new Date(data.end_date));
+      } else {
+        setEndDate(null);
+      }
     } catch (error) {
       console.error('Error fetching promotion item:', error.message);
     }
@@ -116,6 +120,10 @@ export default function EditPromotionPage() {
   };
 
   const formatDate = (date) => {
+    if (!date) {
+      return 'No end date';
+    }
+  
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = String(date.getFullYear()).slice(-2);
@@ -166,28 +174,28 @@ export default function EditPromotionPage() {
       )}
 
       <Button onPress={() => setShowEndDatePicker(true)} style={styles.buttonContainer}>
-        <Text style={styles.buttons}>End Date: {endDate ? formatDate(endDate) : 'No end date'}</Text>
+        <Text style={styles.buttons}>End Date: {endDate !== null ? formatDate(endDate) : 'No end date'}</Text>
       </Button>
       {showEndDatePicker && (
         <DateTimePicker
-          value={endDate || new Date()}
-          mode="date"
-          display="default"
-          onChange={(event, date) => {
+            value={endDate !== null ? endDate : new Date()}
+            mode="date"
+            display="default"
+            onChange={(event, date) => {
             setShowEndDatePicker(false);
             if (date) {
-              setEndDate(date);
-              setShowClearEndDateButton(true);
+                setEndDate(date);
+                setShowClearEndDateButton(true);
             }
-          }}
+            }}
         />
-      )}
+       )}
       {showClearEndDateButton && (
         <Button onPress={() => {
-          setEndDate(null);
-          setShowClearEndDateButton(false);
+            setEndDate(null);
+            setShowClearEndDateButton(false);
         }} style={styles.buttonContainer}>
-          <Text style={styles.buttons}>Clear End Date</Text>
+            <Text style={styles.buttons}>Clear End Date</Text>
         </Button>
       )}
 
