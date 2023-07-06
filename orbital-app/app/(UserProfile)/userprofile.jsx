@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/auth';
 import { AirbnbRating } from 'react-native-ratings';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter, useSearchParams } from 'expo-router'; 
+import { useRouter, useSearchParams } from 'expo-router';
 
 export default function UserProfilePage() {
     const { userId } = useAuth();
@@ -12,25 +12,22 @@ export default function UserProfilePage() {
     const [savedMenus, setSavedMenus] = useState([]);
     const [isSaved, setIsSaved] = useState(false);
     const [profile, setProfile] = useState(null);
-    const router = useRouter(); 
+    const router = useRouter();
     const otherUserId = useSearchParams();
+    const [activeTab, setActiveTab] = useState('reviews'); // State variable for the active tab
 
     useEffect(() => {
         fetchProfile();
     }, []);
 
     useEffect(() => {
-        if (otherUserId) {
-            fetchReviews();
-            fetchSavedMenus(); 
-        }
+        fetchReviews();
+        fetchSavedMenus();
     }, [otherUserId]);
 
     useEffect(() => {
         const refreshData = async () => {
-            if (otherUserId) {
-                await Promise.all([fetchReviews(), fetchSavedMenus()]);
-            }
+            await Promise.all([fetchReviews(), fetchSavedMenus()]);
         };
 
         refreshData();
@@ -43,8 +40,8 @@ export default function UserProfilePage() {
                 .select(
                     'id, rating, review_text, image, updated_at, menu_id(*, stall(*, location(*))), profile:user_id (username, image)'
                 )
-                .eq('user_id', otherUserId.id) // Filter reviews based on other_user_id field in profile relation
-                .order('updated_at', { ascending: false }); 
+                .eq('user_id', otherUserId.id)
+                .order('updated_at', { ascending: false });
 
             if (reviewsError) {
                 console.error('Error fetching reviews:', reviewsError.message);
@@ -59,7 +56,7 @@ export default function UserProfilePage() {
 
     const fetchSavedMenus = async () => {
         try {
-            const { data: savedMenusData, error: savedMenusError } = await supabase
+            const { data: savedMenus, error: savedMenusError } = await supabase
                 .from('profile')
                 .select('menu_id(*, stall(*, location(*)))')
                 .eq('id', otherUserId.id);
@@ -69,29 +66,37 @@ export default function UserProfilePage() {
                 return;
             }
 
-            setSavedMenus(savedMenusData);
+            setSavedMenus(savedMenus);
         } catch (error) {
             console.error('Error fetching saved menus:', error.message);
         }
     };
 
-
     const fetchProfile = async () => {
         try {
-            const { data: profileData, error: profileError } = await supabase
-                .from('profile')
-                .select('username, image')
-                .eq('id', otherUserId.id)
-                .limit(1);
+            const [profileData, savedData] = await Promise.all([
+                supabase
+                    .from('profile')
+                    .select('username, image, other_user_id')
+                    .eq('id', otherUserId.id)
+                    .limit(1),
+                supabase
+                    .from('profile')
+                    .select('other_user_id')
+                    .eq('id', userId)
+                    .limit(1),
+            ]);
 
-            if (profileError) {
-                console.error('Error fetching profile data:', profileError.message);
+            if (profileData.error) {
+                console.error('Error fetching profile data:', profileData.error.message);
                 return;
             }
 
-            if (profileData.length > 0) {
-                setProfile(profileData[0]);
-            }
+            const profile = profileData.data[0];
+            const isProfileSaved = savedData.data && savedData.data[0]?.other_user_id === otherUserId.id;
+            setIsSaved(Boolean(isProfileSaved && profile.other_user_id !== null));
+
+            setProfile(profile);
         } catch (error) {
             console.error('Error fetching profile data:', error.message);
         }
@@ -102,27 +107,33 @@ export default function UserProfilePage() {
     };
 
     const handleReviewPress = (reviewId) => {
-        router.push({ pathname: '/View_Review', params: { id: reviewId } });
+        router.push({ pathname: '/User_View_Review', params: { id: reviewId } });
     };
 
     const handleSaveToggle = async () => {
         try {
-            setIsSaved(!isSaved);
-
             if (isSaved) {
-                // If already saved, remove the profile entry for the current user and otherUserId
+                // If already saved, remove the other_user_id from the profile table
                 await supabase
                     .from('profile')
-                    .delete()
-                    .eq('user_id', userId)
-                    .eq('other_user_id', otherUserId);
+                    .update({ other_user_id: null })// Set the other_user_id column to NULL
+                    .eq('id', userId)
+                    .eq('other_user_id', otherUserId.id);
+                setIsSaved(false);
             } else {
-                // If not saved, add a new profile entry for the current user and otherUserId
-                await supabase.from('profile').insert([{ user_id: userId, other_user_id: otherUserId }]);
+                await supabase
+                    .from('profile')
+                    .update({ other_user_id: otherUserId.id })
+                    .eq('id', userId);
+                setIsSaved(true);
             }
         } catch (error) {
             console.error('Error saving/unsaving profile:', error.message);
         }
+    };
+
+    const handleTabPress = (tab) => {
+        setActiveTab(tab);
     };
 
     if (!profile) {
@@ -150,34 +161,42 @@ export default function UserProfilePage() {
 
             <View style={styles.tabContainer}>
                 <TouchableOpacity
-                    style={[styles.tabButton, !isSaved && styles.activeTabButton]}
-                    onPress={() => setIsSaved(false)}
+                    style={[styles.tabButton, activeTab === 'reviews' && styles.activeTabButton]}
+                    onPress={() => handleTabPress('reviews')} // Set the active tab to 'reviews' when pressed
                 >
                     <Text style={styles.tabButtonText}>Reviews</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[styles.tabButton, isSaved && styles.activeTabButton]}
-                    onPress={() => setIsSaved(true)}
+                    style={[styles.tabButton, activeTab === 'savedMenus' && styles.activeTabButton]}
+                    onPress={() => handleTabPress('savedMenus')} // Set the active tab to 'savedMenus' when pressed
                 >
                     <Text style={styles.tabButtonText}>Saved Menu Items</Text>
                 </TouchableOpacity>
             </View>
 
-            {isSaved ? (
-                savedMenus.length === 0 ? (
+            {activeTab === 'savedMenus' ? (
+                savedMenus.length === 0 || savedMenus.some((item) => item.menu_id === null) ? (
                     <Text>No saved menus found.</Text>
                 ) : (
                     <FlatList
                         data={savedMenus}
-                        keyExtractor={(item) => item.menu_id.toString()}
+                        keyExtractor={(item) => (item.menu_id ? item.menu_id.toString() : null)}
                         renderItem={({ item }) => (
-                            <TouchableOpacity onPress={() => handleMenuPress(item.menu_id.id)}>
+                            <TouchableOpacity onPress={() => handleMenuPress(item.menu_id ? item.menu_id.id : null)}>
                                 <View style={styles.savedMenuContainer}>
-                                    <Image source={{ uri: item.menu_id.image }} style={styles.menuImage} />
+                                    {item.menu_id && item.menu_id.image && (
+                                        <Image source={{ uri: item.menu_id.image }} style={styles.menuImage} />
+                                    )}
                                     <View style={styles.savedMenuDetails}>
-                                        <Text style={styles.menuName}>{item.menu_id.name}</Text>
-                                        <Text style={styles.stallName}>{item.menu_id.stall.name}</Text>
-                                        <Text style={styles.location}>{item.menu_id.stall.location.name}</Text>
+                                        {item.menu_id && item.menu_id.name && (
+                                            <Text style={styles.menuName}>{item.menu_id.name}</Text>
+                                        )}
+                                        {item.menu_id && item.menu_id.stall && item.menu_id.stall.name && (
+                                            <Text style={styles.stallName}>{item.menu_id.stall.name}</Text>
+                                        )}
+                                        {item.menu_id && item.menu_id.stall && item.menu_id.stall.location && item.menu_id.stall.location.name && (
+                                            <Text style={styles.location}>{item.menu_id.stall.location.name}</Text>
+                                        )}
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -190,8 +209,7 @@ export default function UserProfilePage() {
                         <Text>No reviews found.</Text>
                     ) : (
                         <FlatList
-                            data={reviews} //shows all reviews here
-                            //data={reviews.filter(item => item.profile && item.profile.user_id === otherUserId)} // otherUserId is null, trying to filter so that only otherUserId fetched is displayed
+                            data={reviews}
                             keyExtractor={(item) => item.id.toString()}
                             renderItem={({ item }) => (
                                 <TouchableOpacity onPress={() => handleReviewPress(item.id)}>
@@ -211,7 +229,7 @@ export default function UserProfilePage() {
                                             <View style={styles.profileImage} /> // Placeholder or default image
                                         )}
                                         <View style={styles.userInfo}>
-                                            <Text style={styles.text}>Review:</Text> 
+                                            <Text style={styles.text}>Review:</Text>
                                         </View>
                                         <View style={styles.ratingContainer}>
                                             <AirbnbRating
@@ -229,7 +247,7 @@ export default function UserProfilePage() {
                                         <Text style={styles.timestamp}>{item.updated_at}</Text>
                                     </View>
                                 </TouchableOpacity>
-                            )}                    
+                            )}
                         />
                     )}
                 </View>
@@ -307,9 +325,9 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     menuContainer: {
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        marginBottom: 10, 
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
     },
     menuImage: {
         width: 80,
