@@ -16,7 +16,6 @@ export default function StallDetailScreen() {
   }, []);
 
   const fetchMenuDetails = async () => {
-    console.log(stallId);
     try {
       const { data, error } = await supabase
         .from('menu')

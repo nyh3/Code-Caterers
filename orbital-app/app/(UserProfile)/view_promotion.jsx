@@ -23,7 +23,7 @@ export default function ViewReviewScreen() {
         console.error('Error fetching promotion details:', error.message);
         return;
       }
-      console.log('help', data);
+
       setPromotion(data);
     } catch (error) {
       console.error('Error fetching review details:', error.message);
@@ -38,6 +38,24 @@ export default function ViewReviewScreen() {
     );
   }
 
+  const formatPromotionDuration = () => {
+    const startDate = new Date(promotion.start_date);
+    const endDate = promotion.end_date ? new Date(promotion.end_date) : null;
+
+    const formatDate = (date) => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = String(date.getFullYear()).slice(-2);
+      return `${day}/${month}/${year}`;
+    };
+
+    if (endDate) {
+      return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+    } else {
+      return `${formatDate(startDate)} - No end date`;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Image source={{ uri: promotion.image }} style={styles.promotionImage} />
@@ -45,7 +63,7 @@ export default function ViewReviewScreen() {
         <Text style={styles.title}>{promotion.title}</Text>
         <Text style={styles.title}>Only at: {promotion.stall.name} @ {promotion.stall.location.name}</Text>
         <Text style={styles.description}>{promotion.description}</Text>
-        <Text>Promotion Duration:</Text>
+        <Text style={styles.duration}>Promotion Duration: {formatPromotionDuration()}</Text>
       </View>
     </View>
   );
@@ -74,6 +92,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   description: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  duration: {
     fontSize: 16,
     marginBottom: 10,
   },

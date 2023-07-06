@@ -21,7 +21,6 @@ export default function MenuDetailScreen() {
   }, [menuId]);
 
   const fetchMenuDetails = async () => {
-    console.log(menuId);
     try {
       const [menuData, savedData] = await Promise.all([
         supabase
@@ -105,9 +104,14 @@ export default function MenuDetailScreen() {
     );
   }
 
-  const handleAddReview = (menu) => {
-    router.push({ pathname: '/newReview', params: { id: menu } });
+  const handleAddReview = (review) => {
+    router.push({ pathname: '/newReview', params: { id: review } });
   };
+
+  const handleReviewPress = (review) => {
+    router.push({ pathname: '/reviewDetails', params: { id: review } });
+  };
+
 
   return (
     <View style={styles.container}>
@@ -148,28 +152,30 @@ export default function MenuDetailScreen() {
         data={reviews}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.reviewContainer}>
-            <Image source={{ uri: item.profile.image }} style={styles.profileImage} />
-            <View style={styles.reviewDetails}>
-              <Text style={styles.username}>{item.profile.username}</Text>
-              <View style={styles.ratingContainer}>
-                <AirbnbRating
-                  defaultRating={parseFloat(item.rating) || 0}
-                  size={15}
-                  isDisabled
-                  showRating={false}
-                  minRating={0}
-                  maxRating={5}
-                  style={styles.rating}
-                />
+          <TouchableOpacity onPress={() => handleReviewPress(item.id)}>
+            <View style={styles.reviewContainer}>
+              <Image source={{ uri: item.profile.image }} style={styles.profileImage} />
+              <View style={styles.reviewDetails}>
+                <Text style={styles.username}>{item.profile.username}</Text>
+                <View style={styles.ratingContainer}>
+                  <AirbnbRating
+                    defaultRating={parseFloat(item.rating) || 0}
+                    size={15}
+                    isDisabled
+                    showRating={false}
+                    minRating={0}
+                    maxRating={5}
+                    style={styles.rating}
+                  />
+                </View>
+                <Text style={styles.comment}>{item.review_text}</Text>
+                {item.image && (
+                  <Image source={{ uri: item.image }} style={styles.reviewImage} />
+                )}
+                <Text>{item.updated_at}</Text>
               </View>
-              <Text style={styles.comment}>{item.review_text}</Text>
-              {item.image && (
-                <Image source={{ uri: item.image }} style={styles.reviewImage} />
-              )}
-              <Text>{item.updated_at}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>

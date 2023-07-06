@@ -171,5 +171,9 @@ const styles = StyleSheet.create({
   warning: {
     fontWeight: 'bold',
     color: 'red',
+    margin: 0,
+    marginHorizontal: 15,
+    marginTop: 10,
+    marginBottom: 5,
   }
 });

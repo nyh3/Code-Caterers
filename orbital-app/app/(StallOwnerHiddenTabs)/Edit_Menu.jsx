@@ -48,8 +48,8 @@ export default function EditMenuPage() {
 
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
     }
   };
 
@@ -155,6 +155,7 @@ export default function EditMenuPage() {
         keyboardType="numeric"
         style={styles.input}
       />
+      <Text style={styles.warning}>Note: Do not put halal and vegetarian as dietary restrictions</Text>
       <View style={styles.dietaryRestrictionsContainer}>
         <TextInput
           label="Dietary Restrictions"
@@ -260,4 +261,12 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     flexGrow: 1,
   },
+  warning: {
+    fontWeight: 'bold',
+    color: 'red',
+    margin: 0,
+    marginHorizontal: 15,
+    marginTop: 10,
+    marginBottom: 5,
+  }
 });

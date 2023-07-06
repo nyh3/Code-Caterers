@@ -4,16 +4,18 @@ import { supabase } from '../../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { AirbnbRating } from 'react-native-ratings';
+import { Picker } from '@react-native-picker/picker';
 
 export default function StallPage() {
   const [stalls, setStalls] = useState([]);
   const isFocused = useIsFocused();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('');
 
   useEffect(() => {
     fetchStalls();
-  }, [isFocused]);
+  }, [isFocused, sortBy]);
 
   useEffect(() => {
     fetchStalls();
@@ -29,7 +31,27 @@ export default function StallPage() {
         console.error('Error fetching stall details:', error.message);
         return;
       }
-      setStalls(data);
+
+      if (sortBy) {
+        let sortedData = [...data]; // Create a copy of the array
+        switch (sortBy) {
+          case 'rating':
+            sortedData = sortedData.sort((a, b) => {
+              const ratingA = a.rating || 0; // Treat null as 0
+              const ratingB = b.rating || 0; // Treat null as 0
+              return parseFloat(ratingB) - parseFloat(ratingA);
+            });
+            break;
+          case 'name':
+            sortedData = sortedData.sort((a, b) => a.name.localeCompare(b.name));
+            break;
+          default:
+            break;
+          }
+          setStalls(sortedData);
+        } else {
+          setStalls(data);
+        }
     } catch (error) {
       console.error('Error fetching stall details:', error.message);
     }
@@ -96,6 +118,21 @@ export default function StallPage() {
         onChangeText={setSearchQuery}
       />
       <Text style={styles.heading}>Stalls found:</Text>
+
+      <View style={styles.sortContainer}>
+        <Text style={styles.heading}>Sort By:</Text>
+        <Picker
+          selectedValue={sortBy}
+          onValueChange={(itemValue) => setSortBy(itemValue)}
+          style={styles.sortDropdown}
+        >
+          <Picker.Item label="None" value="" />
+          <Picker.Item label="Rating" value="rating" />
+          <Picker.Item label="Stall Name" value="name" />
+          {/* Add additional sorting options here */}
+        </Picker>
+      </View>
+
       <FlatList
         data={stalls}
         renderItem={renderStall}
