@@ -145,6 +145,7 @@ export default function AddMenuPage() {
           keyboardType="numeric"
           style={styles.input}
         />
+        <Text style={styles.warning}>Note: Do not put halal and vegetarian as dietary restrictions</Text>
         <TextInput
           label="Dietary Restrictions"
           autoCapitalize="characters"
@@ -241,5 +242,13 @@ const styles = StyleSheet.create({
     scrollViewContainer: {
       flexGrow: 1,
     },
+    warning: {
+      fontWeight: 'bold',
+      color: 'red',
+      margin: 0,
+      marginHorizontal: 15,
+      marginTop: 10,
+      marginBottom: 5,
+    }
   });
   
