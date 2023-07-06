@@ -105,6 +105,32 @@ export default function HomeLayout() {
                     />
                   </View>
                   )}} />
+
+            <Tabs.Screen 
+            name="explore" 
+            options={{ 
+                tabBarLabel: "Explore",
+                tabBarIcon: ({ color, size }) => (
+                    <Ionicons name="people-outline" size={size} color={color} />
+                  ),
+                tabBarInactiveTintColor: 'gray',
+                tabBarActiveTintColor: 'blue', 
+                headerStyle: {
+                  height: 80, // Customize the header height
+                  backgroundColor: "#FFF5FA", // Customize the header background color
+                },
+                headerTitleStyle: {
+                  alignSelf: "center", // Align the header title to the center
+                },
+                headerTitle: () => (
+                  <View style={styles.headerContainer}>
+                    <Image
+                      source={require('../../assets/headerlogo.png')}
+                      style={styles.logo}
+                      resizeMode="contain"
+                    />
+                  </View>
+                  )}} />
     </Tabs>
     )
 }
