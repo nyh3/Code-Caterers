@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { supabase } from "../../lib/supabase";
 import { TabView, TabBar } from "react-native-tab-view";
