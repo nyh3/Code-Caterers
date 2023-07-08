@@ -38,7 +38,7 @@ const PromotionPopup = ({ promotions }) => {
                 </View>
               ))
             ) : (
-              <Text>No promotions available</Text>
+              <Text style={styles.noPromotion}>No promotions available.</Text>
             )}
             <TouchableOpacity style={styles.viewPromotionsButton} onPress={handlePromotionPress}>
               <Text style={styles.viewPromotionsButtonText}>View Promotions</Text>
@@ -131,6 +131,13 @@ const styles = StyleSheet.create({
     color: '#2C0080',
     fontWeight: 'bold',
   },
+  noPromotion: {
+    color: '#2C0080',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 15,
+    marginLeft: 15,
+  }
 });
 
 export default PromotionPopup;
