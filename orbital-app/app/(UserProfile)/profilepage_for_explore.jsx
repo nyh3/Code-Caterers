@@ -6,7 +6,7 @@ import { AirbnbRating } from 'react-native-ratings';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useSearchParams } from 'expo-router';
 
-export default function UserProfilePage() {
+export default function ProfilePage() {
     const { userId } = useAuth();
     const [reviews, setReviews] = useState([]);
     const [savedMenus, setSavedMenus] = useState([]);
@@ -140,7 +140,7 @@ export default function UserProfilePage() {
     };
 
     const handleMenuPress = (menuId) => {
-        router.push({ pathname: '/User_Menu_Details', params: { id: menuId } });
+        router.push({ pathname: '/menuDetails', params: { id: menuId } });
     };
 
     const handleReviewPress = (reviewId) => {
