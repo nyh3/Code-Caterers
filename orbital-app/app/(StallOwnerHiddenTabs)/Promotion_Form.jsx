@@ -18,10 +18,9 @@ export default function PromotionForm() {
   const router = useRouter();
   const [stall, setStall] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(null);
+  const [endDate, setEndDate] = useState(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [showClearEndDateButton, setShowClearEndDateButton] = useState(false);
 
   useEffect(() => {
     fetchStallId();
@@ -98,8 +97,7 @@ export default function PromotionForm() {
     console.log('Promotion added successfully:', data);
     setTitle('');
     setDescription('');
-    setEndDate(null); // Reset the end date to null
-    setShowClearEndDateButton(false); // Hide the "Clear End Date" button
+    
 
     if (error) {
       console.error('Error inserting menu item:', error.message);
@@ -138,6 +136,7 @@ export default function PromotionForm() {
         style={styles.input}
       />
 
+      <Text style={styles.warning}>Please remember to include both a start and end date.</Text>
       <Button onPress={() => setShowStartDatePicker(true)} style={styles.buttonContainer}>
         <Text style={styles.buttons}>Start Date: {formatDate(startDate)}</Text>
       </Button>
@@ -155,31 +154,22 @@ export default function PromotionForm() {
         />
       )}
 
-    <Button onPress={() => setShowEndDatePicker(true)} style={styles.buttonContainer}>
-        <Text style={styles.buttons}>End Date: {endDate !== null ? formatDate(endDate) : 'No end date'}</Text>
-    </Button>
-    {showEndDatePicker && (
+      <Button onPress={() => setShowEndDatePicker(true)} style={styles.buttonContainer}>
+        <Text style={styles.buttons}>End Date: {formatDate(endDate)}</Text>
+      </Button>
+      {showEndDatePicker && (
         <DateTimePicker
-            value={endDate !== null ? endDate : new Date()}
-            mode="date"
-            display="default"
-            onChange={(event, date) => {
+          value={endDate}
+          mode="date"
+          display="default"
+          onChange={(event, date) => {
             setShowEndDatePicker(false);
             if (date) {
-                setEndDate(date);
-                setShowClearEndDateButton(true);
+              setEndDate(date);
             }
-            }}
+          }}
         />
-    )}
-    {showClearEndDateButton && (
-        <Button onPress={() => {
-            setEndDate(null);
-            setShowClearEndDateButton(false);
-        }} style={styles.buttonContainer}>
-            <Text style={styles.buttons}>Clear End Date</Text>
-        </Button>
-    )}
+      )}
 
       <Button onPress={handleSubmit} style={styles.buttonContainer}>
         <Text style={styles.buttons}>Submit</Text>
@@ -202,12 +192,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF5FA',
     justifyContent: 'flex-start',
+    padding: 15,
   },
   heading: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginVertical: 15,
-    marginHorizontal: 5,
+    marginBottom: 10,
   },
   input: {
     marginBottom: 15,
@@ -236,4 +226,23 @@ const styles = StyleSheet.create({
     height: 200,
     marginBottom: 10,
   },
+  warning: {
+    color: '#FF80AB',
+    marginBottom: 10,
+  }
 });
+
+/*  setEndDate(null);
+    setShowClearEndDateButton(false); 
+    
+    const [showClearEndDateButton, setShowClearEndDateButton] = useState(false);
+
+    {showClearEndDateButton && (
+        <Button onPress={() => {
+            setEndDate(null);
+            setShowClearEndDateButton(false);
+        }} style={styles.buttonContainer}>
+            <Text style={styles.buttons}>Clear End Date</Text>
+        </Button>
+    )}
+*/

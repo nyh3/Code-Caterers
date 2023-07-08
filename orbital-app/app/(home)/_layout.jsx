@@ -13,7 +13,7 @@ export default function HomeLayout() {
                     <Ionicons name="home" size={size} color={color} />
                   ),
                 tabBarInactiveTintColor: 'gray',
-                tabBarActiveTintColor: 'blue', 
+                tabBarActiveTintColor: '#2C0080', 
                 headerStyle: {
                   height: 80, // Customize the header height
                   backgroundColor: "#FFF5FA", // Customize the header background color
@@ -38,7 +38,7 @@ export default function HomeLayout() {
                     <Ionicons name="filter" size={size} color={color} />
                   ),
                 tabBarInactiveTintColor: 'gray',
-                tabBarActiveTintColor: 'blue', 
+                tabBarActiveTintColor: '#2C0080', 
                 headerStyle: {
                   height: 80, // Customize the header height
                   backgroundColor: "#FFF5FA", // Customize the header background color
@@ -63,7 +63,7 @@ export default function HomeLayout() {
                     <Ionicons name="person" size={size} color={color} />
                   ),
                 tabBarInactiveTintColor: 'gray',
-                tabBarActiveTintColor: 'blue', 
+                tabBarActiveTintColor: '#2C0080', 
                 headerStyle: {
                   height: 80, // Customize the header height
                   backgroundColor: "#FFF5FA", // Customize the header background color
@@ -88,7 +88,7 @@ export default function HomeLayout() {
                     <Ionicons name="megaphone" size={size} color={color} />
                   ),
                 tabBarInactiveTintColor: 'gray',
-                tabBarActiveTintColor: 'blue', 
+                tabBarActiveTintColor: '#2C0080', 
                 headerStyle: {
                   height: 80, // Customize the header height
                   backgroundColor: "#FFF5FA", // Customize the header background color
@@ -111,10 +111,10 @@ export default function HomeLayout() {
             options={{ 
                 tabBarLabel: "Explore",
                 tabBarIcon: ({ color, size }) => (
-                    <Ionicons name="people-outline" size={size} color={color} />
+                    <Ionicons name="people" size={size} color={color} />
                   ),
                 tabBarInactiveTintColor: 'gray',
-                tabBarActiveTintColor: 'blue', 
+                tabBarActiveTintColor: '#2C0080', 
                 headerStyle: {
                   height: 80, // Customize the header height
                   backgroundColor: "#FFF5FA", // Customize the header background color

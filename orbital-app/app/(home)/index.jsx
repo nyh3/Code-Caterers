@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { AirbnbRating } from 'react-native-ratings';
 import { Picker } from '@react-native-picker/picker';
+import PromotionPopup from "../(StallOwnerHiddenTabs)/PromotionPopup"
 
 export default function StallPage() {
   const [stalls, setStalls] = useState([]);
@@ -12,6 +13,31 @@ export default function StallPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('');
+  const [promotions, setPromotions] = useState([]);
+  const [showPromotionPopup, setShowPromotionPopup] = useState(false);
+
+  useEffect(() => {
+    const fetchPromotions = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('promotion')
+          .select('*')
+          .lte('start_date', new Date().toLocaleString('en-US', { timeZone: 'Asia/Singapore' }))
+          .gte('end_date', new Date().toLocaleString('en-US', { timeZone: 'Asia/Singapore' }))
+          .order('start_date', { ascending: true })
+          .order('end_date', { ascending: true });
+        if (error) {
+          console.error('Error fetching promotion details:', error.message);
+          return;
+        }
+        setPromotions(data);
+        setShowPromotionPopup(true);
+      } catch (error) {
+        console.error('Error fetching promotion details:', error.message);
+      }
+    };
+    fetchPromotions();
+  }, []);
 
   useEffect(() => {
     fetchStalls();
@@ -47,11 +73,11 @@ export default function StallPage() {
             break;
           default:
             break;
-          }
-          setStalls(sortedData);
-        } else {
-          setStalls(data);
         }
+        setStalls(sortedData);
+      } else {
+        setStalls(data);
+      }
     } catch (error) {
       console.error('Error fetching stall details:', error.message);
     }
@@ -140,6 +166,10 @@ export default function StallPage() {
         contentContainerStyle={styles.stallList}
         showsVerticalScrollIndicator={false}
       />
+
+      {showPromotionPopup && (
+        <PromotionPopup promotions={promotions} />
+      )}
     </View>
   );
 }
