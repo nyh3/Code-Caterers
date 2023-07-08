@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/auth'
 import { AirbnbRating } from 'react-native-ratings';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function MenuDetailScreen() {
+export default function UserMenuDetailScreen() {
   const menuId = useSearchParams();
   const [reviews, setReviews] = useState([]);
   const [menu, setMenu] = useState(null);

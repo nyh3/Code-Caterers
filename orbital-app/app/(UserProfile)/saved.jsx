@@ -18,33 +18,63 @@ export default function SavedPage() {
 
   useEffect(() => {
     const fetchSavedMenuItems = async () => {
-      const { data, error } = await supabase
-        .from('profile')
-        .select('menu_id(*, stall(*, location(*)))')
-        .eq('id', userId);
+      try {
+        const { data, error } = await supabase
+          .from('profile')
+          .select('menu_id')
+          .eq('id', userId);
 
-      if (error) {
-        console.error("Error fetching saved menu items:", error);
-        return;
+        if (error) {
+          console.error('Error fetching saved menu items:', error);
+          return;
+        }
+
+        const savedMenuIds = data[0].menu_id || [];
+
+        const { data: menuData, error: menuError } = await supabase
+          .from('menu')
+          .select('*, stall(*, location(*))')
+          .in('id', savedMenuIds);
+
+        if (menuError) {
+          console.error('Error fetching menu details:', menuError);
+          return;
+        }
+
+        setSavedMenuItems(menuData);
+      } catch (error) {
+        console.error('Error fetching saved menu items:', error);
       }
-
-      const filteredData = data.filter((item) => item.menu_id !== null);
-      setSavedMenuItems(filteredData.map((item) => item.menu_id));
     };
 
     const fetchSavedProfiles = async () => {
-      const { data, error } = await supabase
-        .from('profile')
-        .select('other_user_id(*)')
-        .eq('id', userId);
+      try {
+        const { data, error } = await supabase
+          .from('profile')
+          .select('other_user_id')
+          .eq('id', userId);
 
-      if (error) {
-        console.error("Error fetching saved profiles:", error);
-        return;
+        if (error) {
+          console.error('Error fetching saved profiles:', error);
+          return;
+        }
+
+        const savedProfileIds = data[0].other_user_id || [];
+
+        const { data: profileData, error: profileError } = await supabase
+          .from('profile')
+          .select('*')
+          .in('id', savedProfileIds);
+
+        if (profileError) {
+          console.error('Error fetching profile details:', profileError);
+          return;
+        }
+
+        setSavedProfiles(profileData);
+      } catch (error) {
+        console.error('Error fetching saved profiles:', error);
       }
-
-      const filteredData = data.filter((profile) => profile.other_user_id !== null);
-      setSavedProfiles(filteredData.map((profile) => profile.other_user_id));
     };
 
     fetchSavedMenuItems();
@@ -52,51 +82,72 @@ export default function SavedPage() {
   }, [userId]);
 
   const handleMenuPress = (item) => {
-    router.push({ pathname: '/menuDetails', params: { id: item.id } });
+    router.push({ pathname: '/User_Menu_Details', params: { id: item.id } });
   };
 
   const handleProfilePress = (profile) => {
     router.push({ pathname: '/userprofile', params: { id: profile.id } });
   };
-  
+
 
   const SavedMenu = () => (
     <ScrollView style={styles.tabContainer}>
-      {savedMenuItems.map((item) => (
-        <TouchableOpacity
-          key={item.id}
-          style={styles.tabItem}
-          onPress={() => handleMenuPress(item)}
-        >
-          <View style={styles.itemContainer}>
-            <Image source={{ uri: item.image }} style={styles.itemImage} />
-            <View>
-              <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.itemLocation}>{item.stall.location.name}</Text>
-              <Text style={styles.itemStallName}>{item.stall.name}</Text>
+      {savedMenuItems.length > 0 ? (
+        savedMenuItems.map((item) => (
+          <TouchableOpacity
+            key={item.id}
+            style={styles.tabItem}
+            onPress={() => handleMenuPress(item)}
+          >
+            <View style={styles.itemContainer}>
+              <Image source={{ uri: item.image }} style={styles.itemImage} />
+              <View>
+                <Text style={styles.itemName}>{item.name}</Text>
+                <Text style={styles.itemLocation}>{item.stall.location.name}</Text>
+                <Text style={styles.itemStallName}>{item.stall.name}</Text>
+              </View>
             </View>
-          </View>
-        </TouchableOpacity>
-      ))}
+          </TouchableOpacity>
+        ))
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>User has not saved any menu items.</Text>
+        </View>
+      )}
     </ScrollView>
   );
-  
+
   const SavedProfiles = () => (
     <ScrollView style={styles.tabContainer}>
-      {savedProfiles.map((profile) => (
-        <TouchableOpacity
-          key={profile.id}
-          style={styles.tabItem}
-          onPress={() => handleProfilePress(profile)}
-        >
-          <View style={styles.itemContainer}>
-            <Image source={{ uri: profile.image }} style={styles.itemImage} />
-            <Text style={styles.itemName}>{profile.username}</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
+      {savedProfiles.length > 0 ? (
+        savedProfiles.map((profile) => (
+          <TouchableOpacity
+            key={profile.id}
+            style={styles.tabItem}
+            onPress={() => handleProfilePress(profile)}
+          >
+            <View style={styles.itemContainer}>
+              <Image source={{ uri: profile.image }} style={styles.itemImage} />
+              <Text style={styles.itemName}>{limitUsername(profile.username)}</Text>
+            </View>
+          </TouchableOpacity>
+        ))
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>User has not saved any profiles.</Text>
+        </View>
+      )}
     </ScrollView>
   );
+
+  const limitUsername = (username, limit = 23) => {
+    if (username.length <= limit) {
+      return username;
+    } else {
+      const truncatedUsername = username.slice(0, limit);
+      return `${truncatedUsername}...`;
+    }
+  };
 
   const renderScene = ({ route }) => {
     switch (route.key) {
@@ -143,11 +194,16 @@ const styles = StyleSheet.create({
   tabItem: {
     padding: 5,
     marginBottom: 10,
-    marginLeft: 15,
   },
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#FFECF6',
+    padding: 15,
+    marginHorizontal: 10,
+    borderColor: '#FFF5FA',
+    borderWidth: 2,
+    borderRadius: 10,
   },
   itemImage: {
     width: 100,
@@ -158,13 +214,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#666',
-    marginBottom: 5, 
+    marginBottom: 5,
   },
   itemLocation: {
     fontSize: 13,
     fontWeight: 'bold',
     color: '#666',
-    marginBottom: -15,
+    marginBottom: 5,
   },
   itemStallName: {
     fontSize: 13,
@@ -184,5 +240,15 @@ const styles = StyleSheet.create({
   tabBarUnderline: {
     backgroundColor: "#2C0080",
     height: 2,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
   },
 });
