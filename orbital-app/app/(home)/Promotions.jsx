@@ -85,14 +85,20 @@ const styles = StyleSheet.create({
     },
     promotion: {
         flexDirection: 'row',
-        marginBottom: 15,
-        alignItems: 'center',
+        alignItems: 'center',      
+        backgroundColor: '#FFECF6',
+        padding: 15,
+        marginBottom: 10,
+        marginHorizontal: 5,
+        borderColor: '#FFF5FA',
+        borderWidth: 2,
+        borderRadius: 10,
     },
     promotionImage: {
         width: 100,
         height: 100,
-        borderRadius: 10,
-        marginRight: 10,
+        borderRadius: 20,
+        marginRight: 15,
     },
     promotionTitle: {
         fontWeight: 'bold',
@@ -113,5 +119,5 @@ const styles = StyleSheet.create({
     text: {
         flexDirection: 'column',
         flex: 1,
-    }
+    },
 });
