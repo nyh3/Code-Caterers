@@ -50,9 +50,9 @@ export default function ViewReviewScreen() {
     };
 
     if (endDate) {
-      return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+      return ` ${formatDate(startDate)} to ${formatDate(endDate)}`;
     } else {
-      return `${formatDate(startDate)} - No end date`;
+      return ` ${formatDate(startDate)} to No end date`;
     }
   };
 
@@ -61,9 +61,17 @@ export default function ViewReviewScreen() {
       <Image source={{ uri: promotion.image }} style={styles.promotionImage} />
       <View style={styles.promotionDetails}>
         <Text style={styles.title}>{promotion.title}</Text>
-        <Text style={styles.title}>Only at: {promotion.stall.name} @ {promotion.stall.location.name}</Text>
         <Text style={styles.description}>{promotion.description}</Text>
-        <Text style={styles.duration}>Promotion Duration: {formatPromotionDuration()}</Text>
+        <Text style={styles.title}>Available at:</Text>
+        <Text style={styles.location}> {promotion.stall.name}, {promotion.stall.location.name}</Text>
+        <Text>
+          <Text style={styles.duration}>
+            Valid from:
+          </Text>
+          <Text style={styles.promotionValue}>
+            {formatPromotionDuration()}
+          </Text>
+        </Text>
       </View>
     </View>
   );
@@ -79,24 +87,43 @@ const styles = StyleSheet.create({
     paddingVertical: 35,
   },
   promotionImage: {
-    width: 200,
-    height: 200,
-    marginBottom: 10,
+    width: 150,
+    height: 150,
+    marginBottom: 25,
+    borderRadius: 30,
   },
   promotionDetails: {
     alignItems: 'center',
+    flex: 1,
   },
   title: {
     fontWeight: 'bold',
     fontSize: 20,
-    marginBottom: 10,
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    textAlign: 'center',
   },
   description: {
     fontSize: 16,
     marginBottom: 10,
+    marginTop: 15,
+    textAlign: 'center',
   },
   duration: {
     fontSize: 16,
-    marginBottom: 10,
   },
+  promotionValue: {
+    color: '#2C0080',
+    fontSize: 16,
+  },
+  location: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    textAlign: 'center',
+    color: '#2C0080',
+    marginTop: 10,
+    marginBottom: 15,
+  }
 });

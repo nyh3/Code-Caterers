@@ -19,7 +19,13 @@ export default function PromotionPage() {
 
     const fetchMenuItems = async () => {
         try {
-            const { data, error } = await supabase.from('promotion').select('*');
+            const { data, error } = await supabase
+                .from('promotion')
+                .select('*')
+                .lte('start_date', new Date().toLocaleString('en-US', { timeZone: 'Asia/Singapore' }))
+                .gte('end_date', new Date().toLocaleString('en-US', { timeZone: 'Asia/Singapore' }))
+                .order('start_date', { ascending: true })
+                .order('end_date', { ascending: true });
             if (error) {
                 console.error('Error fetching promotion details:', error.message);
                 return;
@@ -34,10 +40,17 @@ export default function PromotionPage() {
         <TouchableOpacity onPress={() => handlePromotionPress(item.id)}>
             <View style={styles.promotion}>
                 <Image source={{ uri: item.image }} style={styles.promotionImage} />
-                <View style={styles.promotionDetails}>
+                <View style={styles.text}>
                     <Text style={styles.promotionTitle}>{item.title}</Text>
+                    <Text>
+                        <Text style={styles.promotionLabel}>Valid from: </Text>
+                        <Text style={styles.promotionValue}>
+                            {item.start_date} to {item.end_date}
+                        </Text>
+                    </Text>
                 </View>
             </View>
+
         </TouchableOpacity>
     );
 
@@ -73,21 +86,32 @@ const styles = StyleSheet.create({
     promotion: {
         flexDirection: 'row',
         marginBottom: 15,
+        alignItems: 'center',
     },
     promotionImage: {
         width: 100,
         height: 100,
+        borderRadius: 10,
         marginRight: 10,
-    },
-    promotionDetails: {
-        flex: 1,
     },
     promotionTitle: {
         fontWeight: 'bold',
         fontSize: 16,
         marginBottom: 5,
+        flexWrap: 'wrap',
     },
     promotionDescription: {
         marginBottom: 5,
     },
+    promotionLabel: {
+        fontWeight: 'bold',
+    },
+    promotionValue: {
+        marginLeft: 5,
+        color: '#2C0080',
+    },
+    text: {
+        flexDirection: 'column',
+        flex: 1,
+    }
 });
