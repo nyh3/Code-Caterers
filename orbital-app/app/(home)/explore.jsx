@@ -62,7 +62,7 @@ export default function UserPage() {
   };
 
   const handleUserPress = (user) => {
-    router.push({ pathname: '/userprofile', params: { id: user.id } });
+    router.push({ pathname: '/profilepage_for_explore', params: { id: user.id } });
   };
 
   const renderUser = ({ item }) => (
