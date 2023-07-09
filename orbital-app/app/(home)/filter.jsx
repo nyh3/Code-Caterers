@@ -33,13 +33,12 @@ export default function FilterPage() {
           .select('dietary_restrictions')
           .eq('id', userId);
         if (error) {
-          console.error('Error retrieving dietary restrictions:', error.message);
           return;
         }
         const restrictions = data[0]?.dietary_restrictions || [];
         setDietaryRestrictions(restrictions);
       } catch (error) {
-        console.error('Error retrieving dietary restrictions:', error.message);
+        return;
       }
     };
 
