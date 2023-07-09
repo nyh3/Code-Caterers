@@ -46,23 +46,50 @@ export default function UserPage() {
 
   const fetchRecommendedUsers = async () => {
     try {
-      const { data: menuData, error: menuError } = await supabase
+      const { data: currentUserData, error: currentUserError } = await supabase
         .from('profile')
-        .select('menu_id')
+        .select('menu_id, other_user_id')
         .eq('id', userId)
         .single();
-      if (menuError) {
-        console.error('Error fetching menuid details:', menuError.message);
+  
+      if (currentUserError) {
+        console.error('Error fetching current user details:', currentUserError.message);
         return;
       }
-      setMenuId(menuData.menu_id);
+  
+      const currentUserMenuId = currentUserData.menu_id || [];
+      const currentUserSavedUsers = currentUserData.other_user_id || [];
+  
+      const { data: usersData, error: usersError } = await supabase
+        .from('profile')
+        .select('*')
+        .neq('id', userId) // Exclude current user
+        .contains('menu_id', currentUserMenuId);
+  
+      if (usersError) {
+        console.error('Error fetching users with the same menu_id:', usersError.message);
+        return;
+      }
+  
+      const recommendedUsers = usersData
+        .filter((user) => !currentUserSavedUsers.includes(user.id)) // Exclude saved users
+        .map((user) => ({ ...user, similarity: countSimilarMenuIds(user.menu_id, currentUserMenuId) }))
+        .sort((a, b) => b.similarity - a.similarity);
+  
+      setRecommendedUsers(recommendedUsers);
     } catch (error) {
-      console.error('Error fetching menuid details:', error.message);
+      console.error('Error fetching recommended users:', error.message);
     }
-  };
+  };  
+  
+  const countSimilarMenuIds = (menuIds, targetMenuId) => {
+    const menuIdArray = Array.isArray(menuIds) ? menuIds : [menuIds];
+    const targetArray = Array.isArray(targetMenuId) ? targetMenuId : [targetMenuId];
+    return menuIdArray.filter((menuId) => targetArray.includes(menuId)).length;
+  };  
 
   const handleUserPress = (user) => {
-    router.push({ pathname: '/userprofile', params: { id: user.id } });
+    router.push({ pathname: '/profilepage_for_explore', params: { id: user.id } });
   };
 
   const renderUser = ({ item }) => (
