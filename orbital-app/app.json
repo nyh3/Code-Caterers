@@ -21,7 +21,7 @@
     "android": {
       "package": "com.skute.orbitalapp",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/squarelogo.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
