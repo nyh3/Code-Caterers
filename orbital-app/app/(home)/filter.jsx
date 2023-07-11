@@ -182,7 +182,7 @@ export default function FilterPage() {
   };
 
   const handleMenuPress = (menu) => {
-    router.push({ pathname: '/menuDetails', params: { id: menu } });
+    router.push({ pathname: '/Menu_Details_Filter', params: { id: menu } });
   };
 
   return (
