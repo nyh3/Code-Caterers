@@ -121,7 +121,7 @@ export default function UserPage() {
         onChangeText={setSearchQuery}
       />
 
-    {recommendedUsers.length > 0 && (
+    {recommendedUsers.length > 0 && searchQuery == '' && (
     <View>
         <Text style={styles.heading}>Recommended Users</Text>
         <FlatList
