@@ -145,7 +145,7 @@ export default function StallPage() {
       />
       <Text style={styles.heading}>Stalls found:</Text>
 
-      <View style={styles.sortContainer}>
+      {searchQuery == '' && (<View style={styles.sortContainer}>
         <Text style={styles.heading}>Sort By:</Text>
         <Picker
           selectedValue={sortBy}
@@ -158,6 +158,7 @@ export default function StallPage() {
           {/* Add additional sorting options here */}
         </Picker>
       </View>
+      )}
 
       <FlatList
         data={stalls}

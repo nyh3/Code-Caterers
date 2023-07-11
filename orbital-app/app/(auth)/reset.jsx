@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Image, View, StyleSheet, ActivityIndicator } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
@@ -18,7 +18,7 @@ export default function Reset() {
 
             setLoading(true);
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `exp://gvhggxe.anonymous.19000.exp.direct/--/password-reset?email=${email}`
+                redirectTo: `https://nyh3.github.io/resetpassword`
             });
             setLoading(false);
 

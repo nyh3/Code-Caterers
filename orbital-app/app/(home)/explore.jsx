@@ -63,17 +63,20 @@ export default function UserPage() {
       const { data: usersData, error: usersError } = await supabase
         .from('profile')
         .select('*')
-        .neq('id', userId) // Exclude current user
-        .contains('menu_id', currentUserMenuId);
+        .neq('id', userId); // Exclude current user
   
       if (usersError) {
-        console.error('Error fetching users with the same menu_id:', usersError.message);
+        console.error('Error fetching other users:', usersError.message);
         return;
       }
   
       const recommendedUsers = usersData
         .filter((user) => !currentUserSavedUsers.includes(user.id)) // Exclude saved users
-        .map((user) => ({ ...user, similarity: countSimilarMenuIds(user.menu_id, currentUserMenuId) }))
+        .map((user) => ({
+          ...user,
+          similarity: countSimilarMenuIds(user.menu_id, currentUserMenuId)
+        }))
+        .filter((user) => user.similarity > 0) // Filter users with at least 1 similar menu_id
         .sort((a, b) => b.similarity - a.similarity);
   
       setRecommendedUsers(recommendedUsers);
@@ -121,7 +124,7 @@ export default function UserPage() {
         onChangeText={setSearchQuery}
       />
 
-    {recommendedUsers.length > 0 && (
+    {recommendedUsers.length > 0 && searchQuery == '' && (
     <View>
         <Text style={styles.heading}>Recommended Users</Text>
         <FlatList

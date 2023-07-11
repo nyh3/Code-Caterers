@@ -22,7 +22,10 @@ export default function RegisterPage() {
         setErrMsg('');
         const { error } = await supabase.auth.signUp({ 
             email: email, 
-            password: password });
+            password: password,
+            options: {
+                emailRedirectTo: 'https://nyh3.github.io/verify'
+    } });
         setLoading(false);
         if (error) {
             setErrMsg(error.message);
