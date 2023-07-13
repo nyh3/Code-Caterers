@@ -273,6 +273,36 @@ export default function UserProfileLayout() {
                   </View>
                 )}} />
 
+            <Stack.Screen
+            name="userprofile" 
+            options={{ 
+                headerStyle: {
+                  height: 80, // Customize the header height
+                  backgroundColor: "#FFF5FA", // Customize the header background color
+                },
+                headerTitleStyle: {
+                  alignSelf: "center", // Align the header title to the center
+                },
+                headerTitle: () => (
+                  <View style={styles.headerContainer}>
+                    <Image
+                      source={require('../../assets/headerlogo.png')}
+                      style={styles.logo}
+                      resizeMode="contain"
+                    />
+                  </View>
+                  ),
+                  headerLeft: () => (
+                    <TouchableOpacity onPress={handleSaved}>
+                        <Ionicons
+                        name="arrow-back"
+                        size={24}
+                        color="black"
+                        style={styles.backButton}
+                        />
+                    </TouchableOpacity>
+                )}} />
+
     </Stack>
   )
 }
