@@ -65,26 +65,6 @@ export default function AuthLayout() {
           )}} />
 
       <Stack.Screen
-      name="password-reset" 
-      options={{ 
-          headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
-          },
-          headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
-          },
-          headerTitle: () => (
-            <View style={styles.headerContainer}>
-              <Image
-                source={require('../../assets/headerlogo.png')}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-            </View>
-          )}} />
-
-      <Stack.Screen
       name="registerOwner" 
       options={{ 
           headerStyle: {
@@ -124,25 +104,6 @@ export default function AuthLayout() {
             </View>
           )}} />
             
-      <Stack.Screen
-      name="reset" 
-      options={{ 
-          headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
-          },
-          headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
-          },
-          headerTitle: () => (
-            <View style={styles.headerContainer}>
-              <Image
-                source={require('../../assets/headerlogo.png')}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-            </View>
-          )}} />
     </Stack>
   )
 }
