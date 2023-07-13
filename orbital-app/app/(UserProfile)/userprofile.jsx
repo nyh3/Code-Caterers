@@ -296,6 +296,7 @@ export default function UserProfilePage() {
                                     </View>
                                 </TouchableOpacity>
                             )}
+                            contentContainerStyle={styles.flatListContent}
                         />
                     )}
                 </View>
@@ -450,4 +451,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#666',
     },
+    flatListContent: {
+        paddingBottom: 180, // Adjust this value based on your layout
+      },
 });
