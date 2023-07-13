@@ -140,7 +140,7 @@ export default function UserProfilePage() {
     };
 
     const handleMenuPress = (menuId) => {
-        router.push({ pathname: '/User_Menu_Details', params: { id: menuId } });
+        router.push({ pathname: '/userProfilemenuDetails', params: { id: menuId } });
     };
 
     const handleReviewPress = (reviewId) => {
