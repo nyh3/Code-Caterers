@@ -364,9 +364,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     reviewItemContainer: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         backgroundColor: '#FFECF6',
-        padding: 10,
+        padding: 15,
         marginBottom: 10,
         borderColor: '#FFF5FA',
         borderWidth: 2,
