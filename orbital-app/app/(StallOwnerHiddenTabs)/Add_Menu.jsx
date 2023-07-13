@@ -189,6 +189,7 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-start',
       backgroundColor: '#FFF5FA',
       flex: 1,
+      paddingHorizontal: 15,
     },
     heading: {
       fontSize: 20,
@@ -211,12 +212,13 @@ const styles = StyleSheet.create({
       borderColor: '#FFBBDF',
     },
     image: {
-      width: 200,
-      height: 200,
+      width: 100,
+      height: 100,
       marginBottom: 15,
+      marginTop: 5,
     },
     dietaryRestrictionsContainer: {
-      marginBottom: 15,
+      marginBottom: 7,
     },
     dietaryRestrictionItem: {
       flexDirection: 'row',
@@ -242,12 +244,10 @@ const styles = StyleSheet.create({
       flexGrow: 1,
     },
     warning: {
-      fontWeight: 'bold',
       color: 'red',
       margin: 0,
       marginHorizontal: 15,
-      marginTop: 10,
-      marginBottom: 5,
+      marginBottom: 10,
     }
   });
   

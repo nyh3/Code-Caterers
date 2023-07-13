@@ -185,7 +185,7 @@ export default function EditPromotionPage() {
             setShowEndDatePicker(false);
             if (date) {
                 setEndDate(date);
-                setShowClearEndDateButton(true);
+                //setShowClearEndDateButton(true);
             }
             }}
         />
@@ -193,7 +193,7 @@ export default function EditPromotionPage() {
       {showClearEndDateButton && (
         <Button onPress={() => {
             setEndDate(null);
-            setShowClearEndDateButton(false);
+            //setShowClearEndDateButton(false);
         }} style={styles.buttonContainer}>
             <Text style={styles.buttons}>Clear End Date</Text>
         </Button>
@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#FFF5FA',
     flex: 1,
+    paddingHorizontal: 15,
   },
   heading: {
     fontSize: 20,

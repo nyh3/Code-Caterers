@@ -67,7 +67,7 @@ export default function UserProfile() {
                 
                 <Button onPress={handleSaved}>Saved</Button>
 
-            <Button onPress={() => supabase.auth.signOut()}>Log out</Button>
+            <Button onPress={() => supabase.auth.signOut()}>Log Out</Button>
         </View>
     );
 }

@@ -322,7 +322,7 @@ export default function StallProfilePage() {
                 >
                     {isVegetarian ? 'Yes' : 'No'}
                 </Button>
-                <Button onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.buttonText}>Submit Stall Details</Text></Button>
+                <Button onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.buttonText}>Submit / Update Stall Details</Text></Button>
                 {loading && <ActivityIndicator style={styles.ActivityIndicator} />}
                 <View style={styles.marginLeftContainer}>
                     <Link href="../(StallOwnerHome)/Home">
@@ -356,6 +356,7 @@ const styles = StyleSheet.create({
     },
     button: {
         marginHorizontal: 5,
+        marginTop: 5, 
         marginBottom: 10,
         backgroundColor: '#FFECF6',
         borderWidth: 1,
@@ -368,7 +369,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         marginHorizontal: 5,
-        marginVertical: 10,
+        marginVertical: 15,
         backgroundColor: '#FFECF6',
         borderWidth: 1,
         borderColor: '#FFBBDF',
