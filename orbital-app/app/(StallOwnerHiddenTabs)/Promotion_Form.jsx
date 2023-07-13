@@ -18,7 +18,7 @@ export default function PromotionForm() {
   const router = useRouter();
   const [stall, setStall] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(null);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
@@ -52,10 +52,30 @@ export default function PromotionForm() {
     }
   };
 
+  const handleEndDateChange = (event, date) => {
+    setShowEndDatePicker(false);
+    if (date) {
+      if (startDate && date < startDate) {
+        setErrMsg('End date cannot be before start date');
+        setEndDate(null);
+      } else {
+        setErrMsg('');
+        setEndDate(date);
+      }
+    } else {
+      setErrMsg('');
+      setEndDate(null);
+    }
+  };
+
   const handleSubmit = async () => {
     setErrMsg('');
     if (title === '') {
       setErrMsg('Promotion title cannot be empty');
+      return;
+    }
+    if (endDate === null) {
+      setErrMsg('End date cannot be null');
       return;
     }
     setLoading(true);
@@ -106,10 +126,24 @@ export default function PromotionForm() {
   };
 
   const formatDate = (date) => {
+    if (!date) {
+      return 'No end date';
+    }
+
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = String(date.getFullYear()).slice(-2);
     return `${day}/${month}/${year}`;
+  };
+
+  const handleStartDateChange = (event, date) => {
+    setShowStartDatePicker(false);
+    if (date) {
+      setStartDate(date);
+      if (endDate && endDate < date) {
+        setEndDate(null);
+      }
+    }
   };
 
   return (
@@ -145,31 +179,21 @@ export default function PromotionForm() {
           value={startDate}
           mode="date"
           display="default"
-          onChange={(event, date) => {
-            setShowStartDatePicker(false);
-            if (date) {
-              setStartDate(date);
-            }
-          }}
+          onChange={handleStartDateChange}
         />
       )}
 
-      <Button onPress={() => setShowEndDatePicker(true)} style={styles.buttonContainer}>
-        <Text style={styles.buttons}>End Date: {formatDate(endDate)}</Text>
-      </Button>
-      {showEndDatePicker && (
-        <DateTimePicker
-          value={endDate}
-          mode="date"
-          display="default"
-          onChange={(event, date) => {
-            setShowEndDatePicker(false);
-            if (date) {
-              setEndDate(date);
-            }
-          }}
-        />
-      )}
+    <Button onPress={() => setShowEndDatePicker(true)} style={styles.buttonContainer}>
+      <Text style={styles.buttons}>End Date: {endDate !== null ? formatDate(endDate) : 'No end date'}</Text>
+    </Button>
+    {showEndDatePicker && (
+      <DateTimePicker
+        value={endDate !== null ? endDate : new Date()}
+        mode="date"
+        display="default"
+        onChange={handleEndDateChange}
+      />
+    )}
 
       <Button onPress={handleSubmit} style={styles.buttonContainer}>
         <Text style={styles.buttons}>Submit</Text>
@@ -231,18 +255,3 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   }
 });
-
-/*  setEndDate(null);
-    setShowClearEndDateButton(false); 
-    
-    const [showClearEndDateButton, setShowClearEndDateButton] = useState(false);
-
-    {showClearEndDateButton && (
-        <Button onPress={() => {
-            setEndDate(null);
-            setShowClearEndDateButton(false);
-        }} style={styles.buttonContainer}>
-            <Text style={styles.buttons}>Clear End Date</Text>
-        </Button>
-    )}
-*/
