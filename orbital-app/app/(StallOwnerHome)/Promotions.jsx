@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, FlatList, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import { Link } from 'expo-router';
 import { supabase } from '../../lib/supabase';
@@ -55,6 +55,8 @@ export default function AddPromotionPage() {
           validity = 'ongoing';
         } else if (endDate < currentDate) {
           validity = 'expired';
+        } else if (startDate > currentDate) {
+          validity = 'upcoming';
         }
   
         return { ...item, validity };
@@ -85,7 +87,7 @@ export default function AddPromotionPage() {
             <Text
               style={[
                 styles.validityLabel,
-                { backgroundColor: item.validity === 'ongoing' ? '#9AD4C6' : '#FF847C' },
+                { backgroundColor: item.validity === 'ongoing' ? '#9AD4C6' :item.validity === 'expired' ? '#FF847C': item.validity === 'upcoming' ? '#A3D8E6':'grey' },
               ]}
             >
               {item.validity}
@@ -97,11 +99,13 @@ export default function AddPromotionPage() {
   );
 
   const filteredMenuItems =
-    filter === 'ongoing'
-      ? menuItems.filter((item) => item.validity === 'ongoing')
-      : filter === 'expired'
-      ? menuItems.filter((item) => item.validity === 'expired')
-      : menuItems;
+  filter === 'ongoing'
+    ? menuItems.filter((item) => item.validity === 'ongoing')
+    : filter === 'expired'
+    ? menuItems.filter((item) => item.validity === 'expired')
+    : filter === 'upcoming'
+    ? menuItems.filter((item) => item.validity === 'upcoming')
+    : menuItems;
 
   return (
     <View style={styles.container}>
@@ -113,28 +117,50 @@ export default function AddPromotionPage() {
       </Link>
       <Text style={styles.heading}>Promotions:</Text>
       <View style={styles.filterButtonsContainer}>
-        <Button
-          mode={filter === 'all' ? 'contained' : 'outlined'}
-          onPress={() => handleFilterPress('all')}
-          style={styles.buttonContainer}
-        >
-          <Text style={styles.buttons}>All</Text>
-        </Button>
-        <Button
-          mode={filter === 'ongoing' ? 'contained' : 'outlined'}
-          onPress={() => handleFilterPress('ongoing')}
-          style={styles.buttonContainer}
-        >
-          <Text style={styles.buttons}>Ongoing</Text>
-        </Button>
-        <Button
-          mode={filter === 'expired' ? 'contained' : 'outlined'}
-          onPress={() => handleFilterPress('expired')}
-          style={styles.buttonContainer}
-        >
-          <Text style={styles.buttons}>Expired</Text>
-        </Button>
-      </View>
+  <ScrollView
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={styles.filterButtonsScrollView}
+  >
+    <View style={styles.buttonWrapper}>
+      <Button
+        mode={filter === 'all' ? 'contained' : 'outlined'}
+        onPress={() => handleFilterPress('all')}
+        style={[styles.buttonContainer]}
+      >
+        <Text style={styles.buttons}>All</Text>
+      </Button>
+    </View>
+    <View style={styles.buttonWrapper}>
+      <Button
+        mode={filter === 'ongoing' ? 'contained' : 'outlined'}
+        onPress={() => handleFilterPress('ongoing')}
+        style={[styles.buttonContainer]}
+      >
+        <Text style={styles.buttons}>Ongoing</Text>
+      </Button>
+    </View>
+    <View style={styles.buttonWrapper}>
+      <Button
+        mode={filter === 'expired' ? 'contained' : 'outlined'}
+        onPress={() => handleFilterPress('expired')}
+        style={[styles.buttonContainer]}
+      >
+        <Text style={styles.buttons}>Expired</Text>
+      </Button>
+    </View>
+    <View style={styles.buttonWrapper}>
+      <Button
+        mode={filter === 'upcoming' ? 'contained' : 'outlined'}
+        onPress={() => handleFilterPress('upcoming')}
+        style={[styles.buttonContainer]}
+      >
+        <Text style={styles.buttons}>Upcoming</Text>
+      </Button>
+    </View>
+  </ScrollView>
+</View>
+
       <FlatList
         data={filteredMenuItems}
         renderItem={renderMenuItem}
@@ -203,6 +229,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FFBBDF',
     marginRight: 15, 
+    minWidth: 80, 
+    height: 45,
   },
   buttons: {
     color: '#2C0080',
