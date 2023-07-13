@@ -34,10 +34,6 @@ export default function UserProfileLayout() {
         router.push('(home)/Promotions');
       }
 
-      const handleExplore = () => {
-        router.push('explore');
-      }
-
     return (
         <Stack>
             <Stack.Screen
@@ -210,58 +206,10 @@ export default function UserProfileLayout() {
                     </TouchableOpacity>
                   )}} />
 
-            <Stack.Screen
-            name="profilepage_for_explore" 
-            options={{ 
-                headerStyle: {
-                  height: 80, // Customize the header height
-                  backgroundColor: "#FFF5FA", // Customize the header background color
-                },
-                headerTitleStyle: {
-                  alignSelf: "center", // Align the header title to the center
-                },
-                headerTitle: () => (
-                  <View style={styles.headerContainerMain}>
-                    <Image
-                      source={require('../../assets/headerlogo.png')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ),
-                headerLeft: () => (
-                    <TouchableOpacity onPress={handleExplore}>
-                        <Ionicons
-                        name="arrow-back"
-                        size={24}
-                        color="black"
-                        style={styles.backButton}
-                        />
-                    </TouchableOpacity>
-                  )}} />
+            
 
             <Stack.Screen
             name="userprofile" 
-            options={{ 
-                headerStyle: {
-                  height: 80, // Customize the header height
-                  backgroundColor: "#FFF5FA", // Customize the header background color
-                },
-                headerTitleStyle: {
-                  alignSelf: "center", // Align the header title to the center
-                },
-                headerTitle: () => (
-                  <View style={styles.headerContainer}>
-                    <Image
-                      source={require('../../assets/headerlogo.png')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  </View>
-                )}} />
-
-            <Stack.Screen
-            name="User_View_Review" 
             options={{ 
                 headerStyle: {
                   height: 80, // Customize the header height
