@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { supabase } from "../../lib/supabase";
-import { TabView, TabBar } from "react-native-tab-view";
+//import { TabView, TabBar } from "react-native-tab-view";
 import { useAuth } from '../../contexts/auth';
 import { useRouter } from 'expo-router';
 
 export default function SavedPage() {
-  const [index, setIndex] = useState(0);
+  /*const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "menu", title: "Saved Menu" },
     { key: "profiles", title: "Saved Profiles" },
-  ]);
+  ]);*/
+  const [activeTab, setActiveTab] = useState('menu');
   const [savedMenuItems, setSavedMenuItems] = useState([]);
   const [savedProfiles, setSavedProfiles] = useState([]);
   const { userId } = useAuth();
@@ -89,6 +90,9 @@ export default function SavedPage() {
     router.push({ pathname: '/userprofile', params: { id: profile.id } });
   };
 
+  const handleTabPress = (tab) => {
+    setActiveTab(tab);
+  };
 
   const SavedMenu = () => (
     <ScrollView style={styles.tabContainer}>
@@ -149,6 +153,8 @@ export default function SavedPage() {
     }
   };
 
+  /*
+
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "menu":
@@ -167,17 +173,39 @@ export default function SavedPage() {
       style={styles.tabBar}
       labelStyle={styles.tabText}
     />
-  );
+  );*/
 
   return (
-    <View style={styles.container}>
+    /*<View style={styles.container}>
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
         renderTabBar={renderTabBar}
       />
-    </View>
+    </View>*/
+    <View style={styles.container}>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, activeTab === 'menu' && styles.activeButton]}
+          onPress={() => handleTabPress('menu')}
+        >
+          <Text style={styles.buttonText}>Saved Menus</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, activeTab === 'profiles' && styles.activeButton]}
+          onPress={() => handleTabPress('profiles')}
+        >
+          <Text style={styles.buttonText}>Saved Profiles</Text>
+        </TouchableOpacity>
+      </View>
+
+     {activeTab === 'menu' ? (
+       <SavedMenu />
+     ) : (
+       <SavedProfiles />
+     )}
+   </View>
   );
 }
 
@@ -227,6 +255,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#666',
   },
+  /*
   tabBar: {
     backgroundColor: "#FFF",
     borderBottomColor: "#DDD",
@@ -240,7 +269,7 @@ const styles = StyleSheet.create({
   tabBarUnderline: {
     backgroundColor: "#2C0080",
     height: 2,
-  },
+  },*/
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
@@ -250,5 +279,27 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     color: '#666',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#DDD',
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 15,
+  },
+  activeButton: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#2C0080',
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#666',
+    textAlign: 'center',
   },
 });
