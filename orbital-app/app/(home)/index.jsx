@@ -34,12 +34,9 @@ export default function StallPage() {
           return;
         }
         setPromotions(data);
-        console.log('fake', popupCount);
-        if (popupCount === 1 || popupCount === 0) {
-          console.log(popupCount);
+        if (popupCount === 0) {
           setPopupCount(popupCount + 1); // Increment the popup count
           setShowPromotionPopup(true); // Set showPromotionPopup to true
-          console.log('here',showPromotionPopup);
         }
       } catch (error) {
         console.error('Error fetching promotion details:', error.message);

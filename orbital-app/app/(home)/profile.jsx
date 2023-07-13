@@ -1,14 +1,16 @@
 import { View, StyleSheet, Text, Image, } from "react-native";
 import { Button, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useAuth } from "../../contexts/auth";
 import { useRouter } from "expo-router";
+import { PopupContext } from '../../contexts/popup';
 
 export default function UserProfile() {
     const { userId } = useAuth();
     const [userData, setUserData] = useState(null);
     const router = useRouter();
+    const { popupCount, setPopupCount } = useContext(PopupContext); // Accessing the popup context
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -52,6 +54,11 @@ export default function UserProfile() {
         router.push('/saved');
     }
 
+    const handleSignOut = async () => {
+        setPopupCount(0); // Set popupCount to 0
+        await supabase.auth.signOut();
+      };
+
     const { image, username } = userData;
 
     return (
@@ -67,7 +74,7 @@ export default function UserProfile() {
                 
                 <Button onPress={handleSaved}>Saved</Button>
 
-            <Button onPress={() => supabase.auth.signOut()}>Log Out</Button>
+                <Button onPress={handleSignOut}>Log Out</Button>
         </View>
     );
 }
