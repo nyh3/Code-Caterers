@@ -43,11 +43,11 @@ export default function AddPromotionPage() {
         const endDate = new Date(item.end_date);
         let validity = null;
 
-        if (startDate <= currentDate && endDate >= currentDate) {
+        if ((endDate === currentDate) || (startDate <= currentDate && endDate >= currentDate)) {
           validity = 'ongoing';
         } else if (endDate < currentDate) {
           validity = 'expired';
-        }
+        } 
 
         return { ...item, validity };
       });
@@ -77,7 +77,7 @@ export default function AddPromotionPage() {
             <Text
               style={[
                 styles.validityLabel,
-                { backgroundColor: item.validity === 'ongoing' ? '#4CAF50' : '#F44336' },
+                { backgroundColor: item.validity === 'ongoing' ? '#9AD4C6' : '#FF847C' },
               ]}
             >
               {item.validity}
@@ -162,7 +162,12 @@ const styles = StyleSheet.create({
   },
   promotion: {
     flexDirection: 'row',
-    marginBottom: 15,
+    alignItems: 'center',
+    backgroundColor: '#FFECF6',
+    padding: 15,
+    borderColor: '#FFF5FA',
+    borderWidth: 7,
+    borderRadius: 10,
   },
   promotionImage: {
     width: 100,
@@ -180,16 +185,16 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   promotionDescription: {
-    marginBottom: 5,
+    marginBottom: 7,
   },
   promotionValidity: {
-    marginBottom: 5,
     flexDirection: 'row',
   },
   buttonContainer: {
     backgroundColor: '#FFECF6',
     borderWidth: 1,
     borderColor: '#FFBBDF',
+    marginRight: 15, 
   },
   buttons: {
     color: '#2C0080',

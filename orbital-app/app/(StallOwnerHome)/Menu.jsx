@@ -87,14 +87,20 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginVertical: 15,
+        marginTop: 15,
+        marginBottom: 10,
     },
     menuList: {
         paddingBottom: 20,
     },
     menuItem: {
         flexDirection: 'row',
-        marginBottom: 15,
+        alignItems: 'center',
+        backgroundColor: '#FFECF6',
+        padding: 15,
+        borderColor: '#FFF5FA',
+        borderWidth: 5,
+        borderRadius: 10,
     },
     menuItemImage: {
         width: 100,

@@ -172,19 +172,19 @@ export default function EditMenuPage() {
               onPress={() => handleRemoveDietaryRestriction(restriction)}
               style={styles.removeDietaryRestrictionButton}
             >
-              <Text style={styles.removeDietaryRestrictionText}>Remove</Text>
+              <Text style={styles.removeDietaryRestrictionText}>Delete</Text>
             </Button>
           </View>
         ))}
-        <Button mode="contained" onPress={handleAddDietaryRestriction} style={styles.buttonContainer}>
+        <Button mode="contained" onPress={handleAddDietaryRestriction} style={styles.buttonContainer2}>
           <Text style={styles.buttons}>Add Restrictions</Text>
         </Button>
       </View>
       <Button onPress={handleSubmit} style={styles.buttonContainer}>
-        <Text style={styles.buttons}>Submit</Text>
+        <Text style={styles.buttons}>Submit & Update Menu</Text>
       </Button>
       <Button onPress={handleDelete} style={styles.buttonContainer}>
-        <Text style={styles.buttons}>Delete</Text>
+        <Text style={styles.buttons}>Delete Menu</Text>
       </Button>
       <Link href="../(StallOwnerHome)/Menu">
         <Button style={styles.buttonContainer}>
@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#FFF5FA',
     flex: 1,
+    paddingHorizontal: 15,
   },
   heading: {
     fontSize: 20,
@@ -226,6 +227,16 @@ const styles = StyleSheet.create({
     color: '#2C0080',
     width: '100%',
   },
+  buttonContainer2: {
+    marginHorizontal: 0,
+    marginBottom: 10,
+    marginTop: 5,
+    backgroundColor: '#FFECF6',
+    borderWidth: 1,
+    borderColor: '#FFBBDF',
+    color: '#2C0080',
+    width: '100%',
+  },
   imageContainer: {
     flexDirection: 'row',
     marginBottom: 15,
@@ -236,7 +247,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   dietaryRestrictionsContainer: {
-    marginBottom: 15,
+    marginTop: 0,
   },
   dietaryRestrictionItem: {
     flexDirection: 'row',
@@ -262,11 +273,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   warning: {
-    fontWeight: 'bold',
     color: 'red',
     margin: 0,
-    marginHorizontal: 15,
-    marginTop: 10,
+    marginHorizontal: 5,
     marginBottom: 5,
   }
 });

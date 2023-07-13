@@ -191,11 +191,17 @@ export default function FilterPage() {
         <View style={styles.container}>
           <Text style={styles.heading}>Select your preferences:</Text>
           <Text style={styles.dietaryRestrictions}>Dietary Restrictions Retrieved:</Text>
-          {dietaryRestrictions.map((restriction, index) => (
-            <View key={index} style={styles.restrictionContainer}>
-              <Text style={styles.restrictionText}>{restriction}</Text>
+          {dietaryRestrictions.length > 0 ? (
+            dietaryRestrictions.map((restriction, index) => (
+              <View key={index} style={styles.restrictionContainer}>
+                <Text style={styles.restrictionText}>{restriction}</Text>
+              </View>
+            ))
+          ) : (
+            <View style={styles.restrictionContainer}>
+            <Text style={styles.restrictionText}>No dietary restrictions found</Text>
             </View>
-          ))}
+          )}
           <Text style={styles.dietaryRestrictions}>Input Budget:</Text>
           <TextInput
             style={styles.input}
@@ -286,7 +292,7 @@ export default function FilterPage() {
           >
             <Text style={styles.buttonText}>Reset Filter</Text>
           </Button>
-
+          <View style={styles.separator} />
           <Text style={styles.heading}>Here are your 3 Recommendations:</Text>
           {filteredFoodOptions.length > 0 ? (
             filteredFoodOptions.map((option) => (
@@ -294,9 +300,9 @@ export default function FilterPage() {
                 <View style={styles.optionContainer}>
                   <Image source={{ uri: option.image }} style={styles.menuImage} />
                   <View style={styles.optionDetailsContainer}>
-                    <Text style={styles.optionName}>{option.name} from {option.stall.name}</Text>
+                    <Text style={styles.optionName}>{option.name}, {option.stall.name}</Text>
                     <View style={styles.ratingContainer}>
-                    <Text style={styles.optionDetails}>Menu rating:</Text>
+                      <Text style={styles.optionDetails}>Menu rating:</Text>
                       <AirbnbRating
                         defaultRating={parseFloat(option.rating) || 0}
                         size={10}
@@ -309,7 +315,7 @@ export default function FilterPage() {
                     </View>
 
                     <View style={styles.ratingContainer}>
-                    <Text style={styles.optionDetails}>Stall rating:</Text>
+                      <Text style={styles.optionDetails}>Stall rating:</Text>
                       <AirbnbRating
                         defaultRating={parseFloat(option.stall.rating) || 0}
                         size={10}
@@ -346,7 +352,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFF5FA',
     flex: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
   },
   heading: {
     fontSize: 20,
@@ -357,7 +363,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     marginHorizontal: 5,
-    marginBottom: 15,
+    marginBottom: 10,
+    marginTop: 5,
   },
   restriction: {
     height: 40,
@@ -457,7 +464,6 @@ const styles = StyleSheet.create({
   },
   optionContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
   },
   menuImage: {
     width: 80,
@@ -478,5 +484,10 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 12,
     color: '#888',
+  },
+  separator: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC',
+    marginTop: 10,
   },
 });

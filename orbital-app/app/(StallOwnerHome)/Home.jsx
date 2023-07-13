@@ -61,7 +61,7 @@ export default function Home() {
             <Button onPress={handleMenu} style={styles.buttons}>Menu</Button>
             <Button onPress={handlePromotions} style={styles.buttons}>Promotions</Button>
             <Button onPress={handleReviews} style={styles.buttons}>Reviews</Button>
-            <Button style={styles.buttons} onPress={() => supabase.auth.signOut()}>Log out</Button>
+            <Button style={styles.buttons} onPress={() => supabase.auth.signOut()}>Log Out</Button>
         </View>
     );
 }
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         width: 200,
         height: 200,
         marginTop: 30,
-        marginBottom: 10,
+        marginBottom: 20,
         borderRadius: 100,
     },
     name: {

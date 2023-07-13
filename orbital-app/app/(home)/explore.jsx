@@ -101,7 +101,7 @@ export default function UserPage() {
         <View style={styles.userImageContainer}>
           <Image source={{ uri: item.image }} style={styles.userImage} />
         </View>
-        <Text style={styles.username}>{item.username}</Text>
+        <Text style={styles.username}>{item.username.length > 15 ? item.username.slice(0, 25) + '...' : item.username}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -110,7 +110,7 @@ export default function UserPage() {
     <TouchableOpacity onPress={() => handleUserPress(item)}>
       <View style={styles.recommendedUserCard}>
         <Image source={{ uri: item.image }} style={styles.recommendedUserImage} />
-        <Text style={styles.recommendedUsername}>{item.username}</Text>
+        <Text style={styles.recommendedUsername}>{item.username.length > 15 ? item.username.slice(0, 11) + '...' : item.username}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -155,8 +155,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF5FA',
-    paddingHorizontal: 10,
-    paddingTop: 10,
+    paddingHorizontal: 15,
+    paddingTop: 15,
   },
   heading: {
     fontSize: 18,
@@ -177,9 +177,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFECF6',
     borderRadius: 10,
-    padding: 10,
+    padding: 15,
+    borderColor: '#FFF5FA',
+    borderWidth: 3,
+    borderRadius: 10,
   },
   userImageContainer: {
     marginRight: 10,
@@ -197,10 +200,15 @@ const styles = StyleSheet.create({
   recommendedUserCard: {
     alignItems: 'center',
     marginBottom: 10,
+    width: 140, 
+    height: 165,
     marginRight: 10,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFECF6',
     borderRadius: 10,
     padding: 10,
+    borderColor: '#FFF5FA',
+    borderWidth: 2,
+    borderRadius: 10,
   },
   recommendedUserImage: {
     width: 100,

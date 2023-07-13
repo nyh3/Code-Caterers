@@ -81,11 +81,13 @@ const styles = StyleSheet.create({
   username: {
     fontWeight: 'bold',
     fontSize: 20,
-    marginBottom: 10,
+    marginBottom: 15,
+    marginTop: 5,
   },
   comment: {
     fontSize: 16,
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 15,
   },
   reviewImage: {
     width: 200,

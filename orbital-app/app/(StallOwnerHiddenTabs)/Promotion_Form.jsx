@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   warning: {
-    color: '#FF80AB',
+    color: 'red',
     marginBottom: 10,
   }
 });
