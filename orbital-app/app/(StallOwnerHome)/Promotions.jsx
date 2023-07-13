@@ -18,40 +18,48 @@ export default function AddPromotionPage() {
     fetchMenuItems();
   }, [isFocused]);
 
+  const removeTime = (date) => {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  };
+  
   const fetchMenuItems = async () => {
     const { data: stallId, error } = await supabase
       .from('stall')
       .select('id')
       .eq('owner_id', userId)
       .single();
-
+  
     if (error) {
       console.error('Error fetching stall id:', error.message);
       return;
     }
-
+  
     try {
-      const { data, error } = await supabase.from('promotion').select('*').eq('stall_id', stallId.id);
+      const { data, error } = await supabase
+        .from('promotion')
+        .select('*')
+        .eq('stall_id', stallId.id);
+  
       if (error) {
         console.error('Error fetching promotion details:', error.message);
         return;
       }
-
-      const currentDate = new Date();
+  
+      const currentDate = removeTime(new Date());
       const updatedMenuItems = data.map((item) => {
-        const startDate = new Date(item.start_date);
-        const endDate = new Date(item.end_date);
+        const startDate = removeTime(new Date(item.start_date));
+        const endDate = removeTime(new Date(item.end_date));
         let validity = null;
-
-        if ((endDate === currentDate) || (startDate <= currentDate && endDate >= currentDate)) {
+  
+        if (startDate <= currentDate && endDate >= currentDate) {
           validity = 'ongoing';
         } else if (endDate < currentDate) {
           validity = 'expired';
-        } 
-
+        }
+  
         return { ...item, validity };
       });
-
+  
       setMenuItems(updatedMenuItems);
     } catch (error) {
       console.error('Error fetching promotion details:', error.message);
