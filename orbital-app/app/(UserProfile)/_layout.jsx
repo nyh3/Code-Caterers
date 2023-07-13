@@ -38,10 +38,6 @@ export default function UserProfileLayout() {
         router.push('explore');
       }
 
-      const handleFilter = () => {
-        router.push('filter');
-      }
-
     return (
         <Stack>
             <Stack.Screen
@@ -303,36 +299,6 @@ export default function UserProfileLayout() {
                     />
                   </View>
                 )}} />
-
-            <Stack.Screen
-            name="Menu_Details_Filter" 
-            options={{ 
-                headerStyle: {
-                  height: 80, // Customize the header height
-                  backgroundColor: "#FFF5FA", // Customize the header background color
-                },
-                headerTitleStyle: {
-                  alignSelf: "center", // Align the header title to the center
-                },
-                headerTitle: () => (
-                  <View style={styles.headerContainerMain}>
-                    <Image
-                      source={require('../../assets/headerlogo.png')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ),
-                headerLeft: () => (
-                    <TouchableOpacity onPress={handleFilter}>
-                        <Ionicons
-                        name="arrow-back"
-                        size={24}
-                        color="black"
-                        style={styles.backButton}
-                        />
-                    </TouchableOpacity>
-                  )}} />
 
         </Stack>
     )

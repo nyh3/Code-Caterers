@@ -66,6 +66,10 @@ export default function EditPromotionPage() {
       setErrMsg('Promotion title cannot be empty')
       return;
     }
+    if (endDate === null) {
+      setErrMsg('End date cannot be null');
+      return;
+    }
     setLoading(true);
     let uploadedImage = originalImage;
     if (image !== null) {
@@ -130,6 +134,32 @@ export default function EditPromotionPage() {
     return `${day}/${month}/${year}`;
   };
 
+  const handleEndDateChange = (event, date) => {
+    setShowEndDatePicker(false);
+    if (date) {
+      if (startDate && date < startDate) {
+        setErrMsg('End date cannot be before start date');
+        setEndDate(null);
+      } else {
+        setEndDate(date);
+        setErrMsg('');
+      }
+    }
+  };
+  
+  const handleStartDateChange = (event, date) => {
+    setShowStartDatePicker(false);
+    if (date) {
+      setStartDate(date);
+      if (endDate && endDate < date) {
+        setErrMsg('End date cannot be before start date');
+        setEndDate(null);
+      } else {
+        setErrMsg('');
+      }
+    }
+  };  
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Edit Promotion:</Text>
@@ -161,16 +191,11 @@ export default function EditPromotionPage() {
       </Button>
       {showStartDatePicker && (
         <DateTimePicker
-          value={startDate}
-          mode="date"
-          display="default"
-          onChange={(event, date) => {
-            setShowStartDatePicker(false);
-            if (date) {
-              setStartDate(date);
-            }
-          }}
-        />
+        value={startDate}
+        mode="date"
+        display="default"
+        onChange={handleStartDateChange}
+      />
       )}
 
       <Button onPress={() => setShowEndDatePicker(true)} style={styles.buttonContainer}>
@@ -178,17 +203,11 @@ export default function EditPromotionPage() {
       </Button>
       {showEndDatePicker && (
         <DateTimePicker
-            value={endDate !== null ? endDate : new Date()}
-            mode="date"
-            display="default"
-            onChange={(event, date) => {
-            setShowEndDatePicker(false);
-            if (date) {
-                setEndDate(date);
-                //setShowClearEndDateButton(true);
-            }
-            }}
-        />
+        value={endDate !== null ? endDate : new Date()}
+        mode="date"
+        display="default"
+        onChange={handleEndDateChange}
+      />
        )}
       {showClearEndDateButton && (
         <Button onPress={() => {
