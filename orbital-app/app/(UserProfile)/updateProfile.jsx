@@ -5,7 +5,6 @@ import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker'
 import { useRouter } from 'expo-router'
 import { useAuth } from '../../contexts/auth'
-import { Link } from 'expo-router';
 
 export default function UpdateProfile() {
   const [loading, setLoading] = useState(false);
@@ -38,6 +37,11 @@ export default function UpdateProfile() {
     }
   };
 
+  const handleUsernameChange = (value) => {
+    setUsername(value);
+    setErrMsg('');
+  }
+
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
     if (!result.canceled) {
@@ -46,6 +50,11 @@ export default function UpdateProfile() {
   }
 
   const handleSubmit = async () => {
+    if (username.trim() === '') {
+      setErrMsg('Username cannot be empty');
+      return;
+    }
+
     setLoading(true);
     let uploadedImage = null;
     if (image != null) {
@@ -87,7 +96,7 @@ export default function UpdateProfile() {
       <TextInput
         autoCapitalize='none'
         value={username}
-        onChangeText={setUsername}
+        onChangeText={handleUsernameChange}
         style={styles.input}
       />
 
@@ -95,14 +104,8 @@ export default function UpdateProfile() {
         style={styles.buttonContainer}
         onPress={handleSubmit}><Text style={styles.button}>Update Profile</Text></Button>
 
-      {errMsg !== "" && <Text>{errMsg}</Text>}
-      <Text></Text>
-      <View style={styles.marginLeftContainer}>
-        <Link href="../(home)/profile">
-          <Button style={styles.discardContainer}><Text style={styles.button}>Discard & Return</Text></Button>
-        </Link>
-      </View>
-      {loading && <ActivityIndicator />}
+      {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
+      {loading && <ActivityIndicator style={styles.indicator} />}
     </View >
   );
 }
@@ -144,7 +147,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 200,
     height: 200,
-    marginVertical: 30,
+    marginTop: 30,
+    marginBottom: 20,
     borderRadius: 100,
   },
   placeholderImage: {
@@ -155,13 +159,14 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: 'lightgray',
   },
-  discardContainer: {
-    backgroundColor: '#FFECF6',
-    borderWidth: 1,
-    borderColor: '#FFBBDF',
+  indicator: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 25,
   },
-  marginLeftContainer: {
-    marginTop: 5,
-    marginLeft: 10,
-  },
+  error: {
+    color: 'red',
+    marginTop: 15,
+    marginHorizontal: 15,
+},
 });

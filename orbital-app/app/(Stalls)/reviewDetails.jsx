@@ -54,7 +54,7 @@ export default function ViewReviewScreen() {
         />
         <Text style={styles.comment}>{review.review_text}</Text>
         {review.image && <Image source={{ uri: review.image }} style={styles.reviewImage} />}
-        <Text>{review.updated_at}</Text>
+        <Text style={styles.comment2}>{review.updated_at}</Text>
       </View>
     </View>
   );
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   reviewDetails: {
     alignItems: 'center',
@@ -81,11 +81,16 @@ const styles = StyleSheet.create({
   username: {
     fontWeight: 'bold',
     fontSize: 20,
+    marginBottom: 15,
+  },
+  comment: {
+    fontSize: 16,
+    marginTop: 20,
     marginBottom: 10,
   },
   comment: {
     fontSize: 16,
-    marginBottom: 10,
+    marginVertical: 10,
   },
   reviewImage: {
     width: 200,

@@ -177,7 +177,7 @@ export default function UserMenuDetailScreen() {
                 {item.image && (
                   <Image source={{ uri: item.image }} style={styles.reviewImage} />
                 )}
-                <Text>{item.updated_at}</Text>
+                <Text style={styles.comment}>{item.updated_at}</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -221,14 +221,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     alignSelf: 'center',
-    marginBottom: 10,
+    marginVertical: 10,
   },
   reviewContainer: {
     flexDirection: 'row',
-    marginBottom: 15,
+    marginTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(0, 0, 0, 0.1)',
-    paddingBottom: 10,
   },
   profileImage: {
     width: 40,
@@ -242,26 +241,29 @@ const styles = StyleSheet.create({
   username: {
     fontWeight: 'bold',
     fontSize: 16,
+    marginTop: 8,
   },
   ratingContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
+    marginVertical: 10,
+    marginLeft: 100,
   },
   rating: {
     marginLeft: 5,
   },
   comment: {
     fontSize: 14,
+    marginBottom: 5,
   },
   reviewImage: {
     width: 70,
     height: 70,
+    marginVertical: 10,
   },
   price: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginVertical: 5,
+    marginVertical: 10,
     color: '#FF6699',
   },
   dietaryRestrictionsContainer: {

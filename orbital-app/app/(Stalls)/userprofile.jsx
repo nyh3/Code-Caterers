@@ -413,15 +413,17 @@ const styles = StyleSheet.create({
     comment: {
         marginBottom: 4,
         color: '#666',
+        marginVertical: 10,
     },
     reviewImage: {
         width: '100%',
         height: 200,
         borderRadius: 8,
-        marginBottom: 4,
+        marginVertical: 5,
     },
     timestamp: {
         fontSize: 13,
+        marginTop: 5,
     },
     savedMenuContainer: {
         flexDirection: 'row',
@@ -453,5 +455,5 @@ const styles = StyleSheet.create({
     },
     flatListContent: {
         paddingBottom: 180, // Adjust this value based on your layout
-      },
+    },
 });

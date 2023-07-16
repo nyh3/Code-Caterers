@@ -20,7 +20,6 @@ export default function UserPage() {
   }, [isFocused, searchQuery]);
 
   useEffect(() => {
-    // Logic that depends on menuId
     if (menuId) {
       const recommended = users.filter((user) => user.menu_id === menuId);
       setRecommendedUsers(recommended);
@@ -32,7 +31,7 @@ export default function UserPage() {
       const { data, error } = await supabase
         .from('profile')
         .select('*')
-        .neq('id', userId) // Exclude your own profile
+        .neq('id', userId)
         .ilike('username', `%${searchQuery}%`);
       if (error) {
         console.error('Error fetching user details:', error.message);
@@ -119,7 +118,7 @@ export default function UserPage() {
     <View style={styles.container}>
       <TextInput
         style={styles.searchInput}
-        placeholder="Search users"
+        placeholder="Search for users..."
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
@@ -156,7 +155,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF5FA',
     paddingHorizontal: 15,
-    paddingTop: 15,
   },
   heading: {
     fontSize: 18,

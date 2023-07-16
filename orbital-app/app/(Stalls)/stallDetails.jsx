@@ -101,7 +101,7 @@ export default function StallDetailScreen() {
               maxRating={5}
             />
           </View>
-          <Text style={styles.menuItemPrice}>${item.price}</Text>
+          <Text style={styles.menuItemPrice}>Price: ${item.price}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -111,7 +111,7 @@ export default function StallDetailScreen() {
     <View style={styles.container}>
       <Image source={{ uri: stall.stallImage }} style={styles.image} />
       <View style={styles.stallNameContainer}>
-        <Text style={styles.name}>{stall.name} @ {stall.location.name}</Text>
+        <Text style={styles.name}>{stall.name}, {stall.location.name}</Text>
       </View>
       <View style={styles.stallRating}>
         <AirbnbRating
@@ -134,11 +134,11 @@ export default function StallDetailScreen() {
             <Text style={styles.tagText}>Halal</Text>
           </View>
         )}
-        <View style={[styles.cuisineTag, { backgroundColor: getCuisineTagColor(stall.cuisine.name)}]}>
-          <Text style={styles.cuisineTagText}>{stall.cuisine.name}</Text>
+        <View style={[styles.cuisineTag, { backgroundColor: getCuisineTagColor(stall.cuisine.name) }]}>
+          <Text style={styles.tagText}>{stall.cuisine.name}</Text>
         </View>
       </View>
-      <Text>{stall.description}</Text>
+      <Text style={styles.description}>{stall.description}</Text>
       <FlatList
         data={menu}
         renderItem={renderMenuItem}
@@ -156,20 +156,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF5FA',
     flex: 1,
     paddingHorizontal: 15,
-    paddingVertical: 35,
+    paddingTop: 35,
+    paddingBottom: 15,
   },
   image: {
     alignSelf: 'center',
     width: 200,
     height: 200,
-    marginBottom: 10,
+    marginBottom: 20,
     borderRadius: 100,
   },
   stallNameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   name: {
     fontWeight: 'bold',
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
   stallTags: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 10,
+    marginVertical: 10,
   },
   tagContainer: {
     borderRadius: 10,
@@ -203,17 +204,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
-  cuisineTagText: {
-    color: 'white',
-    fontSize: 12,
-  },
   location: {
     textAlign: 'center',
     fontSize: 16,
     marginBottom: 10,
   },
   menuList: {
-    paddingTop: 20,
+    paddingTop: 10,
   },
   menuItemContainer: {
     flexDirection: 'row',
@@ -234,16 +231,17 @@ const styles = StyleSheet.create({
   menuItemRating: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    marginVertical: 5,
   },
   menuItemTitle: {
     fontWeight: 'bold',
     fontSize: 15,
+    marginBottom: 10,
   },
   menuItemPrice: {
     fontWeight: 'bold',
     fontSize: 14,
-    color: '#FF6363',
+    color: '#FF6699',
     marginTop: 5,
   },
   starStyle: {
@@ -252,6 +250,11 @@ const styles = StyleSheet.create({
   menuItemImage: {
     width: 70,
     height: 70,
-    marginRight: 10,
+    marginHorizontal: 10,
+    marginTop: 10,
   },
+  description: {
+    marginHorizontal: 10,
+    marginTop: 10,
+  }
 });

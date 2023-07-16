@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { StyleSheet, View } from 'react-native';
 import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper';
+import { useRouter } from 'expo-router'
 import { useAuth } from '../../contexts/auth';
-import { Link } from 'expo-router';
 
 export default function DietaryRestrictions() {
   const [loading, setLoading] = useState(false);
@@ -11,6 +11,7 @@ export default function DietaryRestrictions() {
   const [newRestriction, setNewRestriction] = useState('');
   const [errMsg, setErrMsg] = useState('');
   const { userId } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchDietaryRestrictions = async () => {
@@ -61,21 +62,26 @@ export default function DietaryRestrictions() {
     }
 
     setLoading(false);
-    setErrMsg('Dietary restrictions updated successfully');
-    console.log('Dietary restrictions updated successfully:', data);
+    router.push('../(home)/profile');
   };
 
   return (
     <View style={styles.wholeThing}>
       <Text style={styles.header}>Dietary Restrictions:</Text>
-      <Text style={styles.warning}>Note: Do not put halal and vegetarian as your dietary restrictions</Text>
+      <Text style={styles.warning}>Note: Please do not put halal and vegetarian as your dietary restrictions</Text>
       <Text style={styles.bold}>Dietary restrictions or allergies declared:</Text>
-      {dietary_restrictions.map((restriction, index) => (
-        <View key={index} style={styles.restrictionContainer}>
-          <Text style={styles.restrictionText}>{restriction}</Text>
-          <Button onPress={() => handleDeleteRestriction(restriction)}>Delete</Button>
+      {dietary_restrictions.length > 0 ? (
+        dietary_restrictions.map((restriction, index) => (
+          <View key={index} style={styles.restrictionContainer}>
+            <Text style={styles.restrictionText}>{restriction}</Text>
+            <Button onPress={() => handleDeleteRestriction(restriction)}>Delete</Button>
+          </View>
+        ))
+      ) : (
+        <View style={styles.restrictionContainer}>
+          <Text style={styles.restrictionText}>No dietary restrictions has been declared</Text>
         </View>
-      ))}
+      )}
       <Text style={styles.bold}>Update your dietary restrictions or food allergies:</Text>
       <TextInput
         autoCapitalize="characters"
@@ -90,14 +96,7 @@ export default function DietaryRestrictions() {
         <Text style={styles.button}>Update Dietary Restrictions</Text>
       </Button>
       {errMsg !== '' && <Text style={styles.errormsg}>{errMsg}</Text>}
-      <View style={styles.marginLeftContainer}>
-        <Link href="../(home)/profile">
-          <Button style={styles.discardContainer}>
-            <Text style={styles.button}>Discard & Return</Text>
-          </Button>
-        </Link>
-      </View>
-      {loading && <ActivityIndicator />}
+      {loading && <ActivityIndicator style={styles.indicator} />}
     </View>
   );
 }
@@ -106,15 +105,11 @@ const styles = StyleSheet.create({
   header: {
     fontWeight: 'bold',
     fontSize: 20,
-    margin: 0,
-    marginHorizontal: 15,
     marginTop: 15,
   },
   bold: {
     fontWeight: 'bold',
     fontSize: 15,
-    margin: 0,
-    marginHorizontal: 15,
     marginTop: 10,
     marginBottom: 5,
   },
@@ -127,13 +122,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
     backgroundColor: '#FFF5FA',
+    paddingHorizontal: 15,
   },
   buttonContainer: {
     backgroundColor: '#FFECF6',
     borderWidth: 1,
     borderColor: '#FFBBDF',
     marginTop: 20,
-    marginHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
     height: 40,
@@ -146,7 +141,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
     marginBottom: 5,
     backgroundColor: '#FFECF6',
     height: 40,
@@ -154,26 +148,19 @@ const styles = StyleSheet.create({
   restrictionText: {
     fontSize: 15,
     color: 'black',
-  },
-  discardContainer: {
-    backgroundColor: '#FFECF6',
-    borderWidth: 1,
-    borderColor: '#FFBBDF',
-  },
-  marginLeftContainer: {
-    marginTop: 15,
-    marginLeft: 10,
+    marginHorizontal: 5,
   },
   errormsg: {
     marginTop: 10,
-    marginLeft: 15,
   },
   warning: {
-    fontWeight: 'bold',
     color: 'red',
-    margin: 0,
-    marginHorizontal: 15,
     marginTop: 10,
     marginBottom: 5,
-  }
+  },
+  indicator: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 20,
+  },
 });

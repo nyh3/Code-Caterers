@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   comment: {
     fontSize: 16,
     marginTop: 10,
-    marginBottom: 15,
+    marginBottom: 5,
   },
   reviewImage: {
     width: 200,
