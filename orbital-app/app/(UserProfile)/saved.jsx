@@ -1,16 +1,10 @@
 import { useEffect, useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { supabase } from "../../lib/supabase";
-//import { TabView, TabBar } from "react-native-tab-view";
 import { useAuth } from '../../contexts/auth';
 import { useRouter } from 'expo-router';
 
 export default function SavedPage() {
-  /*const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: "menu", title: "Saved Menu" },
-    { key: "profiles", title: "Saved Profiles" },
-  ]);*/
   const [activeTab, setActiveTab] = useState('menu');
   const [savedMenuItems, setSavedMenuItems] = useState([]);
   const [savedProfiles, setSavedProfiles] = useState([]);
@@ -153,37 +147,7 @@ export default function SavedPage() {
     }
   };
 
-  /*
-
-  const renderScene = ({ route }) => {
-    switch (route.key) {
-      case "menu":
-        return <SavedMenu />;
-      case "profiles":
-        return <SavedProfiles />;
-      default:
-        return null;
-    }
-  };
-
-  const renderTabBar = (props) => (
-    <TabBar
-      {...props}
-      indicatorStyle={styles.tabBarUnderline}
-      style={styles.tabBar}
-      labelStyle={styles.tabText}
-    />
-  );*/
-
   return (
-    /*<View style={styles.container}>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        renderTabBar={renderTabBar}
-      />
-    </View>*/
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
@@ -255,21 +219,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#666',
   },
-  /*
-  tabBar: {
-    backgroundColor: "#FFF",
-    borderBottomColor: "#DDD",
-    borderBottomWidth: 1,
-  },
-  tabText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#666",
-  },
-  tabBarUnderline: {
-    backgroundColor: "#2C0080",
-    height: 2,
-  },*/
   emptyContainer: {
     flex: 1,
     alignItems: 'center',

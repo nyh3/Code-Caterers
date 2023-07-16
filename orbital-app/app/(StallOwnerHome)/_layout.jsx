@@ -29,7 +29,8 @@ export default function PageLayout() {
                 resizeMode="contain"
               />
             </View>
-            )}} />
+          )
+        }} />
       <Tabs.Screen
         name="Menu"
         options={{
@@ -54,7 +55,8 @@ export default function PageLayout() {
                 resizeMode="contain"
               />
             </View>
-            )}} />
+          )
+        }} />
       <Tabs.Screen
         name="Promotions"
         options={{
@@ -79,7 +81,8 @@ export default function PageLayout() {
                 resizeMode="contain"
               />
             </View>
-            )}} />
+          )
+        }} />
       <Tabs.Screen
         name="Reviews"
         options={{
@@ -104,7 +107,8 @@ export default function PageLayout() {
                 resizeMode="contain"
               />
             </View>
-            )}} />
+          )
+        }} />
       <Tabs.Screen
         name="Stall_Profile"
         options={{
@@ -129,7 +133,8 @@ export default function PageLayout() {
                 resizeMode="contain"
               />
             </View>
-            )}} />
+          )
+        }} />
     </Tabs>
   );
 }

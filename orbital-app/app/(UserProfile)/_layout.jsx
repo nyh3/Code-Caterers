@@ -5,209 +5,215 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function UserProfileLayout() {
-    const router = useRouter();
+  const router = useRouter();
 
-    useEffect(() => {
-        const backAction = () => {
-          // Define your custom navigation logic here
-          // For example, navigate to a different screen
-          router.replace('profile');
-    
-          // Return 'true' to prevent the default back action
-          return true;
-        };
-    
-        const backHandler = BackHandler.addEventListener(
-          'hardwareBackPress',
-          backAction
-        );
-    
-        // Cleanup the event listener
-        return () => backHandler.remove();
-      }, []);
+  useEffect(() => {
+    const backAction = () => {
+      // Define your custom navigation logic here
+      // For example, navigate to a different screen
+      router.replace('profile');
 
-      const handleProfile = () => {
-        router.push('profile');
-      }
+      // Return 'true' to prevent the default back action
+      return true;
+    };
 
-      const handlePromotion = () => {
-        router.push('(home)/Promotions');
-      }
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
 
-    return (
-        <Stack>
-            <Stack.Screen
-            name="editReview" 
-            options={{ 
-                headerStyle: {
-                  height: 80, // Customize the header height
-                  backgroundColor: "#FFF5FA", // Customize the header background color
-                },
-                headerTitleStyle: {
-                  alignSelf: "center", // Align the header title to the center
-                },
-                headerTitle: () => (
-                  <View style={styles.headerContainer}>
-                    <Image
-                      source={require('../../assets/headerlogo.png')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  </View>
-                )}} />
+    // Cleanup the event listener
+    return () => backHandler.remove();
+  }, []);
 
-            <Stack.Screen
-            name="reviews" 
-            options={{ 
-                headerStyle: {
-                  height: 80, // Customize the header height
-                  backgroundColor: "#FFF5FA", // Customize the header background color
-                },
-                headerTitleStyle: {
-                  alignSelf: "center", // Align the header title to the center
-                },
-                headerTitle: () => (
-                  <View style={styles.headerContainerMain}>
-                    <Image
-                      source={require('../../assets/headerlogo.png')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ),
-                headerLeft: () => (
-                    <TouchableOpacity onPress={handleProfile}>
-                        <Ionicons
-                        name="arrow-back"
-                        size={24}
-                        color="black"
-                        style={styles.backButton}
-                        />
-                    </TouchableOpacity>
-                  )}} />
+  const handleProfile = () => {
+    router.push('profile');
+  }
 
-            <Stack.Screen
-            name="restrictions" 
-            options={{ 
-                headerStyle: {
-                  height: 80, // Customize the header height
-                  backgroundColor: "#FFF5FA", // Customize the header background color
-                },
-                headerTitleStyle: {
-                  alignSelf: "center", // Align the header title to the center
-                },
-                headerTitle: () => (
-                  <View style={styles.headerContainerMain}>
-                    <Image
-                      source={require('../../assets/headerlogo.png')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ),
-                headerLeft: () => (
-                    <TouchableOpacity onPress={handleProfile}>
-                        <Ionicons
-                        name="arrow-back"
-                        size={24}
-                        color="black"
-                        style={styles.backButton}
-                        />
-                    </TouchableOpacity>
-                  )}} />
+  const handlePromotion = () => {
+    router.push('(home)/Promotions');
+  }
 
-            <Stack.Screen
-            name="updateProfile" 
-            options={{ 
-                headerStyle: {
-                  height: 80, // Customize the header height
-                  backgroundColor: "#FFF5FA", // Customize the header background color
-                },
-                headerTitleStyle: {
-                  alignSelf: "center", // Align the header title to the center
-                },
-                headerTitle: () => (
-                  <View style={styles.headerContainerMain}>
-                    <Image
-                      source={require('../../assets/headerlogo.png')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ),
-                headerLeft: () => (
-                    <TouchableOpacity onPress={handleProfile}>
-                        <Ionicons
-                        name="arrow-back"
-                        size={24}
-                        color="black"
-                        style={styles.backButton}
-                        />
-                    </TouchableOpacity>
-                  )}} />
+  return (
+    <Stack>
+      <Stack.Screen
+        name="editReview"
+        options={{
+          headerStyle: {
+            height: 80, // Customize the header height
+            backgroundColor: "#FFF5FA", // Customize the header background color
+          },
+          headerTitleStyle: {
+            alignSelf: "center", // Align the header title to the center
+          },
+          headerTitle: () => (
+            <View style={styles.headerContainer}>
+              <Image
+                source={require('../../assets/headerlogo.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          )
+        }} />
 
-            <Stack.Screen
-            name="saved" 
-            options={{ 
-                headerStyle: {
-                  height: 80, // Customize the header height
-                  backgroundColor: "#FFF5FA", // Customize the header background color
-                },
-                headerTitleStyle: {
-                  alignSelf: "center", // Align the header title to the center
-                },
-                headerTitle: () => (
-                  <View style={styles.headerContainerMain}>
-                    <Image
-                      source={require('../../assets/headerlogo.png')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ),
-                headerLeft: () => (
-                    <TouchableOpacity onPress={handleProfile}>
-                        <Ionicons
-                        name="arrow-back"
-                        size={24}
-                        color="black"
-                        style={styles.backButton}
-                        />
-                    </TouchableOpacity>
-                  )}} />
+      <Stack.Screen
+        name="reviews"
+        options={{
+          headerStyle: {
+            height: 80, // Customize the header height
+            backgroundColor: "#FFF5FA", // Customize the header background color
+          },
+          headerTitleStyle: {
+            alignSelf: "center", // Align the header title to the center
+          },
+          headerTitle: () => (
+            <View style={styles.headerContainerMain}>
+              <Image
+                source={require('../../assets/headerlogo.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={handleProfile}>
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color="black"
+                style={styles.backButton}
+              />
+            </TouchableOpacity>
+          )
+        }} />
 
-            <Stack.Screen
-            name="view_promotion" 
-            options={{ 
-                headerStyle: {
-                  height: 80, // Customize the header height
-                  backgroundColor: "#FFF5FA", // Customize the header background color
-                },
-                headerTitleStyle: {
-                  alignSelf: "center", // Align the header title to the center
-                },
-                headerTitle: () => (
-                  <View style={styles.headerContainerMain}>
-                    <Image
-                      source={require('../../assets/headerlogo.png')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  </View>
-                ),
-                headerLeft: () => (
-                    <TouchableOpacity onPress={handlePromotion}>
-                        <Ionicons
-                        name="arrow-back"
-                        size={24}
-                        color="black"
-                        style={styles.backButton}
-                        />
-                    </TouchableOpacity>
-                  )}} />
+      <Stack.Screen
+        name="restrictions"
+        options={{
+          headerStyle: {
+            height: 80, // Customize the header height
+            backgroundColor: "#FFF5FA", // Customize the header background color
+          },
+          headerTitleStyle: {
+            alignSelf: "center", // Align the header title to the center
+          },
+          headerTitle: () => (
+            <View style={styles.headerContainerMain}>
+              <Image
+                source={require('../../assets/headerlogo.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={handleProfile}>
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color="black"
+                style={styles.backButton}
+              />
+            </TouchableOpacity>
+          )
+        }} />
 
-        </Stack>
-    )
+      <Stack.Screen
+        name="updateProfile"
+        options={{
+          headerStyle: {
+            height: 80, // Customize the header height
+            backgroundColor: "#FFF5FA", // Customize the header background color
+          },
+          headerTitleStyle: {
+            alignSelf: "center", // Align the header title to the center
+          },
+          headerTitle: () => (
+            <View style={styles.headerContainerMain}>
+              <Image
+                source={require('../../assets/headerlogo.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={handleProfile}>
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color="black"
+                style={styles.backButton}
+              />
+            </TouchableOpacity>
+          )
+        }} />
+
+      <Stack.Screen
+        name="saved"
+        options={{
+          headerStyle: {
+            height: 80, // Customize the header height
+            backgroundColor: "#FFF5FA", // Customize the header background color
+          },
+          headerTitleStyle: {
+            alignSelf: "center", // Align the header title to the center
+          },
+          headerTitle: () => (
+            <View style={styles.headerContainerMain}>
+              <Image
+                source={require('../../assets/headerlogo.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={handleProfile}>
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color="black"
+                style={styles.backButton}
+              />
+            </TouchableOpacity>
+          )
+        }} />
+
+      <Stack.Screen
+        name="view_promotion"
+        options={{
+          headerStyle: {
+            height: 80, // Customize the header height
+            backgroundColor: "#FFF5FA", // Customize the header background color
+          },
+          headerTitleStyle: {
+            alignSelf: "center", // Align the header title to the center
+          },
+          headerTitle: () => (
+            <View style={styles.headerContainerMain}>
+              <Image
+                source={require('../../assets/headerlogo.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={handlePromotion}>
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color="black"
+                style={styles.backButton}
+              />
+            </TouchableOpacity>
+          )
+        }} />
+
+    </Stack>
+  )
 }
 
 const styles = StyleSheet.create({

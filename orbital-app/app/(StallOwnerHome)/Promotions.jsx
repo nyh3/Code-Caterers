@@ -112,7 +112,7 @@ export default function AddPromotionPage() {
       <Text></Text>
       <Link href="../(StallOwnerHiddenTabs)/Promotion_Form">
         <Button mode="contained" style={styles.buttonContainer}>
-          <Text style={styles.buttons}>Add Promotions</Text>
+          <Text style={styles.buttons}>Add Promotion</Text>
         </Button>
       </Link>
       <Text style={styles.heading}>Promotions:</Text>

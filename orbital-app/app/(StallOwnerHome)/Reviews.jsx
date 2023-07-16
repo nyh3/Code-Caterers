@@ -203,12 +203,12 @@ const styles = StyleSheet.create({
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    paddingBottom: 5,
     marginHorizontal: 140,
   },
   ratingContainer2: {
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 10,
   },
   reviewContainer: {
     flexDirection: 'column',
@@ -224,10 +224,12 @@ const styles = StyleSheet.create({
   comment: {
     fontSize: 14,
     marginHorizontal: 10,
+    marginTop: 5,
   },
   reviewImage: {
     width: 70,
     height: 70,
+    marginLeft: 10,
   },
   menuImage: {
     width: 40,

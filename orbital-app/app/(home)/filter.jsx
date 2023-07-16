@@ -185,6 +185,10 @@ export default function FilterPage() {
     router.push({ pathname: '/Menu_Details_Filter', params: { id: menu } });
   };
 
+  const limitDecimalPlaces = (value) => {
+    return parseFloat(value).toFixed(1);
+  };
+
   return (
     < Provider>
       <ScrollView>
@@ -311,7 +315,7 @@ export default function FilterPage() {
                         minRating={0}
                         maxRating={5}
                       />
-                      <Text style={styles.ratingText}>{parseFloat(option.rating) || 0} / 5.0</Text>
+                      <Text style={styles.ratingText}>{limitDecimalPlaces(option.rating)} / 5.0</Text>
                     </View>
 
                     <View style={styles.ratingContainer}>
@@ -324,7 +328,7 @@ export default function FilterPage() {
                         minRating={0}
                         maxRating={5}
                       />
-                      <Text style={styles.ratingText}>{parseFloat(option.stall.rating) || 0} / 5.0</Text>
+                      <Text style={styles.ratingText}>{limitDecimalPlaces(option.stall.rating)} / 5.0</Text>
                     </View>
 
                     {option.dietary_restrictions && option.dietary_restrictions.length > 0 && (
@@ -364,7 +368,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginHorizontal: 5,
     marginBottom: 10,
-    marginTop: 5,
   },
   restriction: {
     height: 40,

@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   reviewDetails: {
     alignItems: 'center',
@@ -81,16 +81,17 @@ const styles = StyleSheet.create({
   username: {
     fontWeight: 'bold',
     fontSize: 20,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   comment: {
     fontSize: 16,
     marginBottom: 10,
+    marginTop: 20,
   },
   reviewImage: {
     width: 200,
     height: 200,
-    marginBottom: 10,
+    marginVertical: 10,
     borderRadius: 10,
   },
 });

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { View, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
-import { Link } from 'expo-router';
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../contexts/auth";
 import { useRouter } from "expo-router";
@@ -173,12 +172,8 @@ export default function AddMenuPage() {
         <Button onPress={handleSubmit} style={styles.buttonContainer}>
           <Text style={styles.buttons}>Submit</Text>
         </Button>
-        <Link href="../(StallOwnerHome)/Menu">
-          <Button style={styles.buttonContainer}>
-            <Text style={styles.buttons}>Discard & Return</Text>
-          </Button>
-        </Link>
-        {loading && <ActivityIndicator />}
+        {errMsg !== '' && <Text style={styles.warning}>{errMsg}</Text>}
+        {loading && <ActivityIndicator style={styles.indicator}/>}
       </View>
     </ScrollView>
   );
@@ -248,6 +243,11 @@ const styles = StyleSheet.create({
       margin: 0,
       marginHorizontal: 15,
       marginBottom: 10,
-    }
+    },
+    indicator: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      paddingTop: 15,
+  },
   });
   

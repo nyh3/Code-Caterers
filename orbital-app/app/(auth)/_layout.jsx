@@ -5,8 +5,8 @@ export default function AuthLayout() {
   return (
     <Stack>
       <Stack.Screen
-      name="choose" 
-      options={{ 
+        name="choose"
+        options={{
           headerStyle: {
             height: 80, // Customize the header height
             backgroundColor: "#FFF5FA", // Customize the header background color
@@ -22,11 +22,12 @@ export default function AuthLayout() {
                 resizeMode="contain"
               />
             </View>
-          )}} />
+          )
+        }} />
 
       <Stack.Screen
-      name="loginOwner" 
-      options={{ 
+        name="loginOwner"
+        options={{
           headerStyle: {
             height: 80, // Customize the header height
             backgroundColor: "#FFF5FA", // Customize the header background color
@@ -42,11 +43,12 @@ export default function AuthLayout() {
                 resizeMode="contain"
               />
             </View>
-          )}} />
+          )
+        }} />
 
       <Stack.Screen
-      name="loginUser" 
-      options={{ 
+        name="loginUser"
+        options={{
           headerStyle: {
             height: 80, // Customize the header height
             backgroundColor: "#FFF5FA", // Customize the header background color
@@ -62,11 +64,12 @@ export default function AuthLayout() {
                 resizeMode="contain"
               />
             </View>
-          )}} />
+          )
+        }} />
 
       <Stack.Screen
-      name="registerOwner" 
-      options={{ 
+        name="registerOwner"
+        options={{
           headerStyle: {
             height: 80, // Customize the header height
             backgroundColor: "#FFF5FA", // Customize the header background color
@@ -82,11 +85,12 @@ export default function AuthLayout() {
                 resizeMode="contain"
               />
             </View>
-          )}} />
+          )
+        }} />
 
       <Stack.Screen
-      name="registerUser" 
-      options={{ 
+        name="registerUser"
+        options={{
           headerStyle: {
             height: 80, // Customize the header height
             backgroundColor: "#FFF5FA", // Customize the header background color
@@ -102,29 +106,30 @@ export default function AuthLayout() {
                 resizeMode="contain"
               />
             </View>
-          )}} />
-            
+          )
+        }} />
+
     </Stack>
   )
 }
 
 const styles = StyleSheet.create({
-    headerContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingRight: 150,
-    },
-    headerContainerMain: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingRight: 40,
-    },
-    logo: {
-      width: 200,
-      height: 80,
-    },
-  });
+  headerContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingRight: 150,
+  },
+  headerContainerMain: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingRight: 40,
+  },
+  logo: {
+    width: 200,
+    height: 80,
+  },
+});

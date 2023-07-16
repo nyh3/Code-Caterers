@@ -3,7 +3,7 @@ import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 
 const PromotionPopup = ({ promotions }) => {
-  const [showModal, setShowModal] = useState(true); 
+  const [showModal, setShowModal] = useState(true);
   const router = useRouter();
   const closeModal = () => {
     setShowModal(false);
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 8,
     justifyContent: 'center',
-    width: '80%', 
+    width: '80%',
   },
   modalTitle: {
     marginHorizontal: 80,

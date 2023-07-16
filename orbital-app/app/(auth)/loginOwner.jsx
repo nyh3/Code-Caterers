@@ -9,7 +9,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
-    
+
     const handleSubmit = async () => {
         if (email == '') {
             setErrMsg('Please provide a valid email address.');
@@ -32,11 +32,11 @@ export default function LoginPage() {
     return (
         <View style={styles.wholeThing}>
 
-            <Image 
-            style={styles.logo} 
-            source={require('../../assets/logo.png')} />
+            <Image
+                style={styles.logo}
+                source={require('../../assets/logo.png')} />
 
-            <Text style={styles.sign}>Sign In As Owner:</Text>
+            <Text style={styles.sign}>Stall Owner Sign In:</Text>
 
             <Text style={styles.bold}>Email:</Text>
             <TextInput
@@ -44,7 +44,7 @@ export default function LoginPage() {
                 textContentType='emailAddress'
                 value={email}
                 onChangeText={setEmail} />
-            
+
             <Text style={styles.bold}>Password:</Text>
             <TextInput
                 secureTextEntry
@@ -52,20 +52,20 @@ export default function LoginPage() {
                 textContentType='password'
                 value={password}
                 onChangeText={setPassword} />
+            {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
             <View style={styles.container}>
                 <Button
-                style={styles.buttonContainer}
-                onPress={handleSubmit}><Text style={styles.button}>Sign In</Text></Button>
+                    style={[styles.buttonContainer, { alignSelf: 'center' }]}
+                    onPress={handleSubmit}><Text style={styles.button}>Sign In</Text></Button>
             </View>
-                
-            {errMsg !== "" && <Text>{errMsg}</Text>}
-            {loading && <ActivityIndicator />}
-            <View style={styles.bar}>
+            {loading && <ActivityIndicator style={styles.indicator} />}
+            <Text style={styles.text}>Don't have an account, create an account below.</Text>
+            <View style={styles.container}>
                 <Link href="/registerOwner">
-                    <Button style={styles.buttonContainer}><Text style={styles.button}>Sign Up</Text></Button>
-                </Link>    
+                    <Button style={[styles.buttonContainer, { alignSelf: 'center' }]}><Text style={styles.button}>Sign Up</Text></Button>
+                </Link>
             </View>
-            
+
         </View>
     );
 }
@@ -80,38 +80,48 @@ const styles = StyleSheet.create({
     sign: {
         fontWeight: 'bold',
         fontSize: 34,
-        margin: 0,
-        marginHorizontal: 15,
         marginTop: 10,
     },
     bold: {
         fontWeight: 'bold',
-        margin: 0,
-        marginHorizontal: 15,
         marginTop: 10,
         marginBottom: 3,
     },
     container: {
-        padding: 10,
+        paddingTop: 15,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
     },
     wholeThing: {
         justifyContent: 'flex-start',
         flexDirection: 'column',
         flex: 1,
         backgroundColor: '#FFF5FA',
-    },
-    bar: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
+        paddingHorizontal: 10,
     },
     buttonContainer: {
         backgroundColor: '#FFECF6',
-        borderWidth: 5,
-        borderLeftWidth: 5,
-        borderRightWidth: 5,
-      },
+        padding: 1,
+        borderWidth: 1,
+        borderColor: '#FFBBDF',
+        width: 180,
+        justifyContent: 'center',
+    },
     button: {
         color: '#2C0080',
         fontWeight: 'bold',
-    }
-  });
+    },
+    error: {
+        color: 'red',
+        marginTop: 15,
+    },
+    indicator: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingTop: 15,
+    },
+    text: {
+        fontWeight: 'bold',
+        marginTop: 15,
+    },
+});

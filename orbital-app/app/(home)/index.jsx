@@ -145,13 +145,13 @@ export default function StallPage() {
     <View style={styles.container}>
       <TextInput
         style={styles.searchInput}
-        placeholder="Search..."
+        placeholder="Search for stalls..."
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
       <Text style={styles.heading}>Stalls found:</Text>
 
-      {searchQuery == '' && (<View style={styles.sortContainer}>
+      {searchQuery == '' && (<View>
         <Text style={styles.heading}>Sort By:</Text>
         <Picker
           selectedValue={sortBy}
@@ -159,7 +159,7 @@ export default function StallPage() {
           style={styles.sortDropdown}
         >
           <Picker.Item label="None" value="" />
-          <Picker.Item label="Rating" value="rating" />
+          <Picker.Item label="Ratings" value="rating" />
           <Picker.Item label="Stall Name" value="name" />
           {/* Add additional sorting options here */}
         </Picker>
@@ -191,7 +191,8 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginVertical: 15,
+    marginBottom: 15,
+    marginTop: 5,
   },
   stallList: {
     paddingBottom: 20,
@@ -252,5 +253,10 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
+  },
+  sortDropdown: {
+    backgroundColor: 'white',
+    marginBottom: 10,
+    fontSize: 15,
   },
 });

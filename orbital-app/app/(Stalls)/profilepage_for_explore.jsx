@@ -453,5 +453,5 @@ const styles = StyleSheet.create({
     },
     flatListContent: {
         paddingBottom: 180, // Adjust this value based on your layout
-      },
+    },
 });

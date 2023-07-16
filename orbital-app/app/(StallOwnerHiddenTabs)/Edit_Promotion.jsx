@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
-import { Link, useSearchParams } from 'expo-router';
+import { useSearchParams } from 'expo-router';
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
@@ -219,18 +219,13 @@ export default function EditPromotionPage() {
       )}
 
       <Button onPress={handleSubmit} style={styles.buttonContainer}>
-        <Text style={styles.buttons}>Submit</Text>
+        <Text style={styles.buttons}>Submit & Update Promotion</Text>
       </Button>
-      <Button onPress={handleDelete} style={styles.buttonContainer}>
-        <Text style={styles.buttons}>Delete</Text>
-      </Button>
-      <Link href="/Promotions">
-        <Button style={styles.buttonContainer}>
-          <Text style={styles.buttons}>Discard & Return</Text>
-        </Button>
-      </Link>
       {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
-      {loading && <ActivityIndicator />}
+      <Button onPress={handleDelete} style={styles.buttonContainer}>
+        <Text style={styles.buttons}>Delete Promotion</Text>
+      </Button>
+      {loading && <ActivityIndicator style={styles.indicator} />}
     </View>
   );
 }
@@ -273,4 +268,13 @@ const styles = StyleSheet.create({
     height: 100,
     marginRight: 15,
   },
+  indicator: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 15,
+},  
+error: {
+  color: 'red',
+  marginBottom: 10,
+},
 });

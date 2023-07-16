@@ -78,7 +78,8 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginVertical: 15,
+        marginTop: 5,
+        marginBottom: 15,
     },
     promotionList: {
         paddingBottom: 20,

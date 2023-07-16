@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { ScrollView, View, Image, StyleSheet } from "react-native";
 import { Text, Button, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import * as ImagePicker from 'expo-image-picker';
@@ -15,6 +15,7 @@ export default function AddReview() {
   const menuId = useSearchParams();
   const userId = useAuth();
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
@@ -22,9 +23,21 @@ export default function AddReview() {
       setImage(result.assets[0].uri);
     }
   }
+  const handleRatingChange = (value) => {
+    setRating(value);
+    setErrorMessage('');
+  };
+
+  const handleCommentChange = (text) => {
+    setComment(text);
+    setErrorMessage('');
+  };
 
   const handleSubmit = async () => {
-    // Submit the review to Supabase
+    if (rating === 0 || comment.trim() === '') {
+      setErrorMessage('Please provide your ratings and comments.');
+      return;
+    }
     let uploadedImage = null;
     if (image != null) {
       const { data, error } = await supabase.storage.from('ReviewImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
@@ -46,13 +59,12 @@ export default function AddReview() {
         menu_id: menuId.id,
         user_id: userId.userId,
       });
-      
+
     if (error) {
       console.error('Error submitting review:', error.message);
       return;
     }
 
-    // Reset form fields
     setRating(0);
     setComment('');
     setImage('');
@@ -60,35 +72,35 @@ export default function AddReview() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.heading}>Ratings:</Text>
       <AirbnbRating
         count={5}
         defaultRating={rating}
         size={20}
-        onFinishRating={setRating}
+        onFinishRating={handleRatingChange}
       />
       <Button onPress={handleAddImage} style={styles.buttonContainer}><Text style={styles.button}>Upload Image</Text></Button>
       {image && <Image source={{ uri: image }} style={styles.image} />}
       <Text style={styles.heading}>Comments:</Text>
       <TextInput
         value={comment}
-        onChangeText={setComment}
+        onChangeText={handleCommentChange}
         multiline
         style={styles.input}
       />
       <Button onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.button}>Submit</Text></Button>
-    </View>
+      {errorMessage !== '' && <Text style={styles.error}>{errorMessage}</Text>}
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'flex-start',
     backgroundColor: '#FFF5FA',
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 35,
+    paddingVertical: 20,
   },
   heading: {
     fontWeight: 'bold',
@@ -117,5 +129,9 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginBottom: 15,
+  },
+  error: {
+    color: 'red',
+    marginHorizontal: 5,
   },
 })  

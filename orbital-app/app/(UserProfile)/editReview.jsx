@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { ScrollView, View, Image, StyleSheet } from "react-native";
 import { Text, Button, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import * as ImagePicker from 'expo-image-picker';
@@ -57,7 +57,7 @@ export default function EditReview() {
       const { data, error } = await supabase.storage
         .from('ReviewImage')
         .upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
-  
+
       if (error != null) {
         console.log(error);
         return;
@@ -65,26 +65,26 @@ export default function EditReview() {
       const { data: { publicUrl } } = supabase.storage.from('ReviewImage').getPublicUrl(data.path);
       uploadedImage = publicUrl;
     }
-  
+
     let reviewUpdate = {
       rating: rating,
       review_text: comment,
     };
-  
+
     if (uploadedImage !== null) {
       reviewUpdate.image = uploadedImage;
     }
-  
+
     const { data, error } = await supabase
       .from('review')
       .update(reviewUpdate)
       .eq('id', reviewId.id);
-  
+
     if (error) {
       console.error('Error submitting review:', error.message);
       return;
     }
-  
+
     // Reset form fields
     setRating(0);
     setComment('');
@@ -98,12 +98,12 @@ export default function EditReview() {
       .from('review')
       .delete()
       .eq('id', reviewId.id);
-  
+
     if (error) {
       console.error('Error deleting review:', error.message);
       return;
     }
-  
+
     // Reset form fields
     setRating(0);
     setComment('');
@@ -111,11 +111,11 @@ export default function EditReview() {
     setInfo(null);
     router.push('reviews');
   };
-  
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {info && info.menu && (
-        <Text style={styles.heading2}>{info.menu.name} from {info.menu.stall.name}</Text>
+        <Text style={styles.heading2}>{info.menu.name}, {info.menu.stall.name}</Text>
       )}
       <Text style={styles.heading}>Ratings:</Text>
       <AirbnbRating
@@ -125,10 +125,16 @@ export default function EditReview() {
         onFinishRating={setRating}
       />
       <Button onPress={handleAddImage} style={styles.buttonContainer}><Text style={styles.button}>Change Image</Text></Button>
+      <Text style={styles.heading3}>Existing image:</Text>
       {existingImages.map((imageUri) => (
         <Image key={imageUri} source={{ uri: imageUri }} style={styles.existingImage} />
       ))}
-      {image && <Image source={{ uri: image }} style={styles.newImage} />}
+      {image && (
+        <>
+          <Text style={styles.heading3}>Replace with the following image:</Text>
+          <Image source={{ uri: image }} style={styles.newImage} />
+        </>
+      )}
       <Text style={styles.heading}>Comments:</Text>
       <TextInput
         value={comment}
@@ -136,28 +142,32 @@ export default function EditReview() {
         multiline
         style={styles.input}
       />
-      <Button onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.button}>Submit</Text></Button>
-      <Button onPress={handleDelete} style={styles.buttonContainer}><Text style={styles.button}>Delete</Text></Button>
-    </View>
+      <Button onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.button}>Update & Submit Review</Text></Button>
+      <Button onPress={handleDelete} style={styles.deleteContainer}><Text style={styles.button}>Delete Review</Text></Button>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'flex-start',
     backgroundColor: '#FFF5FA',
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 35,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
   },
   heading: {
     fontWeight: 'bold',
     fontSize: 15,
-    marginBottom: 5,
+    marginVertical: 5,
   },
   heading2: {
     fontWeight: 'bold',
     fontSize: 20,
+    marginBottom: 5,
+  },
+  heading3: {
+    fontWeight: 'bold',
+    fontSize: 15,
     marginBottom: 5,
   },
   input: {
@@ -174,18 +184,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FFBBDF',
   },
+  deleteContainer: {
+    marginBottom: 35,
+    backgroundColor: '#FFECF6',
+    borderWidth: 1,
+    borderColor: '#FFBBDF',
+  },
   button: {
     color: '#2C0080',
     fontWeight: 'bold',
   },
   existingImage: {
-    width: 70,
-    height: 70,
+    width: 150,
+    height: 150,
     marginBottom: 10,
   },
   newImage: {
-    width: 70,
-    height: 70,
+    width: 150,
+    height: 150,
     marginBottom: 10,
   },
 });

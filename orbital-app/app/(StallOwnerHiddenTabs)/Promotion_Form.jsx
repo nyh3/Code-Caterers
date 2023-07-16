@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { Button, ActivityIndicator, TextInput } from 'react-native-paper';
-import { Link } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/auth';
 import { useRouter } from 'expo-router';
@@ -56,7 +55,7 @@ export default function PromotionForm() {
     setShowEndDatePicker(false);
     if (date) {
       if (startDate && date < startDate) {
-        setErrMsg('End date cannot be before start date');
+        setErrMsg('End date cannot be set before the start date.');
         setEndDate(null);
       } else {
         setErrMsg('');
@@ -71,11 +70,11 @@ export default function PromotionForm() {
   const handleSubmit = async () => {
     setErrMsg('');
     if (title === '') {
-      setErrMsg('Promotion title cannot be empty');
+      setErrMsg('Promotion title cannot be empty.');
       return;
     }
     if (endDate === null) {
-      setErrMsg('End date cannot be null');
+      setErrMsg('There must be an end date.');
       return;
     }
     setLoading(true);
@@ -199,14 +198,7 @@ export default function PromotionForm() {
         <Text style={styles.buttons}>Submit</Text>
       </Button>
       {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
-      <Link href="../(StallOwnerHome)/Promotions">
-        <Button style={styles.buttonContainer}>
-          <Text mode="contained" style={styles.buttons}>
-            Discard & Return
-          </Text>
-        </Button>
-      </Link>
-      {loading && <ActivityIndicator />}
+      {loading && <ActivityIndicator style={styles.indicator} />}
     </View>
   );
 }
@@ -229,7 +221,7 @@ const styles = StyleSheet.create({
   },
   error: {
     color: 'red',
-    marginTop: 10,
+    marginBottom: 10,
     marginHorizontal: 5,
   },
   buttonContainer: {
@@ -253,5 +245,10 @@ const styles = StyleSheet.create({
   warning: {
     color: 'red',
     marginBottom: 10,
-  }
+  },
+  indicator: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 15,
+},
 });
