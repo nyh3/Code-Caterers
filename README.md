@@ -5,3 +5,5 @@ Design and plan:
 
 To create apk
 eas build -p android --profile preview
+
+To test app run npm test
