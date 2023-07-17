@@ -294,7 +294,7 @@ export default function UserProfileLayout() {
             alignSelf: "center", // Align the header title to the center
           },
           headerTitle: () => (
-            <View style={styles.headerContainer}>
+            <View style={styles.headerContainerMain}>
               <Image
                 source={require('../../assets/headerlogo.png')}
                 style={styles.logo}

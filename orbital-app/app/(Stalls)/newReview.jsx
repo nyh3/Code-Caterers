@@ -68,7 +68,7 @@ export default function AddReview() {
     setRating(0);
     setComment('');
     setImage('');
-    router.push({ pathname: '/menuDetails', params: { id: menuId.id } });
+    router.back();
   };
 
   return (
