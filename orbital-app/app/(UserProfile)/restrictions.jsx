@@ -35,8 +35,23 @@ export default function DietaryRestrictions() {
 
   const handleAddRestriction = () => {
     if (newRestriction.trim() === '') return;
-
-    const updatedRestrictions = [...dietary_restrictions, newRestriction.trim()];
+  
+    const normalizedRestriction = newRestriction.trim();
+    
+    // Check for duplicate restrictions
+    if (dietary_restrictions.includes(normalizedRestriction)) {
+      setErrMsg('This restriction has already been added.');
+      return;
+    }
+  
+    // Check for "halal" and "vegetarian" restrictions
+    const restrictedRestrictions = ['HALAL', 'VEGETARIAN'];
+    if (restrictedRestrictions.includes(normalizedRestriction)) {
+      setErrMsg('Adding HALAL or VEGETARIAN as a restriction is not allowed.');
+      return;
+    }
+  
+    const updatedRestrictions = [...dietary_restrictions, normalizedRestriction];
     setDietaryRestrictions(updatedRestrictions);
     setNewRestriction('');
   };

@@ -54,12 +54,14 @@ export default function UpdateProfile() {
       setErrMsg('Username cannot be empty');
       return;
     }
-
+  
     setLoading(true);
     let uploadedImage = null;
     if (image != null) {
-      const { data, error } = await supabase.storage.from('ProfileImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
-
+      const { data, error } = await supabase.storage
+        .from('ProfileImage')
+        .upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
+  
       if (error != null) {
         console.log(error);
         setErrMsg(error.message)
@@ -67,16 +69,28 @@ export default function UpdateProfile() {
         return;
       }
       console.log('user:', userId);
-      const { data: { publicUrl } } = supabase.storage.from('ProfileImage').getPublicUrl(data.path);
+      const { data: { publicUrl } } = supabase.storage
+        .from('ProfileImage')
+        .getPublicUrl(data.path);
       uploadedImage = publicUrl;
     }
-    const { data, error } = await supabase.from('profile').update({ image: uploadedImage, username: username }).eq('id', userId);
+    
+    const { data, error } = await supabase
+      .from('profile')
+      .update({ image: uploadedImage, username: username })
+      .eq('id', userId);
+    
     if (error != null) {
       setLoading(false);
       console.log(error);
-      setErrMsg(error.message);
+      if (error.message.includes('duplicate key value violates unique constraint')) {
+        setErrMsg('Username taken');
+      } else {
+        setErrMsg(error.message);
+      }
       return;
     }
+  
     setLoading(false);
     router.push('../(home)/profile');
     console.log('Profile updated successfully:', data);
