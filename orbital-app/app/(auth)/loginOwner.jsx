@@ -4,18 +4,26 @@ import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 import { Link } from 'expo-router';
 import { supabase } from "../../lib/supabase";
 
+/**
+ * LoginPage component represents the login page for stall owners.
+ *
+ * @returns {JSX.Element} The rendered LoginPage component.
+ */
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
 
+    /**
+     * Handles the form submission for logging in the stall owner.
+     */
     const handleSubmit = async () => {
-        if (email == '') {
+        if (email === '') {
             setErrMsg('Please provide a valid email address.');
             return;
         }
-        if (password == '') {
+        if (password === '') {
             setErrMsg('Please provide a valid password.');
             return;
         }
@@ -31,7 +39,6 @@ export default function LoginPage() {
 
     return (
         <View style={styles.wholeThing}>
-
             <Image
                 style={styles.logo}
                 source={require('../../assets/logo.png')} />
@@ -65,7 +72,6 @@ export default function LoginPage() {
                     <Button style={[styles.buttonContainer, { alignSelf: 'center' }]}><Text style={styles.button}>Sign Up</Text></Button>
                 </Link>
             </View>
-
         </View>
     );
 }

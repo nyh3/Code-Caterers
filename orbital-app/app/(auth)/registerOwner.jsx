@@ -3,25 +3,35 @@ import { supabase } from "../../lib/supabase";
 import { View, StyleSheet, Image } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 
+/**
+ * RegisterPage component represents the registration page for creating a new account.
+ *
+ * @returns {JSX.Element} The rendered RegisterPage component.
+ */
 export default function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
 
+    /**
+     * Handles the form submission for registering a new account.
+     */
     const handleSubmit = async () => {
-        if (email == '') {
+        if (email === '') {
             setErrMsg('Please provide a valid email address.');
             return;
         }
-        if (password == '') {
+        if (password === '') {
             setErrMsg('Please provide a valid email password.');
             return;
         }
         setLoading(true);
         setErrMsg('');
         const { error } = await supabase.auth.signUp({
-            email, password, options: {
+            email,
+            password,
+            options: {
                 emailRedirectTo: 'https://nyh3.github.io/verify'
             }
         });
@@ -31,6 +41,7 @@ export default function RegisterPage() {
             return;
         }
     }
+
     return (
         <View style={styles.wholeThing}>
 

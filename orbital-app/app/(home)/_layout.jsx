@@ -2,9 +2,15 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Image, View, StyleSheet } from "react-native";
 
+/**
+ * HomeLayout component represents the layout for the home screen with tabs.
+ *
+ * @returns {JSX.Element} The rendered HomeLayout component.
+ */
 export default function HomeLayout() {
   return (
     <Tabs>
+      {/* Screen: index */}
       <Tabs.Screen
         name="index"
         options={{
@@ -15,11 +21,11 @@ export default function HomeLayout() {
           tabBarInactiveTintColor: 'gray',
           tabBarActiveTintColor: '#2C0080',
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -30,7 +36,10 @@ export default function HomeLayout() {
               />
             </View>
           )
-        }} />
+        }}
+      />
+
+      {/* Screen: filter */}
       <Tabs.Screen
         name="filter"
         options={{
@@ -41,11 +50,11 @@ export default function HomeLayout() {
           tabBarInactiveTintColor: 'gray',
           tabBarActiveTintColor: '#2C0080',
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -56,7 +65,10 @@ export default function HomeLayout() {
               />
             </View>
           )
-        }} />
+        }}
+      />
+
+      {/* Screen: profile */}
       <Tabs.Screen
         name="profile"
         options={{
@@ -67,11 +79,11 @@ export default function HomeLayout() {
           tabBarInactiveTintColor: 'gray',
           tabBarActiveTintColor: '#2C0080',
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -82,7 +94,10 @@ export default function HomeLayout() {
               />
             </View>
           )
-        }} />
+        }}
+      />
+
+      {/* Screen: Promotions */}
       <Tabs.Screen
         name="Promotions"
         options={{
@@ -93,11 +108,11 @@ export default function HomeLayout() {
           tabBarInactiveTintColor: 'gray',
           tabBarActiveTintColor: '#2C0080',
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -108,8 +123,10 @@ export default function HomeLayout() {
               />
             </View>
           )
-        }} />
+        }}
+      />
 
+      {/* Screen: explore */}
       <Tabs.Screen
         name="explore"
         options={{
@@ -120,11 +137,11 @@ export default function HomeLayout() {
           tabBarInactiveTintColor: 'gray',
           tabBarActiveTintColor: '#2C0080',
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -135,7 +152,8 @@ export default function HomeLayout() {
               />
             </View>
           )
-        }} />
+        }}
+      />
     </Tabs>
   )
 }

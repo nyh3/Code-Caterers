@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
-import { ScrollView, View, Image, StyleSheet } from "react-native";
+import { ScrollView, Image, StyleSheet } from "react-native";
 import { Text, Button, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import * as ImagePicker from 'expo-image-picker';
 import { AirbnbRating } from 'react-native-ratings';
 import { useSearchParams, useRouter } from "expo-router";
 
+/**
+ * Component for editing and submitting a review.
+ * @returns {JSX.Element} The EditReview component.
+ */
 export default function EditReview() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -19,6 +23,9 @@ export default function EditReview() {
     fetchReviewData();
   }, []);
 
+  /**
+   * Fetches the review data from Supabase.
+   */
   const fetchReviewData = async () => {
     try {
       const { data, error } = await supabase
@@ -43,13 +50,19 @@ export default function EditReview() {
     }
   };
 
+  /**
+   * Handles the addition of an image from the device's library.
+   */
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
-  }
+  };
 
+  /**
+   * Handles the submission of the review.
+   */
   const handleSubmit = async () => {
     // Submit the review to Supabase
     let uploadedImage = null;
@@ -93,6 +106,9 @@ export default function EditReview() {
     router.push('reviews');
   };
 
+  /**
+   * Handles the deletion of the review.
+   */
   const handleDelete = async () => {
     const { data, error } = await supabase
       .from('review')

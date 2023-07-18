@@ -12,6 +12,9 @@ export default function ViewReviewScreen() {
     fetchReviewDetails();
   }, []);
 
+  /**
+   * Fetches the details of the review from the database.
+   */
   const fetchReviewDetails = async () => {
     try {
       const { data, error } = await supabase
@@ -88,7 +91,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
-  comment: {
+  comment2: {
     fontSize: 16,
     marginVertical: 10,
   },

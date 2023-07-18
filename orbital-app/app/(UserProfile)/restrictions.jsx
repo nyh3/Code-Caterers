@@ -2,9 +2,13 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { StyleSheet, View } from 'react-native';
 import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper';
-import { useRouter } from 'expo-router'
+import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/auth';
 
+/**
+ * Component for managing dietary restrictions and allergies.
+ * @returns {JSX.Element} The DietaryRestrictions component.
+ */
 export default function DietaryRestrictions() {
   const [loading, setLoading] = useState(false);
   const [dietary_restrictions, setDietaryRestrictions] = useState([]);
@@ -33,34 +37,44 @@ export default function DietaryRestrictions() {
     fetchDietaryRestrictions();
   }, []);
 
+  /**
+   * Handles the addition of a dietary restriction.
+   */
   const handleAddRestriction = () => {
     if (newRestriction.trim() === '') return;
-  
+
     const normalizedRestriction = newRestriction.trim();
-    
+
     // Check for duplicate restrictions
     if (dietary_restrictions.includes(normalizedRestriction)) {
       setErrMsg('This restriction has already been added.');
       return;
     }
-  
+
     // Check for "halal" and "vegetarian" restrictions
     const restrictedRestrictions = ['HALAL', 'VEGETARIAN'];
     if (restrictedRestrictions.includes(normalizedRestriction)) {
       setErrMsg('Adding HALAL or VEGETARIAN as a restriction is not allowed.');
       return;
     }
-  
+
     const updatedRestrictions = [...dietary_restrictions, normalizedRestriction];
     setDietaryRestrictions(updatedRestrictions);
     setNewRestriction('');
   };
 
+  /**
+   * Handles the deletion of a dietary restriction.
+   * @param {string} restriction - The dietary restriction to be deleted.
+   */
   const handleDeleteRestriction = (restriction) => {
     const updatedRestrictions = dietary_restrictions.filter((item) => item !== restriction);
     setDietaryRestrictions(updatedRestrictions);
   };
 
+  /**
+   * Handles the submission of dietary restrictions.
+   */
   const handleSubmit = async () => {
     setLoading(true);
 
@@ -94,7 +108,7 @@ export default function DietaryRestrictions() {
         ))
       ) : (
         <View style={styles.restrictionContainer}>
-          <Text style={styles.restrictionText}>No dietary restrictions has been declared</Text>
+          <Text style={styles.restrictionText}>No dietary restrictions have been declared</Text>
         </View>
       )}
       <Text style={styles.bold}>Update your dietary restrictions or food allergies:</Text>

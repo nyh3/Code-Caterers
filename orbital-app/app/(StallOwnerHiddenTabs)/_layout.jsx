@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 export default function AuthLayout() {
   const router = useRouter();
 
+  // Navigation handlers for each screen
   const handleMenu = () => {
     router.push('Menu');
   }
@@ -20,15 +21,16 @@ export default function AuthLayout() {
 
   return (
     <Stack>
+      {/* Stack screen for "Add_Menu" */}
       <Stack.Screen
         name="Add_Menu"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -48,18 +50,20 @@ export default function AuthLayout() {
                 style={styles.backButton}
               />
             </TouchableOpacity>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* Stack screen for "Edit_Menu" */}
       <Stack.Screen
         name="Edit_Menu"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -79,18 +83,20 @@ export default function AuthLayout() {
                 style={styles.backButton}
               />
             </TouchableOpacity>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* Stack screen for "Edit_Promotion" */}
       <Stack.Screen
         name="Edit_Promotion"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -110,18 +116,20 @@ export default function AuthLayout() {
                 style={styles.backButton}
               />
             </TouchableOpacity>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* Stack screen for "Promotion_Form" */}
       <Stack.Screen
         name="Promotion_Form"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -141,18 +149,20 @@ export default function AuthLayout() {
                 style={styles.backButton}
               />
             </TouchableOpacity>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* Stack screen for "View_Review" */}
       <Stack.Screen
         name="View_Review"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -172,10 +182,11 @@ export default function AuthLayout() {
                 style={styles.backButton}
               />
             </TouchableOpacity>
-          )
-        }} />
+          ),
+        }}
+      />
     </Stack>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

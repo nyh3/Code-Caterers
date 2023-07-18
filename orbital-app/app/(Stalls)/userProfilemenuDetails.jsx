@@ -7,6 +7,9 @@ import { useAuth } from '../../contexts/auth'
 import { AirbnbRating } from 'react-native-ratings';
 import { Ionicons } from '@expo/vector-icons';
 
+/**
+ * Component for displaying the details of a menu item from the user's perspective.
+ */
 export default function MenuDetailScreen() {
   const menuId = useSearchParams();
   const [reviews, setReviews] = useState([]);
@@ -20,6 +23,9 @@ export default function MenuDetailScreen() {
     fetchReviews();
   }, [menuId]);
 
+  /**
+   * Fetches the details of the menu item from the database.
+   */
   const fetchMenuDetails = async () => {
     try {
       const [menuData, savedData] = await Promise.all([
@@ -54,6 +60,9 @@ export default function MenuDetailScreen() {
     }
   };
 
+  /**
+  * Toggles the saved status of the menu item.
+  */
   const handleSaveToggle = async () => {
     try {
       const savedMenuIds = await supabase
@@ -65,24 +74,24 @@ export default function MenuDetailScreen() {
       let updatedMenuIds = savedMenuIds.data?.menu_id || [];
 
       if (isSaved) {
-        // If already saved, remove the menu_id from the profile table
         updatedMenuIds = updatedMenuIds.filter((id) => id !== menuId.id);
       } else {
-        // If not saved, add the menu_id to the profile table
         updatedMenuIds.push(menuId.id);
       }
-
       await supabase
         .from('profile')
         .update({ menu_id: updatedMenuIds })
         .eq('id', userId);
 
-      setIsSaved(!isSaved); // Toggle the saved status
+      setIsSaved(!isSaved);
     } catch (error) {
       console.error('Error saving/unsaving menu:', error.message);
     }
   };
 
+  /**
+   * Fetches the reviews for the menu item from the database.
+   */
   const fetchReviews = async () => {
     try {
       const { data: reviewsData, error: reviewsError } = await supabase
@@ -109,10 +118,18 @@ export default function MenuDetailScreen() {
     );
   }
 
+  /**
+     * Handles the press event for adding a review.
+     * @param {string} menuId - The ID of the menu item.
+     */
   const handleAddReview = (review) => {
     router.push({ pathname: '/newReview', params: { id: review } });
   };
 
+  /**
+  * Handles the press event for viewing a review.
+  * @param {string} reviewId - The ID of the review.
+  */
   const handleReviewPress = (review) => {
     router.push({ pathname: '/reviewDetails', params: { id: review } });
   };
@@ -130,12 +147,12 @@ export default function MenuDetailScreen() {
       <Image source={{ uri: menu.image }} style={styles.image} />
       <Text style={styles.menuName}>{menu.name}</Text>
       <AirbnbRating
-        defaultRating={parseFloat(menu.rating) || 0} // Use a default value of 0 if stall.rating is null
+        defaultRating={parseFloat(menu.rating) || 0}
         size={30}
         isDisabled
         showRating={false}
-        minRating={0} // Set the minimum selectable value to 0
-        maxRating={5} // Set the maximum selectable value to 5
+        minRating={0}
+        maxRating={5}
       />
       <Text style={styles.price}>Price: ${menu.price}</Text>
       <Text>{menu.description}</Text>

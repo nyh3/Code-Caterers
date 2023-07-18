@@ -7,6 +7,11 @@ import { useRouter } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+/**
+ * Component for editing a promotion item.
+ *
+ * @returns {JSX.Element} The JSX element representing the EditPromotionPage component.
+ */
 export default function EditPromotionPage() {
   const promotionId = useSearchParams();
   const [title, setTitle] = useState('');
@@ -23,10 +28,13 @@ export default function EditPromotionPage() {
   const [showClearEndDateButton, setShowClearEndDateButton] = useState(false);
 
   useEffect(() => {
-    fetchMenuItem();
+    fetchPromotionItem();
   }, []);
 
-  const fetchMenuItem = async () => {
+  /**
+   * Fetches the promotion item to be edited.
+   */
+  const fetchPromotionItem = async () => {
     try {
       const { data, error } = await supabase
         .from('promotion')
@@ -53,13 +61,19 @@ export default function EditPromotionPage() {
     }
   };
 
+  /**
+   * Handles adding an image from the device's image library.
+   */
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
-    if (!result.canceled) {
+    if (!result.cancelled) {
       setImage(result.assets[0].uri);
     }
   };
 
+  /**
+   * Handles the submission of the edited promotion item form.
+   */
   const handleSubmit = async () => {
     setErrMsg('');
     if (title === '') {
@@ -95,8 +109,8 @@ export default function EditPromotionPage() {
       start_date: startDate,
       end_date: endDate,
     })
-    .eq('id', promotionId.id)
-    .single();
+      .eq('id', promotionId.id)
+      .single();
 
     if (error != null) {
       setLoading(false);
@@ -110,30 +124,45 @@ export default function EditPromotionPage() {
     console.log('Promotion item updated successfully:', data);
   };
 
+  /**
+   * Handles deleting the promotion item.
+   */
   const handleDelete = async () => {
     try {
       await supabase
         .from('promotion')
         .delete()
         .eq('id', promotionId.id);
-  
+
       router.push('/Promotions');
     } catch (error) {
       console.error('Error deleting promotion item:', error.message);
     }
   };
 
+  /**
+   * Formats the date to a string in the format "dd/mm/yy".
+   *
+   * @param {Date} date - The date to format.
+   * @returns {string} The formatted date string.
+   */
   const formatDate = (date) => {
     if (!date) {
       return 'No end date';
     }
-  
+
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = String(date.getFullYear()).slice(-2);
     return `${day}/${month}/${year}`;
   };
 
+  /**
+   * Handles the change of the end date in the date picker.
+   *
+   * @param {Event} event - The event object.
+   * @param {Date} date - The selected date.
+   */
   const handleEndDateChange = (event, date) => {
     setShowEndDatePicker(false);
     if (date) {
@@ -146,7 +175,13 @@ export default function EditPromotionPage() {
       }
     }
   };
-  
+
+  /**
+   * Handles the change of the start date in the date picker.
+   *
+   * @param {Event} event - The event object.
+   * @param {Date} date - The selected date.
+   */
   const handleStartDateChange = (event, date) => {
     setShowStartDatePicker(false);
     if (date) {
@@ -158,7 +193,7 @@ export default function EditPromotionPage() {
         setErrMsg('');
       }
     }
-  };  
+  };
 
   return (
     <View style={styles.container}>
@@ -191,11 +226,11 @@ export default function EditPromotionPage() {
       </Button>
       {showStartDatePicker && (
         <DateTimePicker
-        value={startDate}
-        mode="date"
-        display="default"
-        onChange={handleStartDateChange}
-      />
+          value={startDate}
+          mode="date"
+          display="default"
+          onChange={handleStartDateChange}
+        />
       )}
 
       <Button onPress={() => setShowEndDatePicker(true)} style={styles.buttonContainer}>
@@ -203,18 +238,18 @@ export default function EditPromotionPage() {
       </Button>
       {showEndDatePicker && (
         <DateTimePicker
-        value={endDate !== null ? endDate : new Date()}
-        mode="date"
-        display="default"
-        onChange={handleEndDateChange}
-      />
-       )}
+          value={endDate !== null ? endDate : new Date()}
+          mode="date"
+          display="default"
+          onChange={handleEndDateChange}
+        />
+      )}
       {showClearEndDateButton && (
         <Button onPress={() => {
-            setEndDate(null);
-            //setShowClearEndDateButton(false);
+          setEndDate(null);
+          //setShowClearEndDateButton(false);
         }} style={styles.buttonContainer}>
-            <Text style={styles.buttons}>Clear End Date</Text>
+          <Text style={styles.buttons}>Clear End Date</Text>
         </Button>
       )}
 
@@ -272,9 +307,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingTop: 15,
-},  
-error: {
-  color: 'red',
-  marginBottom: 10,
-},
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
+  },
 });

@@ -4,6 +4,10 @@ import { supabase } from "../../lib/supabase";
 import { useAuth } from '../../contexts/auth';
 import { useRouter } from 'expo-router';
 
+/**
+ * Component for displaying saved menu items and profiles.
+ * @returns {JSX.Element} The SavedPage component.
+ */
 export default function SavedPage() {
   const [activeTab, setActiveTab] = useState('menu');
   const [savedMenuItems, setSavedMenuItems] = useState([]);
@@ -76,18 +80,34 @@ export default function SavedPage() {
     fetchSavedProfiles();
   }, [userId]);
 
+  /**
+   * Handles pressing a saved menu item.
+   * @param {Object} item - The selected menu item.
+   */
   const handleMenuPress = (item) => {
     router.push({ pathname: '/User_Menu_Details', params: { id: item.id } });
   };
 
+  /**
+   * Handles pressing a saved profile.
+   * @param {Object} profile - The selected profile.
+   */
   const handleProfilePress = (profile) => {
     router.push({ pathname: '/userprofile', params: { id: profile.id } });
   };
 
+  /**
+   * Handles pressing a tab.
+   * @param {string} tab - The selected tab.
+   */
   const handleTabPress = (tab) => {
     setActiveTab(tab);
   };
 
+  /**
+   * Renders the saved menu items.
+   * @returns {JSX.Element} The rendered saved menu items.
+   */
   const SavedMenu = () => (
     <ScrollView style={styles.tabContainer}>
       {savedMenuItems.length > 0 ? (
@@ -115,6 +135,10 @@ export default function SavedPage() {
     </ScrollView>
   );
 
+  /**
+   * Renders the saved profiles.
+   * @returns {JSX.Element} The rendered saved profiles.
+   */
   const SavedProfiles = () => (
     <ScrollView style={styles.tabContainer}>
       {savedProfiles.length > 0 ? (
@@ -138,6 +162,12 @@ export default function SavedPage() {
     </ScrollView>
   );
 
+  /**
+   * Limits the username to a specified length.
+   * @param {string} username - The username to be limited.
+   * @param {number} limit - The character limit for the username (default: 23).
+   * @returns {string} The limited username.
+   */
   const limitUsername = (username, limit = 23) => {
     if (username.length <= limit) {
       return username;
@@ -164,12 +194,12 @@ export default function SavedPage() {
         </TouchableOpacity>
       </View>
 
-     {activeTab === 'menu' ? (
-       <SavedMenu />
-     ) : (
-       <SavedProfiles />
-     )}
-   </View>
+      {activeTab === 'menu' ? (
+        <SavedMenu />
+      ) : (
+        <SavedProfiles />
+      )}
+    </View>
   );
 }
 

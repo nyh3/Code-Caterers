@@ -6,6 +6,11 @@ import { useAuth } from "../../contexts/auth";
 import { useRouter } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
 
+/**
+ * Component for adding a menu item.
+ *
+ * @returns {JSX.Element} The JSX element representing the AddMenuPage component.
+ */
 export default function AddMenuPage() {
   const [name, setName] = useState('');
   const [errMsg, setErrMsg] = useState('');
@@ -23,6 +28,9 @@ export default function AddMenuPage() {
     fetchStallId();
   }, []);
 
+  /**
+   * Fetches the stall ID associated with the logged-in user.
+   */
   const fetchStallId = async () => {
     try {
       const { data, error } = await supabase
@@ -42,6 +50,9 @@ export default function AddMenuPage() {
     }
   };
 
+  /**
+   * Handles adding an image from the device's image library.
+   */
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
     if (!result.canceled) {
@@ -49,6 +60,9 @@ export default function AddMenuPage() {
     }
   };
 
+  /**
+   * Handles the submission of the menu item form.
+   */
   const handleSubmit = async () => {
     setErrMsg('');
     if (name === '') {
@@ -78,7 +92,7 @@ export default function AddMenuPage() {
         description: description,
         price: parseFloat(price),
         stall_id: stall.id,
-        dietary_restrictions: dietaryRestrictions, // Add dietary restrictions field
+        dietary_restrictions: dietaryRestrictions,
       })
       .select()
       .single();
@@ -103,6 +117,9 @@ export default function AddMenuPage() {
     }
   };
 
+  /**
+   * Handles adding a dietary restriction.
+   */
   const handleAddDietaryRestriction = () => {
     if (newDietaryRestriction !== '') {
       setDietaryRestrictions([...dietaryRestrictions, newDietaryRestriction]);
@@ -110,6 +127,11 @@ export default function AddMenuPage() {
     }
   };
 
+  /**
+   * Handles removing a dietary restriction.
+   *
+   * @param {number} index - The index of the dietary restriction to be removed.
+   */
   const handleRemoveDietaryRestriction = (index) => {
     const updatedDietaryRestrictions = [...dietaryRestrictions];
     updatedDietaryRestrictions.splice(index, 1);
@@ -168,86 +190,85 @@ export default function AddMenuPage() {
         <Button onPress={handleAddDietaryRestriction} style={styles.buttonContainer}>
           <Text style={styles.buttons}>Add Dietary Restriction</Text>
         </Button>
-        
+
         <Button onPress={handleSubmit} style={styles.buttonContainer}>
           <Text style={styles.buttons}>Submit</Text>
         </Button>
         {errMsg !== '' && <Text style={styles.warning}>{errMsg}</Text>}
-        {loading && <ActivityIndicator style={styles.indicator}/>}
+        {loading && <ActivityIndicator style={styles.indicator} />}
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-    container: {
-      justifyContent: 'flex-start',
-      backgroundColor: '#FFF5FA',
-      flex: 1,
-      paddingHorizontal: 15,
-    },
-    heading: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      marginVertical: 15,
-    },
-    input: {
-      marginBottom: 15,
-      backgroundColor: '#FFECF6',
-    },
-    buttons: {
-      color: '#2C0080',
-      fontWeight: 'bold',
-    },
-    buttonContainer: {
-      marginHorizontal: 5,
-      marginBottom: 10,
-      backgroundColor: '#FFECF6',
-      borderWidth: 1,
-      borderColor: '#FFBBDF',
-    },
-    image: {
-      width: 100,
-      height: 100,
-      marginBottom: 15,
-      marginTop: 5,
-    },
-    dietaryRestrictionsContainer: {
-      marginBottom: 7,
-    },
-    dietaryRestrictionItem: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: 5,
-      paddingHorizontal: 15,
-      backgroundColor: '#FFECF6',
-      height: 40,
-    },
-    dietaryRestrictionText: {
-      fontSize: 15,
-      color: 'black',
-    },
-    removeDietaryRestrictionButton: {
-      backgroundColor: 'transparent',
-    },
-    removeDietaryRestrictionText: {
-      color: '#2C0080',
-      fontWeight: 'bold',
-    },
-    scrollViewContainer: {
-      flexGrow: 1,
-    },
-    warning: {
-      color: 'red',
-      margin: 0,
-      marginHorizontal: 15,
-      marginBottom: 10,
-    },
-    indicator: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      paddingTop: 15,
+  container: {
+    justifyContent: 'flex-start',
+    backgroundColor: '#FFF5FA',
+    flex: 1,
+    paddingHorizontal: 15,
   },
-  });
-  
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 15,
+  },
+  input: {
+    marginBottom: 15,
+    backgroundColor: '#FFECF6',
+  },
+  buttons: {
+    color: '#2C0080',
+    fontWeight: 'bold',
+  },
+  buttonContainer: {
+    marginHorizontal: 5,
+    marginBottom: 10,
+    backgroundColor: '#FFECF6',
+    borderWidth: 1,
+    borderColor: '#FFBBDF',
+  },
+  image: {
+    width: 100,
+    height: 100,
+    marginBottom: 15,
+    marginTop: 5,
+  },
+  dietaryRestrictionsContainer: {
+    marginBottom: 7,
+  },
+  dietaryRestrictionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+    paddingHorizontal: 15,
+    backgroundColor: '#FFECF6',
+    height: 40,
+  },
+  dietaryRestrictionText: {
+    fontSize: 15,
+    color: 'black',
+  },
+  removeDietaryRestrictionButton: {
+    backgroundColor: 'transparent',
+  },
+  removeDietaryRestrictionText: {
+    color: '#2C0080',
+    fontWeight: 'bold',
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
+  },
+  warning: {
+    color: 'red',
+    margin: 0,
+    marginHorizontal: 15,
+    marginBottom: 10,
+  },
+  indicator: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 15,
+  },
+});

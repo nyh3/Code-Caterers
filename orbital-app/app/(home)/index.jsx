@@ -6,8 +6,12 @@ import { useRouter } from 'expo-router';
 import { AirbnbRating } from 'react-native-ratings';
 import { Picker } from '@react-native-picker/picker';
 import PromotionPopup from "../(StallOwnerHiddenTabs)/PromotionPopup";
-import { PopupContext } from '../../contexts/popup'; // Import the PopupContext
+import { PopupContext } from '../../contexts/popup';
 
+/**
+ * Displays a page with stalls, allowing users to search and sort stalls.
+ * @returns {JSX.Element} The StallPage component.
+ */
 export default function StallPage() {
   const [stalls, setStalls] = useState([]);
   const isFocused = useIsFocused();
@@ -20,6 +24,9 @@ export default function StallPage() {
   const { popupCount, setPopupCount } = useContext(PopupContext); // Accessing the popup context
 
   useEffect(() => {
+    /**
+     * Fetches promotions from the database and sets the state.
+     */
     const fetchPromotions = async () => {
       try {
         const { data, error } = await supabase
@@ -53,6 +60,9 @@ export default function StallPage() {
     fetchStalls();
   }, [searchQuery]);
 
+  /**
+   * Fetches stalls from the database based on the search query and sorting option.
+   */
   const fetchStalls = async () => {
     try {
       const { data, error } = await supabase
@@ -89,31 +99,45 @@ export default function StallPage() {
     }
   };
 
+  /**
+   * Handles the press event when a stall is selected.
+   * @param {string} stall - The ID of the selected stall.
+   */
   const handleStallPress = (stall) => {
     router.push({ pathname: '/stallDetails', params: { id: stall } });
   };
 
+  /**
+   * Returns the color code for the cuisine tag based on the cuisine name.
+   * @param {string} cuisineName - The name of the cuisine.
+   * @returns {string} The color code for the cuisine tag.
+   */
   const getCuisineTagColor = (cuisineName) => {
     switch (cuisineName) {
       case 'Chinese':
-        return '#FFD700'; // Gold color for Chinese cuisine
+        return '#FFD700';
       case 'Western':
-        return '#6495ED'; // Cornflower blue color for Western cuisine
+        return '#6495ED';
       case 'Malay':
-        return '#228B22'; // Forest green color for Malay cuisine
+        return '#228B22';
       case 'Indian':
-        return '#FF4500'; // Orange-red color for Indian cuisine
+        return '#FF4500';
       case 'Japanese':
-        return '#FF69B4'; // Hot pink color for Japanese cuisine
+        return '#FF69B4';
       case 'Korean':
-        return '#CD5C5C'; // Indian red color for Korean cuisine
+        return '#CD5C5C';
       case 'Thai':
-        return '#FFA500'; // Orange color for Thai cuisine
+        return '#FFA500';
       default:
-        return '#CCCCCC'; // Default color if cuisine name doesn't match any specific case
+        return '#CCCCCC';
     }
   };
 
+  /**
+   * Renders a stall item in the FlatList.
+   * @param {object} item - The stall item.
+   * @returns {JSX.Element} The rendered stall item.
+   */
   const renderStall = ({ item }) => (
     <TouchableOpacity onPress={() => handleStallPress(item.id)}>
       <View style={styles.stallContainer}>
@@ -151,19 +175,20 @@ export default function StallPage() {
       />
       <Text style={styles.heading}>Stalls found:</Text>
 
-      {searchQuery == '' && (<View>
-        <Text style={styles.heading}>Sort By:</Text>
-        <Picker
-          selectedValue={sortBy}
-          onValueChange={(itemValue) => setSortBy(itemValue)}
-          style={styles.sortDropdown}
-        >
-          <Picker.Item label="None" value="" />
-          <Picker.Item label="Ratings" value="rating" />
-          <Picker.Item label="Stall Name" value="name" />
-          {/* Add additional sorting options here */}
-        </Picker>
-      </View>
+      {searchQuery == '' && (
+        <View>
+          <Text style={styles.heading}>Sort By:</Text>
+          <Picker
+            selectedValue={sortBy}
+            onValueChange={(itemValue) => setSortBy(itemValue)}
+            style={styles.sortDropdown}
+          >
+            <Picker.Item label="None" value="" />
+            <Picker.Item label="Ratings" value="rating" />
+            <Picker.Item label="Stall Name" value="name" />
+            {/* Add additional sorting options here */}
+          </Picker>
+        </View>
       )}
 
       <FlatList

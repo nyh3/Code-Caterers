@@ -63,6 +63,9 @@ export default function StallProfilePage() {
         fetchCuisines();
     }, []);
 
+    /**
+     * Fetches the list of locations
+     */
     const fetchLocations = async () => {
         try {
             const { data, error } = await supabase.from('location').select();
@@ -78,6 +81,9 @@ export default function StallProfilePage() {
         }
     };
 
+    /**
+     * Fetches the list of cuisines
+     */
     const fetchCuisines = async () => {
         try {
             const { data, error } = await supabase.from('cuisine').select();
@@ -91,6 +97,9 @@ export default function StallProfilePage() {
         }
     };
 
+    /**
+     * Handles the selection of an image from the gallery
+     */
     const handleAddImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images
@@ -100,6 +109,11 @@ export default function StallProfilePage() {
         }
     };
 
+    /**
+     * Handles the selection of a location
+     * 
+     * @param {string} locationId - The ID of the selected location
+     */
     const handleLocationSelection = async (locationId) => {
         try {
             const { data } = await supabase
@@ -121,6 +135,11 @@ export default function StallProfilePage() {
         }
     };
 
+    /**
+     * Handles the selection of a cuisine
+     * 
+     * @param {string} cuisineId - The ID of the selected cuisine
+     */
     const handleCuisineSelection = async (cuisineId) => {
         try {
             const { data } = await supabase
@@ -139,6 +158,9 @@ export default function StallProfilePage() {
         }
     };
 
+    /**
+     * Handles the submission of the stall details
+     */
     const handleSubmit = async () => {
         setLoading(true);
         let uploadedImage = null;
@@ -330,7 +352,7 @@ export default function StallProfilePage() {
                     </Link>
                 </View>
             </ScrollView>
-        </Provider >
+        </Provider>
     );
 }
 
