@@ -1,9 +1,12 @@
-import { View, Text, Image, ActivityIndicator, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useSearchParams, useRouter } from 'expo-router';
 import { AirbnbRating } from 'react-native-ratings';
 
+/**
+ * Component for displaying the details of a stall.
+ */
 export default function StallDetailScreen() {
   const [menu, setMenu] = useState([]);
   const [stall, setStall] = useState(null);
@@ -15,6 +18,9 @@ export default function StallDetailScreen() {
     fetchStallDetails();
   }, []);
 
+  /**
+   * Fetches the menu details for the stall from the database.
+   */
   const fetchMenuDetails = async () => {
     try {
       const { data, error } = await supabase
@@ -32,11 +38,14 @@ export default function StallDetailScreen() {
     }
   };
 
+  /**
+   * Fetches the stall details from the database.
+   */
   const fetchStallDetails = async () => {
     try {
       const { data, error } = await supabase
         .from('stall')
-        .select('*, location ( name ), cuisine (name)')
+        .select('*, location (name), cuisine (name)')
         .eq('id', stallId.id)
         .single();
 
@@ -46,45 +55,49 @@ export default function StallDetailScreen() {
       }
       setStall(data);
     } catch (error) {
-      console.error('Error fetching menu details:', error.message);
+      console.error('Error fetching stall details:', error.message);
     }
   };
 
-  if (!stall) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>loading</Text>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  const handleMenuPress = (menu) => {
-    router.push({ pathname: '/menuDetails', params: { id: menu } });
-    console.log('Menu item pressed:', menu);
+  /**
+   * Handles the press event of a menu item.
+   * @param {string} menuId - The ID of the menu item.
+   */
+  const handleMenuPress = (menuId) => {
+    router.push({ pathname: '/menuDetails', params: { id: menuId } });
+    console.log('Menu item pressed:', menuId);
   };
 
+  /**
+   * Returns the color for the cuisine tag based on the cuisine name.
+   * @param {string} cuisineName - The name of the cuisine.
+   * @returns {string} The color for the cuisine tag.
+   */
   const getCuisineTagColor = (cuisineName) => {
     switch (cuisineName) {
       case 'Chinese':
-        return '#FFD700'; // Gold color for Chinese cuisine
+        return '#FFD700';
       case 'Western':
-        return '#6495ED'; // Cornflower blue color for Western cuisine
+        return '#6495ED';
       case 'Malay':
-        return '#228B22'; // Forest green color for Malay cuisine
+        return '#228B22';
       case 'Indian':
-        return '#FF4500'; // Orange-red color for Indian cuisine
+        return '#FF4500';
       case 'Japanese':
-        return '#FF69B4'; // Hot pink color for Japanese cuisine
+        return '#FF69B4';
       case 'Korean':
-        return '#CD5C5C'; // Indian red color for Korean cuisine
+        return '#CD5C5C';
       case 'Thai':
-        return '#FFA500'; // Orange color for Thai cuisine
+        return '#FFA500';
       default:
-        return '#CCCCCC'; // Default color if cuisine name doesn't match any specific case
+        return '#CCCCCC';
     }
   };
 
+  /**
+   * Renders a menu item.
+   * @param {object} item - The menu item object.
+   */
   const renderMenuItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleMenuPress(item.id)}>
       <View style={styles.menuItemContainer}>

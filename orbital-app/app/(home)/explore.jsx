@@ -5,6 +5,11 @@ import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/auth';
 
+/**
+ * UserPage component represents the page displaying users and recommended users.
+ *
+ * @returns {JSX.Element} The rendered UserPage component.
+ */
 export default function UserPage() {
   const [users, setUsers] = useState([]);
   const [recommendedUsers, setRecommendedUsers] = useState([]);
@@ -14,11 +19,13 @@ export default function UserPage() {
   const { userId } = useAuth();
   const [menuId, setMenuId] = useState(null);
 
+  // Fetch users and recommended users on component mount and when search query or focus changes
   useEffect(() => {
     fetchUsers();
     fetchRecommendedUsers();
   }, [isFocused, searchQuery]);
 
+  // Update recommended users when menu ID or users change
   useEffect(() => {
     if (menuId) {
       const recommended = users.filter((user) => user.menu_id === menuId);
@@ -26,6 +33,7 @@ export default function UserPage() {
     }
   }, [menuId, users]);
 
+  // Fetch users based on search query
   const fetchUsers = async () => {
     try {
       const { data, error } = await supabase
@@ -43,6 +51,7 @@ export default function UserPage() {
     }
   };
 
+  // Fetch recommended users based on user's menu ID and saved users
   const fetchRecommendedUsers = async () => {
     try {
       const { data: currentUserData, error: currentUserError } = await supabase
@@ -50,66 +59,74 @@ export default function UserPage() {
         .select('menu_id, other_user_id')
         .eq('id', userId)
         .single();
-  
+
       if (currentUserError) {
         console.error('Error fetching current user details:', currentUserError.message);
         return;
       }
-  
+
       const currentUserMenuId = currentUserData.menu_id || [];
       const currentUserSavedUsers = currentUserData.other_user_id || [];
-  
+
       const { data: usersData, error: usersError } = await supabase
         .from('profile')
         .select('*')
         .neq('id', userId); // Exclude current user
-  
+
       if (usersError) {
         console.error('Error fetching other users:', usersError.message);
         return;
       }
-  
+
       const recommendedUsers = usersData
         .filter((user) => !currentUserSavedUsers.includes(user.id)) // Exclude saved users
         .map((user) => ({
           ...user,
-          similarity: countSimilarMenuIds(user.menu_id, currentUserMenuId)
+          similarity: countSimilarMenuIds(user.menu_id, currentUserMenuId),
         }))
         .filter((user) => user.similarity > 0) // Filter users with at least 1 similar menu_id
         .sort((a, b) => b.similarity - a.similarity);
-  
+
       setRecommendedUsers(recommendedUsers);
     } catch (error) {
       console.error('Error fetching recommended users:', error.message);
     }
-  };  
-  
+  };
+
+  // Count the number of similar menu IDs between two arrays
   const countSimilarMenuIds = (menuIds, targetMenuId) => {
     const menuIdArray = Array.isArray(menuIds) ? menuIds : [menuIds];
     const targetArray = Array.isArray(targetMenuId) ? targetMenuId : [targetMenuId];
     return menuIdArray.filter((menuId) => targetArray.includes(menuId)).length;
-  };  
+  };
 
+  // Handle user press to navigate to profile page
   const handleUserPress = (user) => {
     router.push({ pathname: '/profilepage_for_explore', params: { id: user.id } });
   };
 
+  // Render user card
   const renderUser = ({ item }) => (
     <TouchableOpacity onPress={() => handleUserPress(item)}>
       <View style={styles.userCard}>
         <View style={styles.userImageContainer}>
           <Image source={{ uri: item.image }} style={styles.userImage} />
         </View>
-        <Text style={styles.username}>{item.username.length > 15 ? item.username.slice(0, 25) + '...' : item.username}</Text>
+        <Text style={styles.username}>
+          {item.username.length > 15 ? item.username.slice(0, 25) + '...' : item.username}
+        </Text>
       </View>
     </TouchableOpacity>
   );
 
+  // Render recommended user card
   const renderRecommendedUser = ({ item }) => (
     <TouchableOpacity onPress={() => handleUserPress(item)}>
       <View style={styles.recommendedUserCard}>
         <Image source={{ uri: item.image }} style={styles.recommendedUserImage} />
-        <Text style={styles.recommendedUsername}>{item.username.length > 15 ? item.username.slice(0, 11) + '...' : item.username}</Text>
+        <Text style={styles.recommendedUsername}>
+          {item.username.length > 15 ? item.username.slice(0, 11) + '...' : item.username}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -123,19 +140,20 @@ export default function UserPage() {
         onChangeText={setSearchQuery}
       />
 
-    {recommendedUsers.length > 0 && searchQuery == '' && (
-    <View>
-        <Text style={styles.heading}>Recommended Users</Text>
-        <FlatList
-        data={recommendedUsers}
-        renderItem={renderRecommendedUser}
-        keyExtractor={(item) => item.id.toString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.recommendedUsersContainer}
-        />
-    </View>
-    )}
+      {/* Display recommended users */}
+      {recommendedUsers.length > 0 && searchQuery === '' && (
+        <View>
+          <Text style={styles.heading}>Recommended Users</Text>
+          <FlatList
+            data={recommendedUsers}
+            renderItem={renderRecommendedUser}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.recommendedUsersContainer}
+          />
+        </View>
+      )}
 
       <Text style={styles.heading}>All Users</Text>
 
@@ -180,7 +198,6 @@ const styles = StyleSheet.create({
     padding: 15,
     borderColor: '#FFF5FA',
     borderWidth: 3,
-    borderRadius: 10,
   },
   userImageContainer: {
     marginRight: 10,
@@ -198,7 +215,7 @@ const styles = StyleSheet.create({
   recommendedUserCard: {
     alignItems: 'center',
     marginBottom: 10,
-    width: 140, 
+    width: 140,
     height: 165,
     marginRight: 10,
     backgroundColor: '#FFECF6',
@@ -206,7 +223,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderColor: '#FFF5FA',
     borderWidth: 2,
-    borderRadius: 10,
   },
   recommendedUserImage: {
     width: 100,

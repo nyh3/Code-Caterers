@@ -18,6 +18,9 @@ export default function ReviewPage() {
     fetchStallId();
   }, []);
 
+  /**
+   * Fetches the stall ID for the current user
+   */
   const fetchStallId = async () => {
     const { data, error } = await supabase
       .from('stall')
@@ -33,6 +36,11 @@ export default function ReviewPage() {
     }
   };
 
+  /**
+   * Fetches the menu ID for a given stall ID
+   * 
+   * @param {string} stallId - The ID of the stall
+   */
   const fetchMenuId = async (stallId) => {
     const { data, error } = await supabase
       .from('menu')
@@ -49,6 +57,11 @@ export default function ReviewPage() {
     }
   };
 
+  /**
+   * Fetches the review ID for a given menu ID
+   * 
+   * @param {Array} menuId - The IDs of the menu items
+   */
   const fetchReviewId = async (menuId) => {
     const { data, error } = await supabase
       .from('review')
@@ -60,6 +73,11 @@ export default function ReviewPage() {
     }
   };
 
+  /**
+   * Toggles the visibility of menu reviews
+   * 
+   * @param {string} menuId - The ID of the menu
+   */
   const toggleMenuReviewsVisibility = (menuId) => {
     setMenuReviewsVisibility((prevVisibility) => ({
       ...prevVisibility,
@@ -67,10 +85,21 @@ export default function ReviewPage() {
     }));
   };
 
+  /**
+   * Handles the press event for a review
+   * 
+   * @param {string} review - The ID of the review
+   */
   const handleReviewPress = (review) => {
     router.push({ pathname: '/View_Review', params: { id: review } });
   };
 
+  /**
+   * Renders the reviews for a menu
+   * 
+   * @param {string} menuId - The ID of the menu
+   * @returns {JSX.Element|null} - The rendered menu reviews or null if not visible
+   */
   const renderMenuReviews = (menuId) => {
     const isVisible = menuReviewsVisibility[menuId];
 
@@ -80,7 +109,7 @@ export default function ReviewPage() {
       if (menuReviews.length === 0) {
         return (
           <View style={styles.noReviewsContainer}>
-            <Text style={styles.noReviewsText}>No reviews has been given.</Text>
+            <Text style={styles.noReviewsText}>No reviews have been given.</Text>
           </View>
         );
       }
@@ -164,7 +193,7 @@ export default function ReviewPage() {
         )}
       />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

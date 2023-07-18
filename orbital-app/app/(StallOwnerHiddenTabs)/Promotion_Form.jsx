@@ -7,6 +7,11 @@ import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+/**
+ * Component for adding promotions.
+ *
+ * @returns {JSX.Element} The JSX element representing the PromotionForm component.
+ */
 export default function PromotionForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -25,6 +30,9 @@ export default function PromotionForm() {
     fetchStallId();
   }, []);
 
+  /**
+   * Fetches the ID of the stall owned by the user.
+   */
   const fetchStallId = async () => {
     try {
       const { data, error } = await supabase
@@ -44,13 +52,22 @@ export default function PromotionForm() {
     }
   };
 
+  /**
+   * Handles adding an image from the device's image library.
+   */
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
-    if (!result.canceled) {
+    if (!result.cancelled) {
       setImage(result.assets[0].uri);
     }
   };
 
+  /**
+   * Handles the change of the end date in the date picker.
+   *
+   * @param {Event} event - The event object.
+   * @param {Date} date - The selected date.
+   */
   const handleEndDateChange = (event, date) => {
     setShowEndDatePicker(false);
     if (date) {
@@ -67,6 +84,9 @@ export default function PromotionForm() {
     }
   };
 
+  /**
+   * Handles the submission of the promotion form.
+   */
   const handleSubmit = async () => {
     setErrMsg('');
     if (title === '') {
@@ -116,7 +136,6 @@ export default function PromotionForm() {
     console.log('Promotion added successfully:', data);
     setTitle('');
     setDescription('');
-    
 
     if (error) {
       console.error('Error inserting menu item:', error.message);
@@ -124,6 +143,12 @@ export default function PromotionForm() {
     }
   };
 
+  /**
+   * Formats the date to a string in the format "dd/mm/yy".
+   *
+   * @param {Date} date - The date to format.
+   * @returns {string} The formatted date string.
+   */
   const formatDate = (date) => {
     if (!date) {
       return 'No end date';
@@ -135,6 +160,12 @@ export default function PromotionForm() {
     return `${day}/${month}/${year}`;
   };
 
+  /**
+   * Handles the change of the start date in the date picker.
+   *
+   * @param {Event} event - The event object.
+   * @param {Date} date - The selected date.
+   */
   const handleStartDateChange = (event, date) => {
     setShowStartDatePicker(false);
     if (date) {
@@ -182,17 +213,17 @@ export default function PromotionForm() {
         />
       )}
 
-    <Button onPress={() => setShowEndDatePicker(true)} style={styles.buttonContainer}>
-      <Text style={styles.buttons}>End Date: {endDate !== null ? formatDate(endDate) : 'No end date'}</Text>
-    </Button>
-    {showEndDatePicker && (
-      <DateTimePicker
-        value={endDate !== null ? endDate : new Date()}
-        mode="date"
-        display="default"
-        onChange={handleEndDateChange}
-      />
-    )}
+      <Button onPress={() => setShowEndDatePicker(true)} style={styles.buttonContainer}>
+        <Text style={styles.buttons}>End Date: {endDate !== null ? formatDate(endDate) : 'No end date'}</Text>
+      </Button>
+      {showEndDatePicker && (
+        <DateTimePicker
+          value={endDate !== null ? endDate : new Date()}
+          mode="date"
+          display="default"
+          onChange={handleEndDateChange}
+        />
+      )}
 
       <Button onPress={handleSubmit} style={styles.buttonContainer}>
         <Text style={styles.buttons}>Submit</Text>
@@ -250,5 +281,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingTop: 15,
-},
+  },
 });

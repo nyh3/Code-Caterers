@@ -4,6 +4,10 @@ import { useSearchParams } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { AirbnbRating } from 'react-native-ratings';
 
+/**
+ * ViewReviewScreen component displays the details of a specific review.
+ * @returns {JSX.Element} Review screen component JSX
+ */
 export default function ViewReviewScreen() {
   const reviewId = useSearchParams();
   const [review, setReview] = useState(null);
@@ -12,6 +16,9 @@ export default function ViewReviewScreen() {
     fetchReviewDetails();
   }, []);
 
+  /**
+   * Fetches the review details from the database.
+   */
   const fetchReviewDetails = async () => {
     try {
       const { data, error } = await supabase

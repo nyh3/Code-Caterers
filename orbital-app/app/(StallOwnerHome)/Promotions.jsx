@@ -18,39 +18,50 @@ export default function AddPromotionPage() {
     fetchMenuItems();
   }, [isFocused]);
 
+  /**
+   * Remove the time component from a given date
+   * 
+   * @param {Date} date - The date to remove the time component from
+   * @returns {Date} - The date with the time component set to 00:00:00
+   */
   const removeTime = (date) => {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   };
-  
+
+  /**
+   * Fetches the menu items from the database
+   */
   const fetchMenuItems = async () => {
+    // Fetch the stall ID for the current user
     const { data: stallId, error } = await supabase
       .from('stall')
       .select('id')
       .eq('owner_id', userId)
       .single();
-  
+
     if (error) {
       console.error('Error fetching stall id:', error.message);
       return;
     }
-  
+
     try {
+      // Fetch the promotion details for the stall
       const { data, error } = await supabase
         .from('promotion')
         .select('*')
         .eq('stall_id', stallId.id);
-  
+
       if (error) {
         console.error('Error fetching promotion details:', error.message);
         return;
       }
-  
+
       const currentDate = removeTime(new Date());
       const updatedMenuItems = data.map((item) => {
         const startDate = removeTime(new Date(item.start_date));
         const endDate = removeTime(new Date(item.end_date));
         let validity = null;
-  
+
         if (startDate <= currentDate && endDate >= currentDate) {
           validity = 'ongoing';
         } else if (endDate < currentDate) {
@@ -58,24 +69,39 @@ export default function AddPromotionPage() {
         } else if (startDate > currentDate) {
           validity = 'upcoming';
         }
-  
+
         return { ...item, validity };
       });
-  
+
       setMenuItems(updatedMenuItems);
     } catch (error) {
       console.error('Error fetching promotion details:', error.message);
     }
   };
 
+  /**
+   * Handles the press event for a promotion
+   * 
+   * @param {string} promotion - The ID of the selected promotion
+   */
   const handlePromotionPress = (promotion) => {
     router.push({ pathname: '/Edit_Promotion', params: { id: promotion } });
   };
 
+  /**
+   * Handles the press event for the filter buttons
+   * 
+   * @param {string} filterType - The selected filter type
+   */
   const handleFilterPress = (filterType) => {
     setFilter(filterType);
   };
 
+  /**
+   * Renders a menu item (promotion) in the list
+   * 
+   * @param {Object} item - The menu item (promotion) object
+   */
   const renderMenuItem = ({ item }) => (
     <TouchableOpacity onPress={() => handlePromotionPress(item.id)}>
       <View style={styles.promotion}>
@@ -87,7 +113,7 @@ export default function AddPromotionPage() {
             <Text
               style={[
                 styles.validityLabel,
-                { backgroundColor: item.validity === 'ongoing' ? '#9AD4C6' :item.validity === 'expired' ? '#FF847C': item.validity === 'upcoming' ? '#A3D8E6':'grey' },
+                { backgroundColor: item.validity === 'ongoing' ? '#9AD4C6' : item.validity === 'expired' ? '#FF847C' : item.validity === 'upcoming' ? '#A3D8E6' : 'grey' },
               ]}
             >
               {item.validity}
@@ -99,13 +125,13 @@ export default function AddPromotionPage() {
   );
 
   const filteredMenuItems =
-  filter === 'ongoing'
-    ? menuItems.filter((item) => item.validity === 'ongoing')
-    : filter === 'expired'
-    ? menuItems.filter((item) => item.validity === 'expired')
-    : filter === 'upcoming'
-    ? menuItems.filter((item) => item.validity === 'upcoming')
-    : menuItems;
+    filter === 'ongoing'
+      ? menuItems.filter((item) => item.validity === 'ongoing')
+      : filter === 'expired'
+        ? menuItems.filter((item) => item.validity === 'expired')
+        : filter === 'upcoming'
+          ? menuItems.filter((item) => item.validity === 'upcoming')
+          : menuItems;
 
   return (
     <View style={styles.container}>
@@ -117,49 +143,49 @@ export default function AddPromotionPage() {
       </Link>
       <Text style={styles.heading}>Promotions:</Text>
       <View style={styles.filterButtonsContainer}>
-  <ScrollView
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    contentContainerStyle={styles.filterButtonsScrollView}
-  >
-    <View style={styles.buttonWrapper}>
-      <Button
-        mode={filter === 'all' ? 'contained' : 'outlined'}
-        onPress={() => handleFilterPress('all')}
-        style={[styles.buttonContainer]}
-      >
-        <Text style={styles.buttons}>All</Text>
-      </Button>
-    </View>
-    <View style={styles.buttonWrapper}>
-      <Button
-        mode={filter === 'ongoing' ? 'contained' : 'outlined'}
-        onPress={() => handleFilterPress('ongoing')}
-        style={[styles.buttonContainer]}
-      >
-        <Text style={styles.buttons}>Ongoing</Text>
-      </Button>
-    </View>
-    <View style={styles.buttonWrapper}>
-      <Button
-        mode={filter === 'expired' ? 'contained' : 'outlined'}
-        onPress={() => handleFilterPress('expired')}
-        style={[styles.buttonContainer]}
-      >
-        <Text style={styles.buttons}>Expired</Text>
-      </Button>
-    </View>
-    <View style={styles.buttonWrapper}>
-      <Button
-        mode={filter === 'upcoming' ? 'contained' : 'outlined'}
-        onPress={() => handleFilterPress('upcoming')}
-        style={[styles.buttonContainer]}
-      >
-        <Text style={styles.buttons}>Upcoming</Text>
-      </Button>
-    </View>
-  </ScrollView>
-</View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterButtonsScrollView}
+        >
+          <View style={styles.buttonWrapper}>
+            <Button
+              mode={filter === 'all' ? 'contained' : 'outlined'}
+              onPress={() => handleFilterPress('all')}
+              style={[styles.buttonContainer]}
+            >
+              <Text style={styles.buttons}>All</Text>
+            </Button>
+          </View>
+          <View style={styles.buttonWrapper}>
+            <Button
+              mode={filter === 'ongoing' ? 'contained' : 'outlined'}
+              onPress={() => handleFilterPress('ongoing')}
+              style={[styles.buttonContainer]}
+            >
+              <Text style={styles.buttons}>Ongoing</Text>
+            </Button>
+          </View>
+          <View style={styles.buttonWrapper}>
+            <Button
+              mode={filter === 'expired' ? 'contained' : 'outlined'}
+              onPress={() => handleFilterPress('expired')}
+              style={[styles.buttonContainer]}
+            >
+              <Text style={styles.buttons}>Expired</Text>
+            </Button>
+          </View>
+          <View style={styles.buttonWrapper}>
+            <Button
+              mode={filter === 'upcoming' ? 'contained' : 'outlined'}
+              onPress={() => handleFilterPress('upcoming')}
+              style={[styles.buttonContainer]}
+            >
+              <Text style={styles.buttons}>Upcoming</Text>
+            </Button>
+          </View>
+        </ScrollView>
+      </View>
 
       <FlatList
         data={filteredMenuItems}
@@ -228,8 +254,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFECF6',
     borderWidth: 1,
     borderColor: '#FFBBDF',
-    marginRight: 15, 
-    minWidth: 80, 
+    marginRight: 15,
+    minWidth: 80,
     height: 45,
   },
   buttons: {

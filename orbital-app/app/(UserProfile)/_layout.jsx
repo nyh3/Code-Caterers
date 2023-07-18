@@ -4,16 +4,16 @@ import { useEffect } from "react";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
+/**
+ * Layout component for the user profile screens.
+ * @returns {JSX.Element} The UserProfileLayout component.
+ */
 export default function UserProfileLayout() {
   const router = useRouter();
 
   useEffect(() => {
     const backAction = () => {
-      // Define your custom navigation logic here
-      // For example, navigate to a different screen
       router.replace('profile');
-
-      // Return 'true' to prevent the default back action
       return true;
     };
 
@@ -22,29 +22,35 @@ export default function UserProfileLayout() {
       backAction
     );
 
-    // Cleanup the event listener
     return () => backHandler.remove();
   }, []);
 
+  /**
+   * Handles the profile button press event.
+   */
   const handleProfile = () => {
     router.push('profile');
-  }
+  };
 
+  /**
+   * Handles the promotion button press event.
+   */
   const handlePromotion = () => {
     router.push('(home)/Promotions');
-  }
+  };
 
   return (
     <Stack>
+      {/* editReview Screen */}
       <Stack.Screen
         name="editReview"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -55,17 +61,19 @@ export default function UserProfileLayout() {
               />
             </View>
           )
-        }} />
+        }}
+      />
 
+      {/* reviews Screen */}
       <Stack.Screen
         name="reviews"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainerMain}>
@@ -86,17 +94,19 @@ export default function UserProfileLayout() {
               />
             </TouchableOpacity>
           )
-        }} />
+        }}
+      />
 
+      {/* restrictions Screen */}
       <Stack.Screen
         name="restrictions"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainerMain}>
@@ -117,17 +127,19 @@ export default function UserProfileLayout() {
               />
             </TouchableOpacity>
           )
-        }} />
+        }}
+      />
 
+      {/* updateProfile Screen */}
       <Stack.Screen
         name="updateProfile"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainerMain}>
@@ -148,17 +160,19 @@ export default function UserProfileLayout() {
               />
             </TouchableOpacity>
           )
-        }} />
+        }}
+      />
 
+      {/* saved Screen */}
       <Stack.Screen
         name="saved"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainerMain}>
@@ -179,17 +193,19 @@ export default function UserProfileLayout() {
               />
             </TouchableOpacity>
           )
-        }} />
+        }}
+      />
 
+      {/* view_promotion Screen */}
       <Stack.Screen
         name="view_promotion"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainerMain}>
@@ -210,10 +226,11 @@ export default function UserProfileLayout() {
               />
             </TouchableOpacity>
           )
-        }} />
+        }}
+      />
 
     </Stack>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

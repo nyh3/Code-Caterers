@@ -1,7 +1,8 @@
-import { Stack } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { Image, View, StyleSheet, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
+import React from 'react';
+import { Stack } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { Image, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function UserProfileLayout() {
   const router = useRouter();
@@ -18,29 +19,22 @@ export default function UserProfileLayout() {
     router.push('saved');
   }
 
-  /*const handleProfile = () => {
-     router.push('(UserProfile)/userprofile');
-   }*/
-
-  /*const handleExplore = () => {
-    router.push('(UserProfile)/profilepage_for_explore');
-  }*/
-
   const handleExplore = () => {
     router.push('explore');
   }
 
   return (
     <Stack>
+      {/* Menu Details Screen */}
       <Stack.Screen
         name="menuDetails"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: '#FFF5FA',
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: 'center',
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -50,18 +44,20 @@ export default function UserProfileLayout() {
                 resizeMode="contain"
               />
             </View>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* Stall Details Screen */}
       <Stack.Screen
         name="stallDetails"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: '#FFF5FA',
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: 'center',
           },
           headerTitle: () => (
             <View style={styles.headerContainerMain}>
@@ -81,18 +77,20 @@ export default function UserProfileLayout() {
                 style={styles.backButton}
               />
             </TouchableOpacity>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* New Review Screen */}
       <Stack.Screen
         name="newReview"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: '#FFF5FA',
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: 'center',
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -102,18 +100,20 @@ export default function UserProfileLayout() {
                 resizeMode="contain"
               />
             </View>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* Review Details Screen */}
       <Stack.Screen
         name="reviewDetails"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: '#FFF5FA',
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: 'center',
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -123,18 +123,20 @@ export default function UserProfileLayout() {
                 resizeMode="contain"
               />
             </View>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* Menu Details Filter Screen */}
       <Stack.Screen
         name="Menu_Details_Filter"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: '#FFF5FA',
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: 'center',
           },
           headerTitle: () => (
             <View style={styles.headerContainerMain}>
@@ -154,18 +156,20 @@ export default function UserProfileLayout() {
                 style={styles.backButton}
               />
             </TouchableOpacity>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* User Menu Details Screen */}
       <Stack.Screen
         name="User_Menu_Details"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: '#FFF5FA',
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: 'center',
           },
           headerTitle: () => (
             <View style={styles.headerContainerMain}>
@@ -185,18 +189,20 @@ export default function UserProfileLayout() {
                 style={styles.backButton}
               />
             </TouchableOpacity>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* User Profile Menu Details Screen */}
       <Stack.Screen
         name="userProfilemenuDetails"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: '#FFF5FA',
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: 'center',
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -206,18 +212,20 @@ export default function UserProfileLayout() {
                 resizeMode="contain"
               />
             </View>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* Explore Profile Menu Details Screen */}
       <Stack.Screen
         name="exploreProfilemenuDetails"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: '#FFF5FA',
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: 'center',
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -227,18 +235,20 @@ export default function UserProfileLayout() {
                 resizeMode="contain"
               />
             </View>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* Profile Page for Explore Screen */}
       <Stack.Screen
         name="profilepage_for_explore"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: '#FFF5FA',
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: 'center',
           },
           headerTitle: () => (
             <View style={styles.headerContainerMain}>
@@ -258,19 +268,20 @@ export default function UserProfileLayout() {
                 style={styles.backButton}
               />
             </TouchableOpacity>
-          )
-        }} />
+          ),
+        }}
+      />
 
-
+      {/* User View Review Screen */}
       <Stack.Screen
         name="User_View_Review"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: '#FFF5FA',
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: 'center',
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -280,18 +291,20 @@ export default function UserProfileLayout() {
                 resizeMode="contain"
               />
             </View>
-          )
-        }} />
+          ),
+        }}
+      />
 
+      {/* User Profile Screen */}
       <Stack.Screen
         name="userprofile"
         options={{
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: '#FFF5FA',
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: 'center',
           },
           headerTitle: () => (
             <View style={styles.headerContainerMain}>
@@ -311,11 +324,11 @@ export default function UserProfileLayout() {
                 style={styles.backButton}
               />
             </TouchableOpacity>
-          )
-        }} />
-
+          ),
+        }}
+      />
     </Stack>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

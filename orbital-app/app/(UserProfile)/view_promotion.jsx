@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 
+/**
+ * Component for viewing promotion details.
+ * @returns {JSX.Element} The ViewReviewScreen component.
+ */
 export default function ViewReviewScreen() {
   const promotionId = useSearchParams();
   const [promotion, setPromotion] = useState(null);
@@ -11,6 +15,9 @@ export default function ViewReviewScreen() {
     fetchPromotionDetails();
   }, []);
 
+  /**
+   * Fetches promotion details from the database.
+   */
   const fetchPromotionDetails = async () => {
     try {
       const { data, error } = await supabase
@@ -32,12 +39,16 @@ export default function ViewReviewScreen() {
 
   if (!promotion) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={styles.container}>
         <ActivityIndicator size="large" />
       </View>
     );
   }
 
+  /**
+   * Formats the promotion duration.
+   * @returns {string} The formatted promotion duration.
+   */
   const formatPromotionDuration = () => {
     const startDate = new Date(promotion.start_date);
     const endDate = promotion.end_date ? new Date(promotion.end_date) : null;

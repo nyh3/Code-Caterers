@@ -7,6 +7,10 @@ import { useRouter } from "expo-router";
 import { AirbnbRating } from "react-native-ratings";
 import { useIsFocused } from "@react-navigation/native";
 
+/**
+ * Component for displaying and managing user reviews.
+ * @returns {JSX.Element} The ReviewsPage component.
+ */
 export default function ReviewsPage() {
   const { userId } = useAuth();
   const [reviews, setReviews] = useState([]);
@@ -18,6 +22,9 @@ export default function ReviewsPage() {
     fetchUserReviews();
   }, [isFocused]);
 
+  /**
+   * Fetches the user's reviews from the database.
+   */
   const fetchUserReviews = async () => {
     try {
       const { data, error } = await supabase
@@ -37,10 +44,19 @@ export default function ReviewsPage() {
     }
   };
 
+  /**
+   * Handles the editing of a review.
+   * @param {number} reviewId - The ID of the review to be edited.
+   */
   const handleEditReview = (reviewId) => {
     router.push({ pathname: '/editReview', params: { id: reviewId } });
   };
 
+  /**
+   * Renders an individual review item.
+   * @param {Object} item - The review item.
+   * @returns {JSX.Element} The rendered review item.
+   */
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleEditReview(item.id)} style={styles.reviewItem}>
       <View>

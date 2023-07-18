@@ -20,6 +20,9 @@ export default function MenuDetailScreen() {
     fetchReviews();
   }, [menuId]);
 
+  /**
+   * Fetches the details of the menu
+   */
   const fetchMenuDetails = async () => {
     try {
       const [menuData, savedData] = await Promise.all([
@@ -54,6 +57,9 @@ export default function MenuDetailScreen() {
     }
   };
 
+  /**
+   * Toggles the saved status of the menu
+   */
   const handleSaveToggle = async () => {
     try {
       const savedMenuIds = await supabase
@@ -77,12 +83,15 @@ export default function MenuDetailScreen() {
         .update({ menu_id: updatedMenuIds })
         .eq('id', userId);
 
-      setIsSaved(!isSaved); // Toggle the saved status
+      setIsSaved(!isSaved);
     } catch (error) {
       console.error('Error saving/unsaving menu:', error.message);
     }
   };
 
+  /**
+   * Fetches the reviews for the menu
+   */
   const fetchReviews = async () => {
     try {
       const { data: reviewsData, error: reviewsError } = await supabase
@@ -108,11 +117,18 @@ export default function MenuDetailScreen() {
       </View>
     );
   }
-
+  /**
+    * Handles the press event when a review is selected.
+    * @param {string} review - The ID of the selected review.
+    */
   const handleAddReview = (review) => {
     router.push({ pathname: '/newReview', params: { id: review } });
   };
 
+  /**
+   * Handles the press event when a review is selected.
+   * @param {string} review - The ID of the selected review.
+   */
   const handleReviewPress = (review) => {
     router.push({ pathname: '/reviewDetails', params: { id: review } });
   };
@@ -130,12 +146,12 @@ export default function MenuDetailScreen() {
       <Image source={{ uri: menu.image }} style={styles.image} />
       <Text style={styles.menuName}>{menu.name}</Text>
       <AirbnbRating
-        defaultRating={parseFloat(menu.rating) || 0} // Use a default value of 0 if stall.rating is null
+        defaultRating={parseFloat(menu.rating) || 0}
         size={30}
         isDisabled
         showRating={false}
-        minRating={0} // Set the minimum selectable value to 0
-        maxRating={5} // Set the maximum selectable value to 5
+        minRating={0}
+        maxRating={5}
       />
       <Text style={styles.price}>Price: ${menu.price}</Text>
       <Text>{menu.description}</Text>

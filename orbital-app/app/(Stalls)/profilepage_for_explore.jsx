@@ -6,6 +6,9 @@ import { AirbnbRating } from 'react-native-ratings';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useSearchParams } from 'expo-router';
 
+/**
+ * Profile page component
+ */
 export default function ProfilePage() {
     const { userId } = useAuth();
     const [reviews, setReviews] = useState([]);
@@ -36,6 +39,9 @@ export default function ProfilePage() {
         refreshData();
     }, [otherUserId]);
 
+    /**
+     * Fetches the reviews for the user
+     */
     const fetchReviews = async () => {
         try {
             const { data: reviewsData, error: reviewsError } = await supabase
@@ -57,6 +63,9 @@ export default function ProfilePage() {
         }
     };
 
+    /**
+     * Fetches the saved menus for the user
+     */
     const fetchSavedMenus = async () => {
         try {
             const { data, error } = await supabase
@@ -107,6 +116,9 @@ export default function ProfilePage() {
         }
     };
 
+    /**
+     * Fetches the profile for the user
+     */
     const fetchProfile = async () => {
         try {
             const [profileData, savedData] = await Promise.all([
@@ -139,14 +151,25 @@ export default function ProfilePage() {
         }
     };
 
+    /**
+     * Handles the press event of a menu item
+     * @param {string} menuId - The ID of the menu item
+     */
     const handleMenuPress = (menuId) => {
         router.push({ pathname: '/exploreProfilemenuDetails', params: { id: menuId } });
     };
 
+    /**
+     * Handles the press event of a review item
+     * @param {string} reviewId - The ID of the review item
+     */
     const handleReviewPress = (reviewId) => {
         router.push({ pathname: '/User_View_Review', params: { id: reviewId } });
     };
 
+    /**
+     * Handles the save/unsave toggle for the profile
+     */
     const handleSaveToggle = async () => {
         try {
             const savedProfileIds = await supabase
@@ -176,6 +199,10 @@ export default function ProfilePage() {
         }
     };
 
+    /**
+     * Handles the press event of a tab button
+     * @param {string} tab - The active tab value ('reviews' or 'savedMenus')
+     */
     const handleTabPress = (tab) => {
         setActiveTab(tab);
     };
@@ -436,7 +463,6 @@ const styles = StyleSheet.create({
     savedMenuDetails: {
         flex: 1,
         marginTop: 10,
-        marginTop: -5
     },
     price: {
         fontSize: 13,

@@ -6,6 +6,11 @@ import { useAuth } from '../../contexts/auth';
 import { useRouter } from 'expo-router';
 import { AirbnbRating } from 'react-native-ratings';
 
+/**
+ * FilterPage component represents the page for filtering food options based on preferences.
+ *
+ * @returns {JSX.Element} The rendered FilterPage component.
+ */
 export default function FilterPage() {
   const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
   const [budget, setBudget] = useState('');
@@ -26,6 +31,7 @@ export default function FilterPage() {
   const router = useRouter();
 
   useEffect(() => {
+    // Fetch dietary restrictions, locations, cuisines, and food options on component mount
     const fetchDietaryRestrictions = async () => {
       try {
         const { data, error } = await supabase
@@ -90,6 +96,7 @@ export default function FilterPage() {
   }, [userId]);
 
   useEffect(() => {
+    // Filter and update food options based on selected preferences
     const filterFoodOptions = () => {
       let filteredOptions = foodOptions;
 
@@ -154,43 +161,50 @@ export default function FilterPage() {
     filterFoodOptions();
   }, [dietaryRestrictions, budget, hasAirCon, hasHalal, isVegetarian, cuisineId, locationId, foodOptions]);
 
+  // Handle location menu visibility
   const handleLocationMenu = () => setLocationMenuVisible(!locationMenuVisible);
 
+  // Handle cuisine menu visibility
   const handleCuisineMenu = () => setCuisineMenuVisible(!cuisineMenuVisible);
 
+  // Handle location selection
   const handleLocationSelection = (location) => {
     setSelectedLocation(location.name);
     setLocationId(location.id);
     setLocationMenuVisible(false);
   };
 
+  // Handle cuisine selection
   const handleCuisineSelection = (cuisine) => {
     setSelectedCuisine(cuisine.name);
     setCuisineId(cuisine.id);
     setCuisineMenuVisible(false);
   };
 
+  // Reset all filters
   const resetFilters = () => {
     setSelectedLocation(null);
     setSelectedCuisine(null);
     setLocationId(null);
     setCuisineId(null);
-    setBudget(0);
+    setBudget('');
     setHasAirCon(false);
     setHasHalal(false);
     setIsVegetarian(false);
   };
 
+  // Handle pressing a menu
   const handleMenuPress = (menu) => {
     router.push({ pathname: '/Menu_Details_Filter', params: { id: menu } });
   };
 
+  // Limit the decimal places for a given value
   const limitDecimalPlaces = (value) => {
     return parseFloat(value).toFixed(1);
   };
 
   return (
-    < Provider>
+    <Provider>
       <ScrollView>
         <View style={styles.container}>
           <Text style={styles.heading}>Select your preferences:</Text>
@@ -203,7 +217,7 @@ export default function FilterPage() {
             ))
           ) : (
             <View style={styles.restrictionContainer}>
-            <Text style={styles.restrictionText}>No dietary restrictions found</Text>
+              <Text style={styles.restrictionText}>No dietary restrictions found</Text>
             </View>
           )}
           <Text style={styles.dietaryRestrictions}>Input Budget:</Text>

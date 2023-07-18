@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, View, Image, StyleSheet } from "react-native";
+import { ScrollView, Image, StyleSheet } from "react-native";
 import { Text, Button, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import * as ImagePicker from 'expo-image-picker';
@@ -17,22 +17,35 @@ export default function AddReview() {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState('');
 
+  /**
+   * Handle adding an image from the device's image library
+   */
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
   }
+
+  /**
+   * Handle the change in rating value
+   */
   const handleRatingChange = (value) => {
     setRating(value);
     setErrorMessage('');
   };
 
+  /**
+   * Handle the change in comment text
+   */
   const handleCommentChange = (text) => {
     setComment(text);
     setErrorMessage('');
   };
 
+  /**
+   * Handle the submission of the review
+   */
   const handleSubmit = async () => {
     if (rating === 0 || comment.trim() === '') {
       setErrorMessage('Please provide your ratings and comments.');
@@ -46,7 +59,7 @@ export default function AddReview() {
         console.log(error);
         return;
       }
-      console.log('user:', userId);
+
       const { data: { publicUrl } } = supabase.storage.from('ReviewImage').getPublicUrl(data.path);
       uploadedImage = publicUrl;
     }
@@ -134,4 +147,4 @@ const styles = StyleSheet.create({
     color: 'red',
     marginHorizontal: 5,
   },
-})  
+})

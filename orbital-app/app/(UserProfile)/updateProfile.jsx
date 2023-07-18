@@ -6,6 +6,10 @@ import * as ImagePicker from 'expo-image-picker'
 import { useRouter } from 'expo-router'
 import { useAuth } from '../../contexts/auth'
 
+/**
+ * Component for updating user profile information.
+ * @returns {JSX.Element} The UpdateProfile component.
+ */
 export default function UpdateProfile() {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState('');
@@ -18,6 +22,9 @@ export default function UpdateProfile() {
     fetchUserData();
   }, []);
 
+  /**
+   * Fetches user data from the database.
+   */
   const fetchUserData = async () => {
     try {
       setLoading(true);
@@ -37,49 +44,59 @@ export default function UpdateProfile() {
     }
   };
 
+  /**
+   * Handles the change event of the username input.
+   * @param {string} value - The new value of the username.
+   */
   const handleUsernameChange = (value) => {
     setUsername(value);
     setErrMsg('');
   }
 
+  /**
+   * Handles adding an image from the device's image library.
+   */
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
-    if (!result.canceled) {
+    if (!result.cancelled) {
       setImage(result.assets[0].uri);
     }
   }
 
+  /**
+   * Handles the form submission for updating the user profile.
+   */
   const handleSubmit = async () => {
     if (username.trim() === '') {
       setErrMsg('Username cannot be empty');
       return;
     }
-  
+
     setLoading(true);
     let uploadedImage = null;
     if (image != null) {
       const { data, error } = await supabase.storage
         .from('ProfileImage')
         .upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
-  
+
       if (error != null) {
         console.log(error);
         setErrMsg(error.message)
         setLoading(false);
         return;
       }
-      console.log('user:', userId);
+
       const { data: { publicUrl } } = supabase.storage
         .from('ProfileImage')
         .getPublicUrl(data.path);
       uploadedImage = publicUrl;
     }
-    
+
     const { data, error } = await supabase
       .from('profile')
       .update({ image: uploadedImage, username: username })
       .eq('id', userId);
-    
+
     if (error != null) {
       setLoading(false);
       console.log(error);
@@ -90,7 +107,7 @@ export default function UpdateProfile() {
       }
       return;
     }
-  
+
     setLoading(false);
     router.push('../(home)/profile');
     console.log('Profile updated successfully:', data);
@@ -182,5 +199,5 @@ const styles = StyleSheet.create({
     color: 'red',
     marginTop: 15,
     marginHorizontal: 15,
-},
+  },
 });

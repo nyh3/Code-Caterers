@@ -2,6 +2,10 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Image, View, StyleSheet } from "react-native";
 
+/**
+ * PageLayout component displays the layout with tabs and their options.
+ * @returns JSX element representing the page layout.
+ */
 export default function PageLayout() {
   return (
     <Tabs>
@@ -15,11 +19,11 @@ export default function PageLayout() {
           tabBarInactiveTintColor: 'gray',
           tabBarActiveTintColor: 'blue',
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -41,11 +45,11 @@ export default function PageLayout() {
           tabBarInactiveTintColor: 'gray',
           tabBarActiveTintColor: 'blue',
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -67,11 +71,11 @@ export default function PageLayout() {
           tabBarInactiveTintColor: 'gray',
           tabBarActiveTintColor: 'blue',
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -93,11 +97,11 @@ export default function PageLayout() {
           tabBarInactiveTintColor: 'gray',
           tabBarActiveTintColor: 'blue',
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>
@@ -119,11 +123,11 @@ export default function PageLayout() {
           tabBarInactiveTintColor: 'gray',
           tabBarActiveTintColor: 'blue',
           headerStyle: {
-            height: 80, // Customize the header height
-            backgroundColor: "#FFF5FA", // Customize the header background color
+            height: 80,
+            backgroundColor: "#FFF5FA",
           },
           headerTitleStyle: {
-            alignSelf: "center", // Align the header title to the center
+            alignSelf: "center",
           },
           headerTitle: () => (
             <View style={styles.headerContainer}>

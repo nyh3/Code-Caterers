@@ -6,6 +6,9 @@ import { AirbnbRating } from 'react-native-ratings';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useSearchParams } from 'expo-router';
 
+/**
+ * Component for displaying the user profile page.
+ */
 export default function UserProfilePage() {
     const { userId } = useAuth();
     const [reviews, setReviews] = useState([]);
@@ -14,8 +17,7 @@ export default function UserProfilePage() {
     const [profile, setProfile] = useState(null);
     const router = useRouter();
     const otherUserId = useSearchParams();
-    const [activeTab, setActiveTab] = useState('reviews'); // State variable for the active tab
-
+    const [activeTab, setActiveTab] = useState('reviews');
     useEffect(() => {
         fetchProfile();
     }, []);
@@ -36,6 +38,9 @@ export default function UserProfilePage() {
         refreshData();
     }, [otherUserId]);
 
+    /**
+     * Fetches the reviews written by the user.
+     */
     const fetchReviews = async () => {
         try {
             const { data: reviewsData, error: reviewsError } = await supabase
@@ -57,6 +62,9 @@ export default function UserProfilePage() {
         }
     };
 
+    /**
+     * Fetches the menu items saved by the user.
+     */
     const fetchSavedMenus = async () => {
         try {
             const { data, error } = await supabase
@@ -72,20 +80,20 @@ export default function UserProfilePage() {
             const savedMenuIds = data[0]?.menu_id || [];
 
             if (savedMenuIds.length === 0) {
-                setSavedMenus([]); // No saved menu items
+                setSavedMenus([]);
                 return;
             }
 
             console.log('Saved menu IDs:', savedMenuIds);
 
             const menuIds = savedMenuIds
-                .filter((id) => id) // Filter out any undefined or null menu IDs
-                .map((id) => id.toString()); // Convert menu IDs to strings
+                .filter((id) => id)
+                .map((id) => id.toString());
 
             console.log('Menu IDs:', menuIds);
 
             if (menuIds.length === 0) {
-                setSavedMenus([]); // No valid menu IDs
+                setSavedMenus([]);
                 return;
             }
 
@@ -107,6 +115,9 @@ export default function UserProfilePage() {
         }
     };
 
+    /**
+     * Fetches the user profile data.
+     */
     const fetchProfile = async () => {
         try {
             const [profileData, savedData] = await Promise.all([
@@ -139,14 +150,25 @@ export default function UserProfilePage() {
         }
     };
 
+    /**
+       * Handles the press event of a menu item
+       * @param {string} menuId - The ID of the menu item
+       */
     const handleMenuPress = (menuId) => {
         router.push({ pathname: '/userProfilemenuDetails', params: { id: menuId } });
     };
 
+    /**
+         * Handles the press event of a review item
+         * @param {string} reviewId - The ID of the review item
+         */
     const handleReviewPress = (reviewId) => {
         router.push({ pathname: '/User_View_Review', params: { id: reviewId } });
     };
 
+    /**
+     * Handles the save/unsave toggle.
+     */
     const handleSaveToggle = async () => {
         try {
             const savedProfileIds = await supabase
@@ -170,12 +192,15 @@ export default function UserProfilePage() {
                 .update({ other_user_id: updatedProfileIds })
                 .eq('id', userId);
 
-            setIsSaved(!isSaved); // Toggle the saved status
+            setIsSaved(!isSaved);
         } catch (error) {
             console.error('Error saving/unsaving profile:', error.message);
         }
     };
 
+    /**
+     * Handles the press event on a tab button.
+     */
     const handleTabPress = (tab) => {
         setActiveTab(tab);
     };
@@ -206,13 +231,13 @@ export default function UserProfilePage() {
             <View style={styles.tabContainer}>
                 <TouchableOpacity
                     style={[styles.tabButton, activeTab === 'reviews' && styles.activeTabButton]}
-                    onPress={() => handleTabPress('reviews')} // Set the active tab to 'reviews' when pressed
+                    onPress={() => handleTabPress('reviews')}
                 >
                     <Text style={styles.tabButtonText}>Reviews</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.tabButton, activeTab === 'savedMenus' && styles.activeTabButton]}
-                    onPress={() => handleTabPress('savedMenus')} // Set the active tab to 'savedMenus' when pressed
+                    onPress={() => handleTabPress('savedMenus')}
                 >
                     <Text style={styles.tabButtonText}>Saved Menu Items</Text>
                 </TouchableOpacity>
@@ -438,7 +463,6 @@ const styles = StyleSheet.create({
     savedMenuDetails: {
         flex: 1,
         marginTop: 10,
-        marginTop: -5
     },
     price: {
         fontSize: 13,

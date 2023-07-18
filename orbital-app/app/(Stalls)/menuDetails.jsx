@@ -20,6 +20,9 @@ export default function MenuDetailScreen() {
     fetchReviews();
   }, [menuId]);
 
+  /**
+   * Fetch menu details from the 'menu' table and saved status from the 'profile' table
+   */
   const fetchMenuDetails = async () => {
     try {
       const [menuData, savedData] = await Promise.all([
@@ -54,6 +57,9 @@ export default function MenuDetailScreen() {
     }
   };
 
+  /**
+   * Toggle the save status of the menu item in the user's profile
+   */
   const handleSaveToggle = async () => {
     try {
       const savedMenuIds = await supabase
@@ -83,6 +89,9 @@ export default function MenuDetailScreen() {
     }
   };
 
+  /**
+   * Fetch reviews for the menu item from the 'review' table
+   */
   const fetchReviews = async () => {
     try {
       const { data: reviewsData, error: reviewsError } = await supabase
@@ -109,10 +118,16 @@ export default function MenuDetailScreen() {
     );
   }
 
+  /**
+   * Handle adding a new review for the menu item
+   */
   const handleAddReview = (review) => {
     router.push({ pathname: '/newReview', params: { id: review } });
   };
 
+  /**
+   * Handle navigating to the details of a specific review
+   */
   const handleReviewPress = (review) => {
     router.push({ pathname: '/reviewDetails', params: { id: review } });
   };
@@ -130,12 +145,12 @@ export default function MenuDetailScreen() {
       <Image source={{ uri: menu.image }} style={styles.image} />
       <Text style={styles.menuName}>{menu.name}</Text>
       <AirbnbRating
-        defaultRating={parseFloat(menu.rating) || 0} // Use a default value of 0 if stall.rating is null
+        defaultRating={parseFloat(menu.rating) || 0}
         size={30}
         isDisabled
         showRating={false}
-        minRating={0} // Set the minimum selectable value to 0
-        maxRating={5} // Set the maximum selectable value to 5
+        minRating={0}
+        maxRating={5}
       />
       <Text style={styles.price}>Price: ${menu.price}</Text>
       <Text>{menu.description}</Text>

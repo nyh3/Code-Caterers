@@ -6,6 +6,11 @@ import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
 import * as ImagePicker from 'expo-image-picker'
 
+/**
+ * Component for editing a menu item.
+ *
+ * @returns {JSX.Element} The JSX element representing the EditMenuPage component.
+ */
 export default function EditMenuPage() {
   const menuId = useSearchParams();
   const [name, setName] = useState('');
@@ -23,6 +28,9 @@ export default function EditMenuPage() {
     fetchMenuItem();
   }, []);
 
+  /**
+   * Fetches the menu item to be edited.
+   */
   const fetchMenuItem = async () => {
     try {
       const { data, error } = await supabase
@@ -46,6 +54,9 @@ export default function EditMenuPage() {
     }
   };
 
+  /**
+   * Handles adding an image from the device's image library.
+   */
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
     if (!result.canceled) {
@@ -53,6 +64,9 @@ export default function EditMenuPage() {
     }
   };
 
+  /**
+   * Handles the submission of the edited menu item form.
+   */
   const handleSubmit = async () => {
     setErrMsg('');
     if (name === '') {
@@ -97,25 +111,36 @@ export default function EditMenuPage() {
     console.log('Menu item updated successfully:', data);
   };
 
+  /**
+   * Handles deleting the menu item.
+   */
   const handleDelete = async () => {
     try {
       await supabase
         .from('menu')
         .delete()
         .eq('id', menuId.id);
-  
+
       router.push('../(StallOwnerHome)/Menu');
     } catch (error) {
       console.error('Error deleting menu item:', error.message);
     }
   };
 
+  /**
+   * Handles adding a dietary restriction.
+   */
   const handleAddDietaryRestriction = () => {
     if (newDietaryRestriction.trim() === '') return;
     setDietaryRestrictions(prevRestrictions => [...prevRestrictions, newDietaryRestriction]);
     setNewDietaryRestriction('');
   };
 
+  /**
+   * Handles removing a dietary restriction.
+   *
+   * @param {string} restriction - The dietary restriction to be removed.
+   */
   const handleRemoveDietaryRestriction = (restriction) => {
     setDietaryRestrictions(prevRestrictions =>
       prevRestrictions.filter(item => item !== restriction)
@@ -125,71 +150,71 @@ export default function EditMenuPage() {
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.container}>
-      <Text style={styles.heading}>Edit Menu:</Text>
-      <TextInput
-        label="Name"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-      />
-      <Button style={styles.buttonContainer} onPress={handleAddImage}>
-        <Text style={styles.buttons}>Change Image</Text>
-      </Button>
-      {originalImage && (
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: originalImage }} style={styles.image} />
-          {image && <Image source={{ uri: image }} style={styles.image} />}
-        </View>
-      )}
-      <TextInput
-        label="Description"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-        style={styles.input}
-      />
-      <TextInput
-        label="Price"
-        value={price}
-        onChangeText={setPrice}
-        keyboardType="numeric"
-        style={styles.input}
-      />
-      <Text style={styles.warning}>Note: Do not put halal and vegetarian as dietary restrictions</Text>
-      <View style={styles.dietaryRestrictionsContainer}>
+        <Text style={styles.heading}>Edit Menu:</Text>
         <TextInput
-          label="Dietary Restrictions"
-          value={newDietaryRestriction}
-          autoCapitalize="characters"
-          onChangeText={setNewDietaryRestriction}
+          label="Name"
+          value={name}
+          onChangeText={setName}
           style={styles.input}
         />
-        {dietaryRestrictions.map((restriction, index) => (
-          <View style={styles.dietaryRestrictionItem} key={index}>
-            <Text style={styles.dietaryRestrictionText}>{restriction}</Text>
-            <Button
-              mode="text"
-              onPress={() => handleRemoveDietaryRestriction(restriction)}
-              style={styles.removeDietaryRestrictionButton}
-            >
-              <Text style={styles.removeDietaryRestrictionText}>Delete</Text>
-            </Button>
-          </View>
-        ))}
-        <Button mode="contained" onPress={handleAddDietaryRestriction} style={styles.buttonContainer2}>
-          <Text style={styles.buttons}>Add Restrictions</Text>
+        <Button style={styles.buttonContainer} onPress={handleAddImage}>
+          <Text style={styles.buttons}>Change Image</Text>
         </Button>
+        {originalImage && (
+          <View style={styles.imageContainer}>
+            <Image source={{ uri: originalImage }} style={styles.image} />
+            {image && <Image source={{ uri: image }} style={styles.image} />}
+          </View>
+        )}
+        <TextInput
+          label="Description"
+          value={description}
+          onChangeText={setDescription}
+          multiline
+          style={styles.input}
+        />
+        <TextInput
+          label="Price"
+          value={price}
+          onChangeText={setPrice}
+          keyboardType="numeric"
+          style={styles.input}
+        />
+        <Text style={styles.warning}>Note: Do not put halal and vegetarian as dietary restrictions</Text>
+        <View style={styles.dietaryRestrictionsContainer}>
+          <TextInput
+            label="Dietary Restrictions"
+            value={newDietaryRestriction}
+            autoCapitalize="characters"
+            onChangeText={setNewDietaryRestriction}
+            style={styles.input}
+          />
+          {dietaryRestrictions.map((restriction, index) => (
+            <View style={styles.dietaryRestrictionItem} key={index}>
+              <Text style={styles.dietaryRestrictionText}>{restriction}</Text>
+              <Button
+                mode="text"
+                onPress={() => handleRemoveDietaryRestriction(restriction)}
+                style={styles.removeDietaryRestrictionButton}
+              >
+                <Text style={styles.removeDietaryRestrictionText}>Delete</Text>
+              </Button>
+            </View>
+          ))}
+          <Button mode="contained" onPress={handleAddDietaryRestriction} style={styles.buttonContainer2}>
+            <Text style={styles.buttons}>Add Restrictions</Text>
+          </Button>
+        </View>
+        <Button onPress={handleSubmit} style={styles.buttonContainer}>
+          <Text style={styles.buttons}>Submit & Update Menu</Text>
+        </Button>
+        {errMsg !== '' && <Text style={styles.warning}>{errMsg}</Text>}
+        <Button onPress={handleDelete} style={styles.buttonContainer}>
+          <Text style={styles.buttons}>Delete Menu</Text>
+        </Button>
+        {loading && <ActivityIndicator style={styles.indicator} />}
       </View>
-      <Button onPress={handleSubmit} style={styles.buttonContainer}>
-        <Text style={styles.buttons}>Submit & Update Menu</Text>
-      </Button>
-      {errMsg !== '' && <Text style={styles.warning}>{errMsg}</Text>}
-      <Button onPress={handleDelete} style={styles.buttonContainer}>
-        <Text style={styles.buttons}>Delete Menu</Text>
-      </Button>
-      {loading && <ActivityIndicator style={styles.indicator} />}
-    </View>
-    </ScrollView> 
+    </ScrollView>
   );
 }
 
@@ -277,5 +302,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingTop: 15,
-},
+  },
 });

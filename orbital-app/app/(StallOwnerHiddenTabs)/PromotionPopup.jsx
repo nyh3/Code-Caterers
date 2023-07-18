@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 
+/**
+ * PromotionPopup component displays a modal popup showing promotions.
+ *
+ * @param {Array} promotions - An array of promotions to be displayed in the popup.
+ * @returns {JSX.Element} The rendered PromotionPopup component.
+ */
 const PromotionPopup = ({ promotions }) => {
+  // State to control the visibility of the modal
   const [showModal, setShowModal] = useState(true);
   const router = useRouter();
+
+  // Function to close the modal
   const closeModal = () => {
     setShowModal(false);
   };
 
+  /**
+   * Handles the press event when the "View Promotions" button is pressed.
+   * Navigates to the promotions page.
+   */
   const handlePromotionPress = () => {
     router.push('/(home)/Promotions');
   }
@@ -53,6 +66,7 @@ const PromotionPopup = ({ promotions }) => {
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
