@@ -58,7 +58,7 @@ export default function UpdateProfile() {
    */
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
   }
@@ -145,8 +145,6 @@ const styles = StyleSheet.create({
   bold: {
     fontWeight: 'bold',
     fontSize: 15,
-    margin: 0,
-    marginHorizontal: 15,
     marginTop: 10,
     marginBottom: 5,
   },
@@ -155,6 +153,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
     backgroundColor: '#FFF5FA',
+    paddingHorizontal: 10,
   },
   input: {
     marginBottom: 5,
@@ -165,7 +164,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FFBBDF',
     marginTop: 20,
-    marginHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
     height: 40,

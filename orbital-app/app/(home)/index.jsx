@@ -68,10 +68,21 @@ export default function StallPage() {
       const { data, error } = await supabase
         .from('stall')
         .select('*, location ( name ), cuisine (name)')
-        .ilike('name', `%${searchQuery}%`);
+        ;
       if (error) {
         console.error('Error fetching stall details:', error.message);
         return;
+      }
+
+      let filteredData = data; // Create a new variable to store the filtered data
+      // Apply search query
+      if (searchQuery) {
+        filteredData = data.filter((stall) => {
+          const stallName = stall.name.toLowerCase();
+          const locationName = stall.location?.name.toLowerCase() || ''; // Handle null location
+          const search = searchQuery.toLowerCase();
+          return stallName.includes(search) || locationName.includes(search);
+        });
       }
 
       if (sortBy) {
@@ -91,6 +102,8 @@ export default function StallPage() {
             break;
         }
         setStalls(sortedData);
+      } else if (searchQuery) {
+        setStalls(filteredData);
       } else {
         setStalls(data);
       }
@@ -138,32 +151,41 @@ export default function StallPage() {
    * @param {object} item - The stall item.
    * @returns {JSX.Element} The rendered stall item.
    */
-  const renderStall = ({ item }) => (
-    <TouchableOpacity onPress={() => handleStallPress(item.id)}>
-      <View style={styles.stallContainer}>
-        <Image source={{ uri: item.stallImage }} style={styles.stallImage} />
-        <View style={styles.stallDetails}>
-          <Text style={styles.stallTitle}>{item.name} @ {item.location.name}</Text>
-          <View style={styles.ratingContainer}>
-            <AirbnbRating
-              defaultRating={parseFloat(item.rating) || 0}
-              size={20}
-              isDisabled
-              showRating={false}
-              minRating={0}
-              maxRating={5}
-            />
-            <Text style={styles.ratingText}>{parseFloat(item.rating) || 0} / 5.0</Text>
-          </View>
-          <View style={styles.cuisineTagsContainer}>
-            <Text style={[styles.cuisineTag, { backgroundColor: getCuisineTagColor(item.cuisine.name) }]}>
-              {item.cuisine.name}
-            </Text>
+  const renderStall = ({ item }) => {
+    // Convert item.rating to a number and handle the case when it's null or undefined
+    const ratingValue = parseFloat(item.rating) || 0;
+
+    // Round the rating to 1 decimal place
+    const roundedRating = ratingValue.toFixed(1);
+
+    return (
+      <TouchableOpacity onPress={() => handleStallPress(item.id)}>
+        <View style={styles.stallContainer}>
+          <Image source={{ uri: item.stallImage }} style={styles.stallImage} />
+          <View style={styles.stallDetails}>
+            <Text style={styles.stallTitle}>{item.name} @ {item.location.name}</Text>
+            <View style={styles.ratingContainer}>
+              <AirbnbRating
+                defaultRating={ratingValue}
+                size={20}
+                isDisabled
+                showRating={false}
+                minRating={0}
+                maxRating={5}
+              />
+              {/* Display the roundedRating */}
+              <Text style={styles.ratingText}>{roundedRating} / 5.0</Text>
+            </View>
+            <View style={styles.cuisineTagsContainer}>
+              <Text style={[styles.cuisineTag, { backgroundColor: getCuisineTagColor(item.cuisine.name) }]}>
+                {item.cuisine.name}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>

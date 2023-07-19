@@ -131,9 +131,28 @@ export default function EditMenuPage() {
    * Handles adding a dietary restriction.
    */
   const handleAddDietaryRestriction = () => {
-    if (newDietaryRestriction.trim() === '') return;
-    setDietaryRestrictions(prevRestrictions => [...prevRestrictions, newDietaryRestriction]);
-    setNewDietaryRestriction('');
+    if (newDietaryRestriction !== '') {
+      if (newDietaryRestriction.trim() === '') return;
+
+      const normalizedRestriction = newDietaryRestriction.trim().toUpperCase();
+
+      // Check for duplicate restrictions
+      if (dietaryRestrictions.includes(normalizedRestriction)) {
+        setErrMsg('This restriction has already been added.');
+        return;
+      }
+
+      // Check for "halal" and "vegetarian" restrictions
+      const restrictedRestrictions = ['HALAL', 'VEGETARIAN'];
+      if (restrictedRestrictions.includes(normalizedRestriction)) {
+        setErrMsg('Adding HALAL or VEGETARIAN as a restriction is not allowed.');
+        return;
+      }
+
+      const updatedRestrictions = [...dietaryRestrictions, normalizedRestriction];
+      setDietaryRestrictions(updatedRestrictions);
+      setNewDietaryRestriction('');
+    }
   };
 
   /**
@@ -145,6 +164,15 @@ export default function EditMenuPage() {
     setDietaryRestrictions(prevRestrictions =>
       prevRestrictions.filter(item => item !== restriction)
     );
+  };
+
+  /**
+ * Handles the input change in the Dietary Restrictions TextInput.
+ * @param {string} text - The input text value.
+ */
+  const handleInputChange = (text) => {
+    setNewDietaryRestriction(text);
+    setErrMsg(''); // Clear the error message when text changes
   };
 
   return (
@@ -163,7 +191,10 @@ export default function EditMenuPage() {
         {originalImage && (
           <View style={styles.imageContainer}>
             <Image source={{ uri: originalImage }} style={styles.image} />
+            {image && (
+              <Text style={styles.text}> will change to: </Text>)}
             {image && <Image source={{ uri: image }} style={styles.image} />}
+
           </View>
         )}
         <TextInput
@@ -181,12 +212,12 @@ export default function EditMenuPage() {
           style={styles.input}
         />
         <Text style={styles.warning}>Note: Do not put halal and vegetarian as dietary restrictions</Text>
+        <Text style={styles.warning2}>Currently, we only take into account fish, shellfish, lamb, beef, pork, chicken, eggs, diary, gluten, soy, peanuts.</Text>
         <View style={styles.dietaryRestrictionsContainer}>
           <TextInput
             label="Dietary Restrictions"
             value={newDietaryRestriction}
-            autoCapitalize="characters"
-            onChangeText={setNewDietaryRestriction}
+            onChangeText={handleInputChange}
             style={styles.input}
           />
           {dietaryRestrictions.map((restriction, index) => (
@@ -294,13 +325,21 @@ const styles = StyleSheet.create({
   },
   warning: {
     color: 'red',
-    margin: 0,
     marginHorizontal: 5,
     marginBottom: 10,
+  },
+  warning2: {
+    color: 'red',
+    marginBottom: 15,
+    marginHorizontal: 5,
   },
   indicator: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingTop: 15,
   },
+  text: {
+    marginVertical: 40,
+    marginRight: 20,
+  }
 });

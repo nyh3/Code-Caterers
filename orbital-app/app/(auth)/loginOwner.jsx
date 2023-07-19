@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image, View, StyleSheet } from "react-native";
+import { ScrollView, Image, View, StyleSheet } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 import { Link } from 'expo-router';
 import { supabase } from "../../lib/supabase";
@@ -38,7 +38,7 @@ export default function LoginPage() {
     }
 
     return (
-        <View style={styles.wholeThing}>
+        <ScrollView style={styles.wholeThing}>
             <Image
                 style={styles.logo}
                 source={require('../../assets/logo.png')} />
@@ -72,7 +72,7 @@ export default function LoginPage() {
                     <Button style={[styles.buttonContainer, { alignSelf: 'center' }]}><Text style={styles.button}>Sign Up</Text></Button>
                 </Link>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     wholeThing: {
-        justifyContent: 'flex-start',
         flexDirection: 'column',
         flex: 1,
         backgroundColor: '#FFF5FA',

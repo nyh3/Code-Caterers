@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { View, StyleSheet, Image } from "react-native";
+import { ScrollView, View, StyleSheet, Image } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 
 /**
@@ -43,7 +43,7 @@ export default function RegisterPage() {
     }
 
     return (
-        <View style={styles.wholeThing}>
+        <ScrollView style={styles.wholeThing}>
 
             <Image
                 style={styles.logo}
@@ -73,7 +73,7 @@ export default function RegisterPage() {
             <Text style={styles.bold}>
                 Note: After creating your account, please check your email for a verification link to complete the registration process.
             </Text>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     wholeThing: {
-        justifyContent: 'flex-start',
         flexDirection: 'column',
         backgroundColor: '#FFF5FA',
         flex: 1,

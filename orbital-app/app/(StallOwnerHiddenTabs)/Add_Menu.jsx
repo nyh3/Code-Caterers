@@ -122,7 +122,25 @@ export default function AddMenuPage() {
    */
   const handleAddDietaryRestriction = () => {
     if (newDietaryRestriction !== '') {
-      setDietaryRestrictions([...dietaryRestrictions, newDietaryRestriction]);
+      if (newDietaryRestriction.trim() === '') return;
+
+      const normalizedRestriction = newDietaryRestriction.trim().toUpperCase();
+
+      // Check for duplicate restrictions
+      if (dietaryRestrictions.includes(normalizedRestriction)) {
+        setErrMsg('This restriction has already been added.');
+        return;
+      }
+
+      // Check for "halal" and "vegetarian" restrictions
+      const restrictedRestrictions = ['HALAL', 'VEGETARIAN'];
+      if (restrictedRestrictions.includes(normalizedRestriction)) {
+        setErrMsg('Adding HALAL or VEGETARIAN as a restriction is not allowed.');
+        return;
+      }
+
+      const updatedRestrictions = [...dietaryRestrictions, normalizedRestriction];
+      setDietaryRestrictions(updatedRestrictions);
       setNewDietaryRestriction('');
     }
   };
@@ -136,6 +154,15 @@ export default function AddMenuPage() {
     const updatedDietaryRestrictions = [...dietaryRestrictions];
     updatedDietaryRestrictions.splice(index, 1);
     setDietaryRestrictions(updatedDietaryRestrictions);
+  };
+
+  /**
+   * Handles the input change in the Dietary Restrictions TextInput.
+   * @param {string} text - The input text value.
+   */
+  const handleInputChange = (text) => {
+    setNewDietaryRestriction(text);
+    setErrMsg(''); // Clear the error message when text changes
   };
 
   return (
@@ -167,11 +194,11 @@ export default function AddMenuPage() {
           style={styles.input}
         />
         <Text style={styles.warning}>Note: Do not put halal and vegetarian as dietary restrictions</Text>
+        <Text style={styles.warning2}>Currently, we only take into account fish, shellfish, lamb, beef, pork, chicken, eggs, diary, gluten, soy, peanuts.</Text>
         <TextInput
           label="Dietary Restrictions"
-          autoCapitalize="characters"
           value={newDietaryRestriction}
-          onChangeText={setNewDietaryRestriction}
+          onChangeText={handleInputChange}
           style={styles.input}
         />
         <View style={styles.dietaryRestrictionsContainer}>
@@ -262,9 +289,13 @@ const styles = StyleSheet.create({
   },
   warning: {
     color: 'red',
-    margin: 0,
-    marginHorizontal: 15,
+    marginHorizontal: 5,
     marginBottom: 10,
+  },
+  warning2: {
+    color: 'red',
+    marginBottom: 15,
+    marginHorizontal: 5,
   },
   indicator: {
     flexDirection: 'row',

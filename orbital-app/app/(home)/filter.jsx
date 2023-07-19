@@ -198,9 +198,12 @@ export default function FilterPage() {
     router.push({ pathname: '/Menu_Details_Filter', params: { id: menu } });
   };
 
-  // Limit the decimal places for a given value
-  const limitDecimalPlaces = (value) => {
-    return parseFloat(value).toFixed(1);
+  // Convert option.rating to a number and handle the case when it's null or undefined. Round the ratings to 1 decimal place
+  const roundedRating = (value) => {
+    const floatValue = parseFloat(value);
+    // If the value is NaN (null or non-numeric), set it to 0
+    const roundedValue = isNaN(floatValue) ? 0 : floatValue.toFixed(1);
+    return roundedValue;
   };
 
   return (
@@ -225,8 +228,11 @@ export default function FilterPage() {
             style={styles.input}
             placeholder="Budget"
             placeholderTextColor="#2C0080"
-            value={budget.toString()}
-            onChangeText={setBudget}
+            value={budget === '' ? '' : `$${budget}`}
+            onChangeText={(text) => {
+              const budgetValue = text.replace('$', '');
+              setBudget(budgetValue === '' || isNaN(budgetValue) ? '' : parseFloat(budgetValue));
+            }}
             keyboardType="numeric"
           />
 
@@ -329,7 +335,7 @@ export default function FilterPage() {
                         minRating={0}
                         maxRating={5}
                       />
-                      <Text style={styles.ratingText}>{limitDecimalPlaces(option.rating)} / 5.0</Text>
+                      <Text style={styles.ratingText}>{roundedRating(option.rating)} / 5.0</Text>
                     </View>
 
                     <View style={styles.ratingContainer}>
@@ -342,7 +348,7 @@ export default function FilterPage() {
                         minRating={0}
                         maxRating={5}
                       />
-                      <Text style={styles.ratingText}>{limitDecimalPlaces(option.stall.rating)} / 5.0</Text>
+                      <Text style={styles.ratingText}>{roundedRating(option.stall.rating)} / 5.0</Text>
                     </View>
 
                     {option.dietary_restrictions && option.dietary_restrictions.length > 0 && (

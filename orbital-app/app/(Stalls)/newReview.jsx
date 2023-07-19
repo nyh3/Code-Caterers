@@ -71,6 +71,8 @@ export default function AddReview() {
         image: uploadedImage,
         menu_id: menuId.id,
         user_id: userId.userId,
+        created_at: new Date(),
+        updated_at: new Date(),
       });
 
     if (error) {

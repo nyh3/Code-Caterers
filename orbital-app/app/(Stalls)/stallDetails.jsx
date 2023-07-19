@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, Image, ActivityIndicator, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useSearchParams, useRouter } from 'expo-router';
@@ -58,6 +58,17 @@ export default function StallDetailScreen() {
       console.error('Error fetching stall details:', error.message);
     }
   };
+
+  // Check if 'stall' data is available, if not show a loading indicator.
+  if (!stall) {
+    // Render a loading view with a 'loading' text and an activity indicator.
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Loading...</Text>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   /**
    * Handles the press event of a menu item.
@@ -121,7 +132,7 @@ export default function StallDetailScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Image source={{ uri: stall.stallImage }} style={styles.image} />
       <View style={styles.stallNameContainer}>
         <Text style={styles.name}>{stall.name}, {stall.location.name}</Text>
@@ -159,13 +170,13 @@ export default function StallDetailScreen() {
         contentContainerStyle={styles.menuList}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'flex-start',
+    //justifyContent: 'flex-start',
     backgroundColor: '#FFF5FA',
     flex: 1,
     paddingHorizontal: 15,
@@ -224,6 +235,7 @@ const styles = StyleSheet.create({
   },
   menuList: {
     paddingTop: 10,
+    paddingBottom: 50,
   },
   menuItemContainer: {
     flexDirection: 'row',

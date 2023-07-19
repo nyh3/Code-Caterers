@@ -66,7 +66,7 @@ export default function EditPromotionPage() {
    */
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
   };
@@ -211,6 +211,8 @@ export default function EditPromotionPage() {
       {originalImage && (
         <View style={styles.imageContainer}>
           <Image source={{ uri: originalImage }} style={styles.image} />
+          {image && (
+            <Text style={styles.text}> will change to: </Text>)}
           {image && <Image source={{ uri: image }} style={styles.image} />}
         </View>
       )}
@@ -312,4 +314,8 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 10,
   },
+  text: {
+    marginVertical: 40,
+    marginRight: 20,
+  }
 });

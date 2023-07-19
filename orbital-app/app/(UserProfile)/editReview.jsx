@@ -82,6 +82,7 @@ export default function EditReview() {
     let reviewUpdate = {
       rating: rating,
       review_text: comment,
+      updated_at: new Date(),
     };
 
     if (uploadedImage !== null) {
