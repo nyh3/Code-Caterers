@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginTop: 30,
-    marginBottom: 15,
+    marginBottom: 25,
     borderRadius: 100,
   },
   username: {

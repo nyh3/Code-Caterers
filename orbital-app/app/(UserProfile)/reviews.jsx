@@ -86,12 +86,15 @@ export default function ReviewsPage() {
       ) : (
         <>
           {reviews.length > 0 ? (
-            <FlatList
-              data={reviews}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id.toString()}
-              contentContainerStyle={styles.flatListContent}
-            />
+            <View>
+              <Text style={styles.header}>Reviews Written:</Text>
+              <FlatList
+                data={reviews}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.flatListContent}
+              />
+            </View>
           ) : (
             <Text style={styles.noReviews}>User has not written any reviews.</Text>
           )}
@@ -141,5 +144,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 10,
     alignSelf: 'center',
+  },
+  header: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginBottom: 5,
+    marginLeft: 10,
   },
 });
