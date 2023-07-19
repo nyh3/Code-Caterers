@@ -58,7 +58,7 @@ export default function UpdateProfile() {
    */
   const handleAddImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
   }

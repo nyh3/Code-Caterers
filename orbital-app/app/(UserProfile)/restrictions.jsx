@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/auth';
@@ -43,7 +43,7 @@ export default function DietaryRestrictions() {
   const handleAddRestriction = () => {
     if (newRestriction.trim() === '') return;
 
-    const normalizedRestriction = newRestriction.trim();
+    const normalizedRestriction = newRestriction.trim().toUpperCase();
 
     // Check for duplicate restrictions
     if (dietary_restrictions.includes(normalizedRestriction)) {
@@ -94,10 +94,21 @@ export default function DietaryRestrictions() {
     router.push('../(home)/profile');
   };
 
+  /**
+ * Handles the input change in the Dietary Restrictions TextInput.
+ * @param {string} text - The input text value.
+ */
+  const handleInputChange = (text) => {
+    setNewRestriction(text);
+    setErrMsg(''); // Clear the error message when text changes
+  };
+
+
   return (
-    <View style={styles.wholeThing}>
+    <ScrollView style={styles.wholeThing}>
       <Text style={styles.header}>Dietary Restrictions:</Text>
-      <Text style={styles.warning}>Note: Please do not put halal and vegetarian as your dietary restrictions</Text>
+      <Text style={styles.warning}>Note: Please do not put halal and vegetarian as your dietary restrictions.</Text>
+      <Text style={styles.warning2}>Currently, we only take into account fish, shellfish, lamb, beef, pork, chicken, eggs, diary, gluten, soy, peanuts.</Text>
       <Text style={styles.bold}>Dietary restrictions or allergies declared:</Text>
       {dietary_restrictions.length > 0 ? (
         dietary_restrictions.map((restriction, index) => (
@@ -113,9 +124,8 @@ export default function DietaryRestrictions() {
       )}
       <Text style={styles.bold}>Update your dietary restrictions or food allergies:</Text>
       <TextInput
-        autoCapitalize="characters"
         value={newRestriction}
-        onChangeText={setNewRestriction}
+        onChangeText={handleInputChange}
         style={styles.input}
       />
       <Button style={styles.buttonContainer} onPress={handleAddRestriction}>
@@ -126,7 +136,7 @@ export default function DietaryRestrictions() {
       </Button>
       {errMsg !== '' && <Text style={styles.errormsg}>{errMsg}</Text>}
       {loading && <ActivityIndicator style={styles.indicator} />}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -147,7 +157,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFECF6',
   },
   wholeThing: {
-    justifyContent: 'flex-start',
     flexDirection: 'column',
     flex: 1,
     backgroundColor: '#FFF5FA',
@@ -181,10 +190,15 @@ const styles = StyleSheet.create({
   },
   errormsg: {
     marginTop: 10,
+    color: 'red',
   },
   warning: {
     color: 'red',
     marginTop: 10,
+    marginBottom: 5,
+  },
+  warning2: {
+    color: 'red',
     marginBottom: 5,
   },
   indicator: {

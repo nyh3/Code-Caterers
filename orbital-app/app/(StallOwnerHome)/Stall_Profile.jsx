@@ -4,7 +4,7 @@ import { Text, TextInput, Button, Menu, Provider, ActivityIndicator } from 'reac
 import { supabase } from '../../lib/supabase';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from "../../contexts/auth";
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 export default function StallProfilePage() {
     const [stallImage, setStallImage] = useState(null);
@@ -26,6 +26,7 @@ export default function StallProfilePage() {
     const [description, setDescription] = useState('');
     const { userId } = useAuth();
     const router = useRouter();
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         const fetchStallDetails = async () => {
@@ -61,7 +62,8 @@ export default function StallProfilePage() {
         fetchStallDetails();
         fetchLocations();
         fetchCuisines();
-    }, []);
+        setRefresh(false);
+    }, [refresh]);
 
     /**
      * Fetches the list of locations
@@ -244,6 +246,12 @@ export default function StallProfilePage() {
         }
     };
 
+    // Function to handle the "Discard & Return" button press
+    const handleDiscardAndReturn = () => {
+        setRefresh(true);
+        router.push({ pathname: '../(StallOwnerHome)/Home' });
+    };
+
     return (
         <Provider>
             <ScrollView style={styles.container}>
@@ -347,9 +355,7 @@ export default function StallProfilePage() {
                 <Button onPress={handleSubmit} style={styles.buttonContainer}><Text style={styles.buttonText}>Submit / Update Stall Details</Text></Button>
                 {loading && <ActivityIndicator style={styles.ActivityIndicator} />}
                 <View style={styles.marginLeftContainer}>
-                    <Link href="../(StallOwnerHome)/Home">
-                        <Button style={styles.discardContainer}><Text style={styles.buttonText}>Discard & Return</Text></Button>
-                    </Link>
+                    <Button style={styles.discardContainer} onPress={handleDiscardAndReturn}><Text style={styles.buttonText}>Discard & Return</Text></Button>
                 </View>
             </ScrollView>
         </Provider>

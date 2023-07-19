@@ -1,4 +1,4 @@
-import { View, Text, Image, ActivityIndicator, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, Image, ActivityIndicator, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'expo-router';
 import { supabase } from '../../lib/supabase';
@@ -112,7 +112,7 @@ export default function MenuDetailScreen() {
   if (!menu) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Error</Text>
+        <Text>Loading</Text>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -136,7 +136,7 @@ export default function MenuDetailScreen() {
 
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <TouchableOpacity onPress={handleSaveToggle} style={styles.heartButton}>
         <Ionicons
           name={isSaved ? 'heart' : 'heart-outline'}
@@ -199,19 +199,20 @@ export default function MenuDetailScreen() {
             </View>
           </TouchableOpacity>
         )}
+        contentContainerStyle={styles.flatListContent}
       />
-    </View>
+    </ScrollView>
   );
 }
 
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'flex-start',
+    //justifyContent: 'flex-start',
     backgroundColor: '#FFF5FA',
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 35,
+    paddingVertical: 20,
   },
   buttonContainer: {
     backgroundColor: '#FFECF6',
@@ -231,6 +232,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 200,
     height: 200,
+    marginTop: 15,
     marginBottom: 10,
     borderRadius: 100,
   },
@@ -301,7 +303,10 @@ const styles = StyleSheet.create({
   },
   heartButton: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 0,
+    right: 5,
   },
+  flatListContent: {
+    paddingBottom: 50, // Adjust this value based on your layout
+},
 });
