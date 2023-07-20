@@ -140,11 +140,10 @@ export default function ProfilePage() {
             }
 
             const profile = profileData.data[0];
-            const isProfileSaved =
-                savedData.data &&
-                savedData.data[0]?.other_user_id.includes(otherUserId.id);
+            const isProfileSaved = savedData.data
+                ? savedData.data[0]?.other_user_id?.includes(otherUserId.id)
+                : false;
             setIsSaved(Boolean(isProfileSaved));
-
             setProfile(profile);
         } catch (error) {
             console.error('Error fetching profile data:', error.message);
