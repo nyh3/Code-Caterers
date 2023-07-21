@@ -19,9 +19,9 @@ export default function StallPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [promotions, setPromotions] = useState([]);
-  const [showPromotionPopup, setShowPromotionPopup] = useState(false); // Define showPromotionPopup state
+  const [showPromotionPopup, setShowPromotionPopup] = useState(false);
 
-  const { popupCount, setPopupCount } = useContext(PopupContext); // Accessing the popup context
+  const { popupCount, setPopupCount } = useContext(PopupContext);
 
   useEffect(() => {
     /**
@@ -54,11 +54,7 @@ export default function StallPage() {
 
   useEffect(() => {
     fetchStalls();
-  }, [isFocused, sortBy]);
-
-  useEffect(() => {
-    fetchStalls();
-  }, [searchQuery]);
+  }, [isFocused, searchQuery, sortBy]);
 
   /**
    * Fetches stalls from the database based on the search query and sorting option.
@@ -86,27 +82,22 @@ export default function StallPage() {
       }
 
       if (sortBy) {
-        let sortedData = [...data]; // Create a copy of the array
         switch (sortBy) {
           case 'rating':
-            sortedData = sortedData.sort((a, b) => {
+            filteredData.sort((a, b) => {
               const ratingA = a.rating || 0; // Treat null as 0
               const ratingB = b.rating || 0; // Treat null as 0
               return parseFloat(ratingB) - parseFloat(ratingA);
             });
             break;
           case 'name':
-            sortedData = sortedData.sort((a, b) => a.name.localeCompare(b.name));
+            filteredData.sort((a, b) => a.name.localeCompare(b.name));
             break;
           default:
             break;
         }
-        setStalls(sortedData);
-      } else if (searchQuery) {
-        setStalls(filteredData);
-      } else {
-        setStalls(data);
       }
+      setStalls(filteredData);
     } catch (error) {
       console.error('Error fetching stall details:', error.message);
     }
@@ -173,7 +164,6 @@ export default function StallPage() {
                 minRating={0}
                 maxRating={5}
               />
-              {/* Display the roundedRating */}
               <Text style={styles.ratingText}>{roundedRating} / 5.0</Text>
             </View>
             <View style={styles.cuisineTagsContainer}>
@@ -208,7 +198,6 @@ export default function StallPage() {
             <Picker.Item label="None" value="" />
             <Picker.Item label="Ratings" value="rating" />
             <Picker.Item label="Stall Name" value="name" />
-            {/* Add additional sorting options here */}
           </Picker>
         </View>
       )}
@@ -240,6 +229,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
     marginTop: 5,
+    marginLeft: 5,
   },
   stallList: {
     paddingBottom: 20,
