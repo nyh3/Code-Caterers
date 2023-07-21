@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#666',
     marginBottom: 5,
+    maxWidth: '90%',
   },
   itemLocation: {
     fontSize: 13,

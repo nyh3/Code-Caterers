@@ -115,31 +115,29 @@ export default function UpdateProfile() {
   }
 
   return (
-    <ScrollView>
-      <View style={styles.wholeThing}>
+    <ScrollView style={styles.wholeThing}>
 
-        <Button style={styles.buttonContainer} onPress={handleAddImage}><Text style={styles.button}>Change Profile Image</Text></Button>
-        {image !== '' ? (
-          <Image source={{ uri: image }} style={styles.image} />
-        ) : (
-          <View style={styles.placeholderImage} />
-        )}
+      <Button style={styles.buttonContainer} onPress={handleAddImage}><Text style={styles.button}>Change Profile Image</Text></Button>
+      {image !== '' ? (
+        <Image source={{ uri: image }} style={styles.image} />
+      ) : (
+        <View style={styles.placeholderImage} />
+      )}
 
-        <Text style={styles.bold}>Username:</Text>
-        <TextInput
-          autoCapitalize='none'
-          value={username}
-          onChangeText={handleUsernameChange}
-          style={styles.input}
-        />
+      <Text style={styles.bold}>Username:</Text>
+      <TextInput
+        autoCapitalize='none'
+        value={username}
+        onChangeText={handleUsernameChange}
+        style={styles.input}
+      />
 
-        <Button
-          style={styles.buttonContainer}
-          onPress={handleSubmit}><Text style={styles.button}>Update Profile</Text></Button>
+      <Button
+        style={styles.buttonContainer}
+        onPress={handleSubmit}><Text style={styles.button}>Update Profile</Text></Button>
 
-        {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
-        {loading && <ActivityIndicator style={styles.indicator} />}
-      </View >
+      {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
+      {loading && <ActivityIndicator style={styles.indicator} />}
     </ScrollView>
   );
 }
@@ -152,7 +150,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   wholeThing: {
-    justifyContent: 'flex-start',
     flexDirection: 'column',
     flex: 1,
     backgroundColor: '#FFF5FA',

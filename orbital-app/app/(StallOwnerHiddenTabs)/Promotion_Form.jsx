@@ -71,16 +71,8 @@ export default function PromotionForm() {
   const handleEndDateChange = (event, date) => {
     setShowEndDatePicker(false);
     if (date) {
-      if (startDate && date < startDate) {
-        setErrMsg('End date cannot be set before the start date.');
-        setEndDate(null);
-      } else {
-        setErrMsg('');
-        setEndDate(date);
-      }
-    } else {
+      setEndDate(date);
       setErrMsg('');
-      setEndDate(null);
     }
   };
 
@@ -97,6 +89,10 @@ export default function PromotionForm() {
       setErrMsg('There must be an end date.');
       return;
     }
+    if (endDate < startDate) {
+      setErrMsg('End date cannot be before start date');
+      return;
+    }
     setLoading(true);
     let uploadedImage = null;
     if (image != null) {
@@ -111,6 +107,8 @@ export default function PromotionForm() {
       const { data: { publicUrl } } = supabase.storage.from('PromotionImage').getPublicUrl(data.path);
       uploadedImage = publicUrl;
     }
+    const utcStartDate = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
+    const utcEndDate = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()));
     const { data, error } = await supabase
       .from('promotion')
       .insert({
@@ -118,8 +116,8 @@ export default function PromotionForm() {
         title: title,
         description: description,
         stall_id: stall.id,
-        start_date: startDate,
-        end_date: endDate,
+        start_date: utcStartDate,
+        end_date: utcEndDate,
       })
       .select()
       .single();
@@ -170,9 +168,7 @@ export default function PromotionForm() {
     setShowStartDatePicker(false);
     if (date) {
       setStartDate(date);
-      if (endDate && endDate < date) {
-        setEndDate(null);
-      }
+      setErrMsg('');
     }
   };
 
