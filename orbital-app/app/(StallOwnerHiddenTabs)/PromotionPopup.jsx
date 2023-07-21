@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   modalTitle: {
-    marginHorizontal: 80,
+    marginHorizontal: 70,
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 5,
     alignItems: 'center',
-    marginHorizontal: 70,
+    marginHorizontal: 60,
   },
   viewPromotionsButtonText: {
     color: '#2C0080',
