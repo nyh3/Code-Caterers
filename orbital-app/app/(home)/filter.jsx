@@ -142,22 +142,30 @@ export default function FilterPage() {
         filteredOptions = filteredOptions.filter((option) => option.stall.location.id === locationId);
       }
 
-      // Sort by rating (descending order)
-      filteredOptions.sort((a, b) => b.rating - a.rating);
+      // Sort by rating (descending order) and stall rating (descending order) in case of ties
+      filteredOptions.sort((a, b) => {
+        const ratingDiff = b.rating - a.rating;
+        if (ratingDiff !== 0) {
+          return ratingDiff;
+        }
+        return (b.stall.rating || 0) - (a.stall.rating || 0);
+      });
 
       // Get the top 3 options with the highest rating
-      const topThreeOptions = filteredOptions.slice(0, 3);
+      const topThreeOptions = [];
+      const selectedOptionIds = new Set();
 
-      // If there are ties in the rating, sort by stall rating (descending order)
-      if (topThreeOptions.length < 3) {
-        filteredOptions.sort((a, b) => (b.stall.rating || 0) - (a.stall.rating || 0));
-        const additionalOptions = filteredOptions.slice(0, 3 - topThreeOptions.length);
-        setFilteredFoodOptions([...topThreeOptions, ...additionalOptions]);
-      } else {
-        setFilteredFoodOptions(topThreeOptions);
+      for (const option of filteredOptions) {
+        if (!selectedOptionIds.has(option.id)) {
+          topThreeOptions.push(option);
+          selectedOptionIds.add(option.id);
+        }
+        if (topThreeOptions.length === 3) {
+          break;
+        }
       }
+      setFilteredFoodOptions(topThreeOptions);
     };
-
     filterFoodOptions();
   }, [dietaryRestrictions, budget, hasAirCon, hasHalal, isVegetarian, cuisineId, locationId, foodOptions]);
 
@@ -366,6 +374,9 @@ export default function FilterPage() {
           ) : (
             <Text style={styles.label}>No options match your criteria.</Text>
           )}
+          {filteredFoodOptions.length > 0 && filteredFoodOptions.length < 3 && (
+            <Text style={styles.label2}>No other options match your criteria.</Text>
+          )}
         </View>
       </ScrollView>
     </Provider>
@@ -412,6 +423,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     paddingTop: 10,
+  },
+  label2: {
+    marginLeft: 5,
+    marginBottom: 15,
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   buttons: {
     marginHorizontal: 5,

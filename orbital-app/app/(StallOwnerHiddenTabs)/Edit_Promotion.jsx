@@ -84,6 +84,10 @@ export default function EditPromotionPage() {
       setErrMsg('End date cannot be null');
       return;
     }
+    if (endDate < startDate) {
+      setErrMsg('End date cannot be before start date');
+      return;
+    }
     setLoading(true);
     let uploadedImage = originalImage;
     if (image !== null) {
@@ -166,13 +170,8 @@ export default function EditPromotionPage() {
   const handleEndDateChange = (event, date) => {
     setShowEndDatePicker(false);
     if (date) {
-      if (startDate && date < startDate) {
-        setErrMsg('End date cannot be before start date');
-        setEndDate(null);
-      } else {
-        setEndDate(date);
-        setErrMsg('');
-      }
+      setEndDate(date);
+      setErrMsg('');
     }
   };
 
@@ -186,12 +185,7 @@ export default function EditPromotionPage() {
     setShowStartDatePicker(false);
     if (date) {
       setStartDate(date);
-      if (endDate && endDate < date) {
-        setErrMsg('End date cannot be before start date');
-        setEndDate(null);
-      } else {
-        setErrMsg('');
-      }
+      setErrMsg('');
     }
   };
 
@@ -245,14 +239,6 @@ export default function EditPromotionPage() {
           display="default"
           onChange={handleEndDateChange}
         />
-      )}
-      {showClearEndDateButton && (
-        <Button onPress={() => {
-          setEndDate(null);
-          //setShowClearEndDateButton(false);
-        }} style={styles.buttonContainer}>
-          <Text style={styles.buttons}>Clear End Date</Text>
-        </Button>
       )}
 
       <Button onPress={handleSubmit} style={styles.buttonContainer}>

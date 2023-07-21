@@ -419,6 +419,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 2,
         color: '#666',
+        maxWidth: '90%'
     },
     location: {
         fontSize: 13,
