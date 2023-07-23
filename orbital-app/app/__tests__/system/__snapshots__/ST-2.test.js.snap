@@ -1,0 +1,492 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserPage renders correctly 1`] = `
+<View
+  style={
+    {
+      "backgroundColor": "#FFF5FA",
+      "flex": 1,
+      "paddingHorizontal": 15,
+    }
+  }
+>
+  <TextInput
+    onChangeText={[Function]}
+    placeholder="Search for users..."
+    style={
+      {
+        "backgroundColor": "#FFF",
+        "borderRadius": 8,
+        "fontSize": 15,
+        "marginBottom": 10,
+        "padding": 10,
+      }
+    }
+    testID="searchInput"
+    value=""
+  />
+  <View>
+    <Text
+      style={
+        {
+          "fontSize": 18,
+          "fontWeight": "bold",
+          "marginBottom": 10,
+        }
+      }
+    >
+      Recommended Users
+    </Text>
+    <RCTScrollView
+      contentContainerStyle={
+        {
+          "paddingHorizontal": 10,
+        }
+      }
+      data={
+        [
+          {
+            "id": 1,
+            "image": "image_url_1",
+            "username": "User 1",
+          },
+          {
+            "id": 2,
+            "image": "image_url_2",
+            "username": "User 2",
+          },
+        ]
+      }
+      getItem={[Function]}
+      getItemCount={[Function]}
+      horizontal={true}
+      keyExtractor={[Function]}
+      onContentSizeChange={[Function]}
+      onLayout={[Function]}
+      onMomentumScrollBegin={[Function]}
+      onMomentumScrollEnd={[Function]}
+      onScroll={[Function]}
+      onScrollBeginDrag={[Function]}
+      onScrollEndDrag={[Function]}
+      removeClippedSubviews={false}
+      renderItem={[Function]}
+      scrollEventThrottle={50}
+      showsHorizontalScrollIndicator={false}
+      stickyHeaderIndices={[]}
+      viewabilityConfigCallbackPairs={[]}
+    >
+      <View>
+        <View
+          onFocusCapture={[Function]}
+          onLayout={[Function]}
+          style={
+            [
+              {
+                "flexDirection": "row",
+              },
+              null,
+            ]
+          }
+        >
+          <View
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "opacity": 1,
+              }
+            }
+          >
+            <View
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#FFECF6",
+                  "borderColor": "#FFF5FA",
+                  "borderRadius": 10,
+                  "borderWidth": 2,
+                  "height": 165,
+                  "marginBottom": 10,
+                  "marginRight": 10,
+                  "padding": 10,
+                  "width": 140,
+                }
+              }
+            >
+              <Image
+                source={
+                  {
+                    "uri": "image_url_1",
+                  }
+                }
+                style={
+                  {
+                    "borderRadius": 50,
+                    "height": 100,
+                    "marginBottom": 10,
+                    "width": 100,
+                  }
+                }
+              />
+              <Text
+                style={
+                  {
+                    "fontSize": 14,
+                    "fontWeight": "bold",
+                  }
+                }
+              >
+                User 1
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View
+          onFocusCapture={[Function]}
+          onLayout={[Function]}
+          style={
+            [
+              {
+                "flexDirection": "row",
+              },
+              null,
+            ]
+          }
+        >
+          <View
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": undefined,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "opacity": 1,
+              }
+            }
+          >
+            <View
+              style={
+                {
+                  "alignItems": "center",
+                  "backgroundColor": "#FFECF6",
+                  "borderColor": "#FFF5FA",
+                  "borderRadius": 10,
+                  "borderWidth": 2,
+                  "height": 165,
+                  "marginBottom": 10,
+                  "marginRight": 10,
+                  "padding": 10,
+                  "width": 140,
+                }
+              }
+            >
+              <Image
+                source={
+                  {
+                    "uri": "image_url_2",
+                  }
+                }
+                style={
+                  {
+                    "borderRadius": 50,
+                    "height": 100,
+                    "marginBottom": 10,
+                    "width": 100,
+                  }
+                }
+              />
+              <Text
+                style={
+                  {
+                    "fontSize": 14,
+                    "fontWeight": "bold",
+                  }
+                }
+              >
+                User 2
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </RCTScrollView>
+  </View>
+  <Text
+    style={
+      {
+        "fontSize": 18,
+        "fontWeight": "bold",
+        "marginBottom": 10,
+      }
+    }
+  >
+    All Users
+  </Text>
+  <RCTScrollView
+    contentContainerStyle={
+      {
+        "paddingBottom": 20,
+      }
+    }
+    data={
+      [
+        {
+          "id": 1,
+          "image": "image_url_1",
+          "username": "User 1",
+        },
+        {
+          "id": 2,
+          "image": "image_url_2",
+          "username": "User 2",
+        },
+      ]
+    }
+    getItem={[Function]}
+    getItemCount={[Function]}
+    keyExtractor={[Function]}
+    onContentSizeChange={[Function]}
+    onLayout={[Function]}
+    onMomentumScrollBegin={[Function]}
+    onMomentumScrollEnd={[Function]}
+    onScroll={[Function]}
+    onScrollBeginDrag={[Function]}
+    onScrollEndDrag={[Function]}
+    removeClippedSubviews={false}
+    renderItem={[Function]}
+    scrollEventThrottle={50}
+    showsVerticalScrollIndicator={false}
+    stickyHeaderIndices={[]}
+    viewabilityConfigCallbackPairs={[]}
+  >
+    <View>
+      <View
+        onFocusCapture={[Function]}
+        onLayout={[Function]}
+        style={null}
+      >
+        <View
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "opacity": 1,
+            }
+          }
+        >
+          <View
+            style={
+              {
+                "alignItems": "center",
+                "backgroundColor": "#FFECF6",
+                "borderColor": "#FFF5FA",
+                "borderRadius": 10,
+                "borderWidth": 3,
+                "flexDirection": "row",
+                "marginBottom": 10,
+                "padding": 15,
+              }
+            }
+          >
+            <View
+              style={
+                {
+                  "marginRight": 10,
+                }
+              }
+            >
+              <Image
+                source={
+                  {
+                    "uri": "image_url_1",
+                  }
+                }
+                style={
+                  {
+                    "borderRadius": 40,
+                    "height": 80,
+                    "width": 80,
+                  }
+                }
+              />
+            </View>
+            <Text
+              style={
+                {
+                  "flex": 1,
+                  "fontSize": 16,
+                  "fontWeight": "bold",
+                }
+              }
+            >
+              User 1
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View
+        onFocusCapture={[Function]}
+        onLayout={[Function]}
+        style={null}
+      >
+        <View
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            {
+              "opacity": 1,
+            }
+          }
+        >
+          <View
+            style={
+              {
+                "alignItems": "center",
+                "backgroundColor": "#FFECF6",
+                "borderColor": "#FFF5FA",
+                "borderRadius": 10,
+                "borderWidth": 3,
+                "flexDirection": "row",
+                "marginBottom": 10,
+                "padding": 15,
+              }
+            }
+          >
+            <View
+              style={
+                {
+                  "marginRight": 10,
+                }
+              }
+            >
+              <Image
+                source={
+                  {
+                    "uri": "image_url_2",
+                  }
+                }
+                style={
+                  {
+                    "borderRadius": 40,
+                    "height": 80,
+                    "width": 80,
+                  }
+                }
+              />
+            </View>
+            <Text
+              style={
+                {
+                  "flex": 1,
+                  "fontSize": 16,
+                  "fontWeight": "bold",
+                }
+              }
+            >
+              User 2
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  </RCTScrollView>
+</View>
+`;
