@@ -1,7 +1,5 @@
-import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import LoginPage from '../../test/loginuser'; // Update the path to your LoginPage component
-
+import LoginPage from '../../test/loginuser';
 describe('LoginPage', () => {
   it('should display error message if email is empty', async () => {
     const { getByText, getByTestId, queryByText } = render(<LoginPage />);

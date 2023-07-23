@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Image, View, StyleSheet } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from "react-native-paper";
 
@@ -65,7 +65,6 @@ export default function LoginPage() {
                 <Button
                     style={[styles.buttonContainer, { alignSelf: 'center' }]}
                     onPress={() => {
-                        // Handle navigation to the sign-up page here, if needed
                     }}
                 >
                     <Text style={styles.button}>Sign Up</Text>
