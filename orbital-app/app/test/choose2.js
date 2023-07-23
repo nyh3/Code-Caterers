@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Image, View, StyleSheet } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 
 export default function UserOrOwner() {
-    const [selectedGroup, setSelectedGroup] = useState(''); // Local state to track the selected group
+    const [selectedGroup, setSelectedGroup] = useState('');
 
     const handleUser = () => {
         setSelectedGroup('User');
@@ -21,7 +21,7 @@ export default function UserOrOwner() {
             <Button
                 style={[
                     styles.buttonContainer,
-                    selectedGroup === 'User' && styles.selectedButton, // Apply different styles for selected button
+                    selectedGroup === 'User' && styles.selectedButton,
                 ]}
                 onPress={handleUser}
             >
@@ -30,7 +30,7 @@ export default function UserOrOwner() {
             <Button
                 style={[
                     styles.buttonContainer,
-                    selectedGroup === 'Owner' && styles.selectedButton, // Apply different styles for selected button
+                    selectedGroup === 'Owner' && styles.selectedButton,
                 ]}
                 onPress={handleOwner}
             >
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     selectedButton: {
-        backgroundColor: '#2C0080', // Apply a different background color for the selected button
+        backgroundColor: '#2C0080',
     },
     button: {
         fontWeight: 'bold',
