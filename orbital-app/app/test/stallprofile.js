@@ -115,9 +115,9 @@ export default function StallProfilePage({ mockSupabaseData }) {
     };
 
     // Function to handle the "Discard & Return" button press
-const handleDiscardAndReturn = () => {
-    console.log('Discard & Return button pressed');
-};
+    const handleDiscardAndReturn = () => {
+        console.log('Discard & Return button pressed');
+    };
 
     return (
         <Provider>
@@ -126,7 +126,14 @@ const handleDiscardAndReturn = () => {
                     <Text style={styles.buttonText}>Insert Stall Image</Text>
                 </Button>
                 {stallImage !== '' ? <View style={styles.stallImage} /> : null}
-                <TextInput label="Stall Name" value={stallName} onChangeText={setStallName} style={styles.input} accessibilityLabel="Stall Name" />
+                <TextInput
+                    label="Stall Name"
+                    value={stallName}
+                    onChangeText={setStallName}
+                    style={styles.input}
+                    accessibilityLabel="Stall Name"
+                    placeholder='Stall Name'
+                    testID='Stall Name' />
                 <TextInput
                     label="Description"
                     autoCapitalize="none"
@@ -135,6 +142,7 @@ const handleDiscardAndReturn = () => {
                     multiline
                     style={styles.input}
                     accessibilityLabel="Description"
+                    testID='Description'
                 />
                 <Text style={styles.label}>What is the location of the stall?</Text>
                 <Menu
@@ -178,7 +186,7 @@ const handleDiscardAndReturn = () => {
                 <Button testID="is-vegetarian-button" mode="contained" onPress={() => setIsVegetarian(!isVegetarian)} style={styles.button}>
                     {isVegetarian ? 'Yes' : 'No'}
                 </Button>
-                <Button onPress={handleSubmit} style={styles.buttonContainer}>
+                <Button testID='submit button' onPress={handleSubmit} style={styles.buttonContainer}>
                     <Text style={styles.buttonText}>Submit / Update Stall Details</Text>
                 </Button>
                 {loading && <ActivityIndicator style={styles.activityIndicator} />}
