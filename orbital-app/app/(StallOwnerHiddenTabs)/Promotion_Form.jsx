@@ -94,7 +94,7 @@ export default function PromotionForm() {
       return;
     }
     setLoading(true);
-    let uploadedImage = null;
+    let uploadedImage = 'https://tkkkeagmqcijtmriflss.supabase.co/storage/v1/object/public/PromotionImage/Promotions_default.jpg?t=2023-08-01T08%3A35%3A55.822Z';
     if (image != null) {
       const { data, error } = await supabase.storage.from('PromotionImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
 
