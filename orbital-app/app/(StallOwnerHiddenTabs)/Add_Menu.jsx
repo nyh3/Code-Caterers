@@ -6,6 +6,21 @@ import { useAuth } from "../../contexts/auth";
 import { useRouter } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
 
+const restrictionIcons = {
+  CHICKEN: '🍗',
+  PORK: '🥓',
+  BEEF: '🥩',
+  LAMB: '🐑',
+  FISH: '🐟',
+  SHELLFISH: '🦀',
+  DAIRY: '🥛',
+  EGGS: '🥚',
+  PEANUTS: '🥜',
+  GLUTEN: '🌾',
+  SOY: '🍱',
+  SPICY: '🌶️',
+};
+
 /**
  * Component for adding a menu item.
  *
@@ -22,7 +37,6 @@ export default function AddMenuPage() {
   const [price, setPrice] = useState('');
   const [stall, setStall] = useState(null);
   const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
-  const [newDietaryRestriction, setNewDietaryRestriction] = useState('');
 
   useEffect(() => {
     fetchStallId();
@@ -117,52 +131,36 @@ export default function AddMenuPage() {
     }
   };
 
+  // Function to render each dietary restriction as a grid item
+  const renderDietaryRestrictionItem = (restriction) => (
+    <TouchableOpacity
+      key={restriction}
+      style={[
+        styles.restrictionContainer,
+        dietaryRestrictions.includes(restriction) && styles.selectedGridItem,
+      ]}
+      onPress={() => handleToggleRestriction(restriction)}
+    >
+      <View style={styles.restrictionIconContainer}>
+        <Text style={styles.restrictionIcon}>{restrictionIcons[restriction]}</Text>
+      </View>
+      <Text style={styles.restrictionText}>{restriction}</Text>
+    </TouchableOpacity>
+  );
+
+  const gridItemWidth = `${(100 / 3).toFixed(2)}%`;
+  const spacingBetweenItems = 5;
+
   /**
-   * Handles adding a dietary restriction.
-   */
-  const handleAddDietaryRestriction = () => {
-    if (newDietaryRestriction !== '') {
-      if (newDietaryRestriction.trim() === '') return;
-
-      const normalizedRestriction = newDietaryRestriction.trim().toUpperCase();
-
-      // Check for duplicate restrictions
-      if (dietaryRestrictions.includes(normalizedRestriction)) {
-        setErrMsg('This restriction has already been added.');
-        return;
-      }
-
-      // Check for "halal" and "vegetarian" restrictions
-      const restrictedRestrictions = ['HALAL', 'VEGETARIAN'];
-      if (restrictedRestrictions.includes(normalizedRestriction)) {
-        setErrMsg('Adding HALAL or VEGETARIAN as a restriction is not allowed.');
-        return;
-      }
-
-      const updatedRestrictions = [...dietaryRestrictions, normalizedRestriction];
-      setDietaryRestrictions(updatedRestrictions);
-      setNewDietaryRestriction('');
+  * Handles the addition and removal of a dietary restriction.
+  * @param {string} restriction - The dietary restriction to be toggled.
+  */
+  const handleToggleRestriction = (restriction) => {
+    if (dietaryRestrictions.includes(restriction)) {
+      setDietaryRestrictions((prev) => prev.filter((r) => r !== restriction));
+    } else {
+      setDietaryRestrictions((prev) => [...prev, restriction]);
     }
-  };
-
-  /**
-   * Handles removing a dietary restriction.
-   *
-   * @param {number} index - The index of the dietary restriction to be removed.
-   */
-  const handleRemoveDietaryRestriction = (index) => {
-    const updatedDietaryRestrictions = [...dietaryRestrictions];
-    updatedDietaryRestrictions.splice(index, 1);
-    setDietaryRestrictions(updatedDietaryRestrictions);
-  };
-
-  /**
-   * Handles the input change in the Dietary Restrictions TextInput.
-   * @param {string} text - The input text value.
-   */
-  const handleInputChange = (text) => {
-    setNewDietaryRestriction(text);
-    setErrMsg(''); // Clear the error message when text changes
   };
 
   return (
@@ -193,31 +191,17 @@ export default function AddMenuPage() {
           keyboardType="numeric"
           style={styles.input}
         />
-        <Text style={styles.warning}>Note: Do not put halal and vegetarian as dietary restrictions</Text>
-        <Text style={styles.warning2}>Currently, we only take into account fish, shellfish, lamb, beef, pork, chicken, eggs, diary, gluten, soy, peanuts.</Text>
-        <TextInput
-          label="Dietary Restrictions"
-          value={newDietaryRestriction}
-          onChangeText={handleInputChange}
-          style={styles.input}
-        />
-        <View style={styles.dietaryRestrictionsContainer}>
-          {dietaryRestrictions.map((restriction, index) => (
-            <View key={index} style={styles.dietaryRestrictionItem}>
-              <Text style={styles.dietaryRestrictionText}>{restriction}</Text>
-              <TouchableOpacity
-                onPress={() => handleRemoveDietaryRestriction(index)}
-                style={styles.removeDietaryRestrictionButton}
-              >
-                <Text style={styles.removeDietaryRestrictionText}>Delete</Text>
-              </TouchableOpacity>
+        <Text style={styles.heading}>Dietary Restrictions:</Text>
+        <View style={styles.gridContainer}>
+          {Object.keys(restrictionIcons).map((restriction) => (
+            <View
+              key={restriction}
+              style={{ width: gridItemWidth, marginBottom: spacingBetweenItems }}
+            >
+              {renderDietaryRestrictionItem(restriction)}
             </View>
           ))}
         </View>
-        <Button onPress={handleAddDietaryRestriction} style={styles.buttonContainer}>
-          <Text style={styles.buttons}>Add Dietary Restriction</Text>
-        </Button>
-
         <Button onPress={handleSubmit} style={styles.buttonContainer}>
           <Text style={styles.buttons}>Submit</Text>
         </Button>
@@ -261,28 +245,30 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginTop: 5,
   },
-  dietaryRestrictionsContainer: {
-    marginBottom: 7,
-  },
-  dietaryRestrictionItem: {
-    flexDirection: 'row',
+  restrictionContainer: {
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 5,
-    paddingHorizontal: 15,
-    backgroundColor: '#FFECF6',
-    height: 40,
+    marginLeft: 5,
+    backgroundColor: '#FFF5FA',
+    borderRadius: 30,
+    padding: 10,
+    height: 100,
   },
-  dietaryRestrictionText: {
+  restrictionIconContainer: {
+    borderRadius: 20,
+    padding: 10,
+  },
+  restrictionIcon: {
+    fontSize: 30,
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  restrictionText: {
     fontSize: 15,
     color: 'black',
-  },
-  removeDietaryRestrictionButton: {
-    backgroundColor: 'transparent',
-  },
-  removeDietaryRestrictionText: {
-    color: '#2C0080',
-    fontWeight: 'bold',
+    textAlign: 'center',
   },
   scrollViewContainer: {
     flexGrow: 1,
@@ -301,5 +287,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingTop: 15,
+  },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  selectedGridItem: {
+    backgroundColor: '#FFD9E8',
   },
 });

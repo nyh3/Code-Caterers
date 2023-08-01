@@ -1,18 +1,33 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper';
+import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Text, Button, ActivityIndicator } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/auth';
+
+// Icons for dietary restrictions
+const restrictionIcons = {
+  CHICKEN: '🍗',
+  PORK: '🥓',
+  BEEF: '🥩',
+  LAMB: '🐑',
+  FISH: '🐟',
+  SHELLFISH: '🦀',
+  DAIRY: '🥛',
+  EGGS: '🥚',
+  PEANUTS: '🥜',
+  GLUTEN: '🌾',
+  SOY: '🍱',
+  SPICY: '🌶️',
+};
 
 /**
  * Component for managing dietary restrictions and allergies.
  * @returns {JSX.Element} The DietaryRestrictions component.
  */
 export default function DietaryRestrictions() {
-  const [loading, setLoading] = useState(false);
-  const [dietary_restrictions, setDietaryRestrictions] = useState([]);
-  const [newRestriction, setNewRestriction] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
   const [errMsg, setErrMsg] = useState('');
   const { userId } = useAuth();
   const router = useRouter();
@@ -26,50 +41,30 @@ export default function DietaryRestrictions() {
           .eq('id', userId);
         if (error) {
           console.error('Error retrieving dietary restrictions:', error.message);
+          setLoading(false);
           return;
         }
         const restrictions = data[0]?.dietary_restrictions || [];
         setDietaryRestrictions(restrictions);
+        setLoading(false);
       } catch (error) {
         console.error('Error retrieving dietary restrictions:', error.message);
+        setLoading(false);
       }
     };
     fetchDietaryRestrictions();
   }, []);
 
   /**
-   * Handles the addition of a dietary restriction.
+   * Handles the addition and removal of a dietary restriction.
+   * @param {string} restriction - The dietary restriction to be toggled.
    */
-  const handleAddRestriction = () => {
-    if (newRestriction.trim() === '') return;
-
-    const normalizedRestriction = newRestriction.trim().toUpperCase();
-
-    // Check for duplicate restrictions
-    if (dietary_restrictions.includes(normalizedRestriction)) {
-      setErrMsg('This restriction has already been added.');
-      return;
+  const handleToggleRestriction = (restriction) => {
+    if (dietaryRestrictions.includes(restriction)) {
+      setDietaryRestrictions((prev) => prev.filter((r) => r !== restriction));
+    } else {
+      setDietaryRestrictions((prev) => [...prev, restriction]);
     }
-
-    // Check for "halal" and "vegetarian" restrictions
-    const restrictedRestrictions = ['HALAL', 'VEGETARIAN'];
-    if (restrictedRestrictions.includes(normalizedRestriction)) {
-      setErrMsg('Adding HALAL or VEGETARIAN as a restriction is not allowed.');
-      return;
-    }
-
-    const updatedRestrictions = [...dietary_restrictions, normalizedRestriction];
-    setDietaryRestrictions(updatedRestrictions);
-    setNewRestriction('');
-  };
-
-  /**
-   * Handles the deletion of a dietary restriction.
-   * @param {string} restriction - The dietary restriction to be deleted.
-   */
-  const handleDeleteRestriction = (restriction) => {
-    const updatedRestrictions = dietary_restrictions.filter((item) => item !== restriction);
-    setDietaryRestrictions(updatedRestrictions);
   };
 
   /**
@@ -77,13 +72,12 @@ export default function DietaryRestrictions() {
    */
   const handleSubmit = async () => {
     setLoading(true);
-
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('profile')
-      .update({ dietary_restrictions })
+      .update({ dietary_restrictions: dietaryRestrictions })
       .eq('id', userId);
 
-    if (error != null) {
+    if (error) {
       setLoading(false);
       console.log(error);
       setErrMsg(error.message);
@@ -94,43 +88,40 @@ export default function DietaryRestrictions() {
     router.push('../(home)/profile');
   };
 
-  /**
- * Handles the input change in the Dietary Restrictions TextInput.
- * @param {string} text - The input text value.
- */
-  const handleInputChange = (text) => {
-    setNewRestriction(text);
-    setErrMsg(''); // Clear the error message when text changes
-  };
+  // Function to render each dietary restriction as a grid item
+  const renderDietaryRestrictionItem = (restriction) => (
+    <TouchableOpacity
+      key={restriction}
+      style={[
+        styles.restrictionContainer,
+        dietaryRestrictions.includes(restriction) && styles.selectedGridItem,
+      ]}
+      onPress={() => handleToggleRestriction(restriction)}
+    >
+      <View style={styles.restrictionIconContainer}>
+        <Text style={styles.restrictionIcon}>{restrictionIcons[restriction]}</Text>
+      </View>
+      <Text style={styles.restrictionText}>{restriction}</Text>
+    </TouchableOpacity>
+  );
 
+  const gridItemWidth = `${(100 / 3).toFixed(2)}%`;
+  const spacingBetweenItems = 5;
 
   return (
     <ScrollView style={styles.wholeThing}>
       <Text style={styles.header}>Dietary Restrictions:</Text>
-      <Text style={styles.warning}>Note: Please do not put halal and vegetarian as your dietary restrictions.</Text>
-      <Text style={styles.warning2}>Currently, we only take into account fish, shellfish, lamb, beef, pork, chicken, eggs, diary, gluten, soy, peanuts.</Text>
       <Text style={styles.bold}>Dietary restrictions or allergies declared:</Text>
-      {dietary_restrictions.length > 0 ? (
-        dietary_restrictions.map((restriction, index) => (
-          <View key={index} style={styles.restrictionContainer}>
-            <Text style={styles.restrictionText}>{restriction}</Text>
-            <Button onPress={() => handleDeleteRestriction(restriction)}>Delete</Button>
+      <View style={styles.gridContainer}>
+        {Object.keys(restrictionIcons).map((restriction) => (
+          <View
+            key={restriction}
+            style={{ width: gridItemWidth, marginBottom: spacingBetweenItems }}
+          >
+            {renderDietaryRestrictionItem(restriction)}
           </View>
-        ))
-      ) : (
-        <View style={styles.restrictionContainer}>
-          <Text style={styles.restrictionText}>No dietary restrictions have been declared</Text>
-        </View>
-      )}
-      <Text style={styles.bold}>Update your dietary restrictions or food allergies:</Text>
-      <TextInput
-        value={newRestriction}
-        onChangeText={handleInputChange}
-        style={styles.input}
-      />
-      <Button style={styles.buttonContainer} onPress={handleAddRestriction}>
-        <Text style={styles.button}>Add Restriction</Text>
-      </Button>
+        ))}
+      </View>
       <Button style={styles.buttonContainer} onPress={handleSubmit}>
         <Text style={styles.button}>Update Dietary Restrictions</Text>
       </Button>
@@ -176,17 +167,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   restrictionContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 5,
-    backgroundColor: '#FFECF6',
-    height: 40,
+    marginLeft: 5,
+    backgroundColor: '#FFF5FA',
+    borderRadius: 30,
+    padding: 10,
+    height: 100,
+  },
+  restrictionIconContainer: {
+    borderRadius: 20,
+    padding: 10,
+  },
+  restrictionIcon: {
+    fontSize: 30,
+    textAlign: 'center',
+    marginBottom: 5,
   },
   restrictionText: {
     fontSize: 15,
     color: 'black',
-    marginHorizontal: 5,
+    textAlign: 'center',
   },
   errormsg: {
     marginTop: 10,
@@ -205,5 +208,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingTop: 20,
+  },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  selectedGridItem: {
+    backgroundColor: '#FFD9E8',
   },
 });
