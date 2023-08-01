@@ -165,7 +165,7 @@ export default function StallProfilePage() {
      */
     const handleSubmit = async () => {
         setLoading(true);
-        let uploadedImage = null;
+        let uploadedImage = 'https://tkkkeagmqcijtmriflss.supabase.co/storage/v1/object/public/StallImage/stall_default.ico?t=2023-08-01T08%3A33%3A11.447Z';
         if (stallImage !== null) {
             const { data, error } = await supabase.storage
                 .from('StallImage')

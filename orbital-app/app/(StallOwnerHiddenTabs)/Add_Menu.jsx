@@ -84,7 +84,7 @@ export default function AddMenuPage() {
       return;
     }
     setLoading(true);
-    let uploadedImage = null;
+    let uploadedImage = 'https://tkkkeagmqcijtmriflss.supabase.co/storage/v1/object/public/MenuImage/Menu_default.png?t=2023-08-01T08%3A37%3A05.755Z';
     if (image != null) {
       const { data, error } = await supabase.storage.from('MenuImage').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
 
