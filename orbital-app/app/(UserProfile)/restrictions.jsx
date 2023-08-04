@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFECF6',
     borderWidth: 1,
     borderColor: '#FFBBDF',
-    marginTop: 20,
+    marginTop: 5,
     justifyContent: 'center',
     alignItems: 'center',
     height: 40,
@@ -179,8 +179,7 @@ const styles = StyleSheet.create({
   },
   restrictionIconContainer: {
     borderRadius: 20,
-    padding: 10,
-  },
+    },
   restrictionIcon: {
     fontSize: 30,
     textAlign: 'center',
