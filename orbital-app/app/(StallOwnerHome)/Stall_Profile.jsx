@@ -164,6 +164,10 @@ export default function StallProfilePage() {
      * Handles the submission of the stall details
      */
     const handleSubmit = async () => {
+        if (!stallName || !description || !selectedLocation || !selectedCuisine) {
+            alert('Please fill in all the required(*) fields.');
+            return;
+        }
         setLoading(true);
         let uploadedImage = 'https://tkkkeagmqcijtmriflss.supabase.co/storage/v1/object/public/StallImage/stall_default.ico?t=2023-08-01T08%3A33%3A11.447Z';
         if (stallImage !== null) {
@@ -264,20 +268,20 @@ export default function StallProfilePage() {
                     null
                 )}
                 <TextInput
-                    label="Stall Name"
+                    label="Stall Name*"
                     value={stallName}
                     onChangeText={setStallName}
                     style={styles.input}
                 />
                 <TextInput
-                    label="Description"
+                    label="Description*"
                     autoCapitalize='none'
                     value={description}
                     onChangeText={setDescription}
                     multiline
                     style={styles.input}
                 />
-                <Text style={styles.label}>What is the location of the stall?</Text>
+                <Text style={styles.label}>What is the location of the stall?*</Text>
                 <Menu
                     visible={locationMenuVisible}
                     onDismiss={() => setLocationMenuVisible(false)}
@@ -301,7 +305,7 @@ export default function StallProfilePage() {
                     ))}
                 </Menu>
 
-                <Text style={styles.label}>What is the cuisine?</Text>
+                <Text style={styles.label}>What is the cuisine?*</Text>
                 <Menu
                     visible={cuisineMenuVisible}
                     onDismiss={() => setCuisineMenuVisible(false)}

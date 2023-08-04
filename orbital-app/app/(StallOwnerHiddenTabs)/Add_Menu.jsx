@@ -191,7 +191,7 @@ export default function AddMenuPage() {
           keyboardType="numeric"
           style={styles.input}
         />
-        <Text style={styles.heading}>Dietary Restrictions:</Text>
+        <Text style={styles.heading2}>Dietary Restrictions:</Text>
         <View style={styles.gridContainer}>
           {Object.keys(restrictionIcons).map((restriction) => (
             <View
@@ -223,6 +223,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginVertical: 15,
+  },
+  heading2: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 12,
   },
   input: {
     marginBottom: 15,
@@ -258,7 +263,8 @@ const styles = StyleSheet.create({
   },
   restrictionIconContainer: {
     borderRadius: 20,
-    padding: 10,
+    alignItems: 'center', 
+    justifyContent: 'center',
   },
   restrictionIcon: {
     fontSize: 30,
